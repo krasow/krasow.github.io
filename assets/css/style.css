@@ -1,0 +1,149 @@
+/* overall page css  */
+body {
+  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.footer {
+  flex-shrink: 0;
+  background-color: #1d2228 !important;
+}
+
+/* end page */
+
+/* navbar css  */
+.topnav {
+  overflow: hidden;
+  background-color: #fb8122;
+  z-index: 100;
+  height: 50px;
+}
+
+.topnav a {
+  display: block;
+  color: #1d2228;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.active {
+  background-color: #e1e2e2;
+  color: white;
+}
+
+.topnav .icon {
+  display: none;
+}
+
+.topnav a:hover {
+  background-color: #e1e2e2;
+  color: white;
+}
+
+.link {
+  float: left;
+}
+
+.social {
+  float: right;
+}
+
+
+@media screen and (max-width: 444px) {
+  .link {
+    display: none;
+
+  }
+}
+/* endnav */
+.intro{
+  padding-top: 20px;
+  max-width: 60%;
+}
+
+.intro h2{
+  font-size: 32px;
+  text-align: center;
+  font-weight: normal;
+  font-style: oblique;
+}
+
+.about{
+  background-color: #1d2228;
+  color: white;
+  padding-top: 20px;
+  max-width: 60%;
+
+}
+.command{
+  text-align: left;
+  margin-left: 2%;
+}
+.response{
+  text-align: left;
+  font-size: 20px;
+  margin-left: 7%;
+  padding-bottom: 16px;
+  padding-right: 15px;
+}
+.response a{
+  color: white;
+}
+@media screen and (max-width: 1000px) {
+  .about {
+    max-width: 85%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .about {
+    max-width: 95%;
+  }
+}
+
+.event {
+  font-size: 20px;
+  text-align: left;
+}
+
+.work h2{
+  font-size: 30px;
+  text-align: center;
+  font-weight: normal;
+  font-style: oblique;
+}
+
+.language{
+  text-align: center;
+}
+
+.language li{
+  display:inline-block !important;
+  padding-right: 20px;
+  font-size: 18px;
+}
+
+.language span{
+  font-size: 30px;
+  text-align: center;
+  font-weight: normal;
+  font-style: oblique;
+}
+
+.project{
+  padding-top: 25px;
+}
+.project img{
+  max-height: 275px;
+  text-align: center;
+}
+.project a{
+  color:black;
+}
