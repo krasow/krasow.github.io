@@ -113,6 +113,10 @@ body {
   text-align: left;
 }
 
+.work {
+    top: -500px;
+}
+
 .work h2{
   font-size: 30px;
   text-align: center;
@@ -145,4 +149,13 @@ body {
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+}
+
+
+.frontimg img{
+    display: block;
+    position: sticky;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
 }
