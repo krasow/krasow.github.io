@@ -141,9 +141,8 @@ body {
   padding-top: 25px;
 }
 .project img{
-  max-height: 275px;
-  text-align: center;
-}
-.project a{
-  color:black;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
