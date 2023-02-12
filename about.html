@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/" />
+        <meta property="og:image" content="/assets/images/"/>
+        <meta property="og:image:secure_url" content="/assets/images/"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>David Krasowska | About </title>
+        <!-- custom css  -->
+        <link rel="stylesheet" type = "text/css" href="assets/css/style.css">
+        <!-- Bootstrap 4.5.0 -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <!-- Font awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+
+    <body>
+        <div class="content">
+        <!-- Navbar -->
+        <div class="left-side-navbar" id="myTopnav">
+            <div class="links">
+                <a href="index.html">SUMMARY</a>
+                <a href="index.html#experience">EXPERIENCE</a>
+                <a href="index.html#publications">PUBLICATIONS</a>
+                <a href="presentations.html">PRESENTATIONS</a>
+                <a href="about.html">ABOUT</a>
+                <a href="news.html">NEWS</a>
+            </div>
+            <div class="social">
+                <a class="btn btn-lg btn-github" href="https://github.com/Krasow">
+                    <i class="fa fa-github"></i>
+                </a>
+                <a class="btn btn-lg btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
+                    <i class="fa fa-linkedin"></i>
+                </a>
+                <a class="btn btn-paper-plane" href="mailto:krasow@u.northwestern.edu">
+                <i class="fa fa-paper-plane"></i>
+                </a>
+            </div>
+            <!-- Navbar end -->
+        </div>
+
+            <!-- content of projects -->
+            <div class=" presentations">
+                <div class="presentation">
+                    <div class="presentation-title">My background.</div>
+                    <div class="presentation-text">
+                        My research introduction began with research within the FTHPC group at Clemson University under Dr. Jon C. Calhoun. 
+                        Within this group, I collaborated with Argonne National Laboratory as a visiting student on lossy data compression research.
+                        Our goal was to determine different statistical predictions that would allow for estimation of lossy compression ratios. This had lead to 
+                        <a href="index.html#publications">publications</a> and <a href="news.html">awards</a>.
+                        I participated in the Student Cluster Competition at Super Computing (SC) ’21. I had to manage resource allocations to achieve highest benchmark scores on HPL[1] and
+                        run scientific applications, i.e. Quantum Espresso[2], with large problems without going over the given monetary budget. These applications took hours to complete using tens
+                        of nodes configured with MPI. Also, I participated in the INDYSCC at SC '22 with our team winning best poster.
+                        I recently have started at Northwestern under Dr. Peter Dinda and have interest in data centric computing for domain specific applications.
+                    </div>
+                </div>
+                <div class="presentation">
+                    <div class="presentation-title">What is my research proposal?</div>
+                    <div class="presentation-text">
+                        The end of Moore’s law has resulted in development of new specialized architectures for computing [3]. There has been countless prior work in the area of increasing computational 
+                        speed using processing in/near memory (PIM) accelerators. However, there are a few issues that require a demanding amount of work for adoption for these newer ideas. 
+                        This is due to the general approach taken and requiring domain scientists to rewrite their code with directives in order to make use of this functionality. 
+                        <br><br>
+                        I have an interest in designing a PIM system for HPC domain specific applications. I would like to focus on HPC infrastructures; however, this approach would 
+                        generalize to other infrastructures, such as data centers. Data centers are used all over the world and utilize lots of valuable resources/energy. 
+                        Improving data center architecture and programmability can reduce the environmental footprint. Northwestern has multiple labs working towards the goal of optimizing 
+                        performance in computing systems. I am currently working with the Prescience lab that focuses on optimizing higher level code to reduce programmer intervention. 
+                        My goal is to take high level languages that are popular within a specific domain and automatically detect parallel code to generate PIM instructions. 
+                        Using today’s PIM hardware, I expect to be able to develop a software approach to achieve this goal. I can leverage my group's compiler and language expertise in pursuit of the goal. 
+                        This approach would allow domain scientists to keep their high level code and not spend time rewriting it for the new system. Based on my experience in the software approach, 
+                        I will next consider improvements to hardware design. This plan will hopefully lead to increased performance and allow for less energy consumption, 
+                        thus improving efficiency and environmental impact.
+                    </div>
+                </div>
+                <div class="presentation">
+                    <div class="presentation-cite">
+                        [1] A. Petitet, R. Whaley, J. Dongarra, and A. Cleary, ‘HPL – a Portable Implementation of the High-Performance Linpack Benchmark for Distributed-Memory Computers’, 01 2008.
+                        <br>
+                        [2] P. Giannozzi et al., ‘QUANTUM ESPRESSO: a modular and open-source software project for quantum simulations of materials’, Journal of Physics: Condensed Matter, vol. 21, no. 39, p. 395502, Sep. 2009.
+                        <br>
+                        [3] T. N. Theis and H. . -S. P. Wong, "The End of Moore's Law: A New Beginning for Information Technology," in Computing in Science & Engineering, vol. 19, no. 2, pp. 41-50, Mar.-Apr. 2017, doi: 10.1109/MCSE.2017.29.
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <!-- end content -->
+        </div>
+    </body>
+    <!-- footer -->
+    <footer class="footer">
+        &copy; 2023 David Krasowska
+        <a class="btn btn-github " href="https://github.com/Krasow">
+            <i class="fa fa-github"></i>
+        </a>
+        <a class="btn btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
+            <i class="fa fa-linkedin"></i>
+        </a>
+        <a class="btn btn-paper-plane " href="mailto:dkrasow@g.clemson.edu">
+            <i class="fa fa-paper-plane"></i>
+        </a>
+    </footer>
+    <!-- footer end -->
+</html>

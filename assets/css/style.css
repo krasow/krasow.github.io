@@ -374,3 +374,94 @@ hr {
 .presentation-text b{
   font-weight: 700;
 }
+
+
+.presentation-cite {
+  font-size: 12px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.articles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+
+.article {
+  width: calc(65% - 10px);
+  background-color: white;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: left;
+  border-block: black;
+  margin-bottom: 20px;
+  margin-left: 200px;
+}
+
+.article img {
+  max-width:  95%;
+  height: auto;
+}
+
+
+.article-venue {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+
+.article-title {
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.article-abstract {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 850px) {
+  .article {
+    margin-left: 6%;
+    width: calc(100% - 10px);
+  }
+  .article-title {
+    font-size: 20px;
+  }
+  .article-abstract {
+    font-size: 16px;
+  }
+  .article-venue {
+    font-size: 14px;
+  }
+}
+
