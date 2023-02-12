@@ -95,12 +95,14 @@ hr {
     position: fixed;
     top: 0;
     left: 0;
+    background-color: #3F51B5;
   }
 }
 
 .left-side-navbar:hover {
   width: 250px;
   display: block;
+  background-color: #111;
 }
 
 /* Page content */
