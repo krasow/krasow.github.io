@@ -97,6 +97,7 @@ hr {
     left: 0;
     background-color: #3F51B5;
   }
+  .left-side-navbar a {padding-left: 300px;}
 }
 
 .left-side-navbar:hover {
@@ -104,6 +105,7 @@ hr {
   display: block;
   background-color: #111;
 }
+.left-side-navbar:hover a {padding-left: 15px;}
 
 /* Page content */
 .main {
