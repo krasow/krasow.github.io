@@ -192,15 +192,15 @@ hr {
 
 @media (max-width: 1050px) {
   .command, .response {
-    width: 60vw;
+    width: 65vw;
   }
 }
 
 
-@media (max-width: 940px) {
+@media (max-width: 850px) {
   .command, .response {
     margin-left: 6% !important;
-    width: 80vw;
+    width: 82vw;
   }
 }
 
