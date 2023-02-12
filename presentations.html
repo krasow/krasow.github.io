@@ -6,7 +6,7 @@
         <meta property="og:image" content="/assets/images/"/>
         <meta property="og:image:secure_url" content="/assets/images/"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>David Krasowska | Presentations</title>
+        <title>David Krasowska | Presentationns </title>
         <!-- custom css  -->
         <link rel="stylesheet" type = "text/css" href="assets/css/style.css">
         <!-- Bootstrap 4.5.0 -->
@@ -17,36 +17,41 @@
 
     <body>
         <div class="content">
-            <!-- Navbar -->
-            <div class="topnav" id="myTopnav">
-                <a href="index.html" class="link">EXPERIENCE</a>
-                <a href="presentations.html" class="active link">PRESENTATIONS</a>
-
-                <a class="btn btn-paper-plane social" href="mailto:krasow@u.northwestern.edu">
-                    <i class="fa fa-paper-plane"></i>
-                </a>
-
-                <a class="btn btn-github social" href="https://github.com/Krasow">
+        <!-- Navbar -->
+        <div class="left-side-navbar" id="myTopnav">
+            <div class="links">
+                <a href="index.html">SUMMARY</a>
+                <a href="index.html#experience">EXPERIENCE</a>
+                <a href="index.html#publications">PUBLICATIONS</a>
+                <a href="presentations.html">PRESENTATIONS</a>
+            </div>
+            <div class="social">
+                <a class="btn btn-lg btn-github" href="https://github.com/Krasow">
                     <i class="fa fa-github"></i>
                 </a>
-                <!-- Navbar end -->
+                <a class="btn btn-lg btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
+                    <i class="fa fa-linkedin"></i>
+                </a>
+                <a class="btn btn-paper-plane" href="mailto:krasow@u.northwestern.edu">
+                <i class="fa fa-paper-plane"></i>
+                </a>
             </div>
+            <!-- Navbar end -->
+        </div>
+
             <!-- content of projects -->
-            <div class="container">
-                <div class="project">
-                        <a href="https://sc22.supercomputing.org/presentation/?id=spostu110&sess=sess227#038;sess=sess227"> <img src="assets/images/sc.JPG"></a>
-                        <p>
-                        <br>
-<b>Session:</b> ACM Student Reasearch Competition: Undergraduate Poster
-<br>
-<b>Title:</b> Statistical Prediction of Lossy Compression Ratios for 3D Scientific Data
-<br>
-<b>Summary:</b> Won 1st Place for the ACM poster competition at SC'22. Presented the reasearch I completed over the 2022 at Argonne National Laboratory under my advisors Julie Bessac and Robert Underwoood. The work was showcased at a poster gala and a best poster presentation session. 
-<br>
-<b>Materials:</b> <a href="assets/documents/best_krasowska.pdf">PowerPoint: best_krasowska.pdf</a> and <a href="assets/documents/poster_krasowska.pdf">Poster: poster_krasowska.pdf</a>.
-<br>
-<b>Abstract:</b> In the fields of science and engineering, lossy compression plays a growing role in running scientific simulations, as output data is on the scale of terabytes. Using error bounded lossy compression reduces the amount of storage for each simulation; however, there is no known bound for the upper limit of lossy compressibility. Data correlation structures, compressors and error bounds are factors allowing larger compression ratios and improved quality metrics. This provides one direction towards quantifying lossy compressibility. Our previous work explored 2D statistical methods to characterize the data correlation structures and their relationships, through functional models, to compression ratios and quality metrics for 2D scientific data. In this poster, we explore the expansion of our statistical methods to 3D scientific data. The method was comparable to 2D. Our work is the next step towards evaluating the theoretical limits of lossy compressibility used to predict compression performance and optimally adapt compressors. 
-                        </p>
+            <div class=" presentations">
+                <div class="presentation">
+                    <a href="https://sc22.supercomputing.org/presentation/?id=spostu110&sess=sess227#038;sess=sess227"> <img src="assets/images/sc.JPG"></a>
+                    <div class="presentation-session"><b>Session: </b>ACM Student Reasearch Competition: Undergraduate Poster
+                    </div>
+                    <div class="presentation-title"><b>Title: </b>Statistical Prediction of Lossy Compression Ratios for 3D Scientific Data
+                    </div>
+                    <div class="presentation-text"><b>Summary: </b>Won 1st Place for the ACM poster competition at SC'22. Presented the reasearch I completed over the 2022 at Argonne National Laboratory under my advisors Julie Bessac and Robert Underwoood. The work was showcased at a poster gala and a best poster presentation session. 
+                    </div>
+                    <div class="presentation-text"><b>Materials: </b><a href="assets/documents/best_krasowska.pdf">PowerPoint: best_krasowska.pdf</a> and <a href="assets/documents/poster_krasowska.pdf">Poster: poster_krasowska.pdf</a>.
+                    </div>
+                    <div class="presentation-text"><b>Abstract: </b>In the fields of science and engineering, lossy compression plays a growing role in running scientific simulations, as output data is on the scale of terabytes. Using error bounded lossy compression reduces the amount of storage for each simulation; however, there is no known bound for the upper limit of lossy compressibility. Data correlation structures, compressors and error bounds are factors allowing larger compression ratios and improved quality metrics. This provides one direction towards quantifying lossy compressibility. Our previous work explored 2D statistical methods to characterize the data correlation structures and their relationships, through functional models, to compression ratios and quality metrics for 2D scientific data. In this poster, we explore the expansion of our statistical methods to 3D scientific data. The method was comparable to 2D. Our work is the next step towards evaluating the theoretical limits of lossy compressibility used to predict compression performance and optimally adapt compressors. 
                     </div>
                 </div>
             </div>
@@ -54,7 +59,7 @@
         </div>
     </body>
     <!-- footer -->
-    <footer class="footer text-white text-center">
+    <footer class="footer">
         &copy; 2022 David Krasowska
         <a class="btn btn-github " href="https://github.com/Krasow">
             <i class="fa fa-github"></i>

@@ -18,173 +18,209 @@
     <body>
         <div class="content">
             <!-- Navbar -->
-            <div class="topnav" id="myTopnav">
-                <a href="index.html" class="active link">EXPERIENCE</a>
-                <a href="presentations.html" class="link">PRESENTATIONS</a>
-
-                <a class="btn btn-paper-plane social" href="mailto:krasow@u.northwestern.edu">
+            <div class="left-side-navbar" id="myTopnav">
+                <div class="links">
+                    <a href="index.html">SUMMARY</a>
+                    <a href="index.html#experience">EXPERIENCE</a>
+                    <a href="index.html#publications">PUBLICATIONS</a>
+                    <a href="presentations.html">PRESENTATIONS</a>
+                </div>
+                <div class="social">
+                    <a class="btn btn-lg btn-github" href="https://github.com/Krasow">
+                        <i class="fa fa-github"></i>
+                    </a>
+                    <a class="btn btn-lg btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                    <a class="btn btn-paper-plane" href="mailto:krasow@u.northwestern.edu">
                     <i class="fa fa-paper-plane"></i>
-                </a>
-
-                <a class="btn btn-github social" href="https://github.com/Krasow">
-                    <i class="fa fa-github"></i>
-                </a>
+                    </a>
+                </div>
                 <!-- Navbar end -->
             </div>
 
             <!-- content of experience -->
             <div class="intro m-auto">
-                <h2> Hello World! I'm David Krasowska. </h2>
+               Hello World! I'm David Krasowska.
+            </div>
+
+            <div class="m-auto">
+                <div class="terminal">
+                    <div class="command">
+                        david:~$ summary
+                    </div>
+                    <div class ="response"> 
+                        David Krasowska is an NSF REU student at Clemson University, advised by Dr. Jon C. Calhoun. He also is a visiting student at Argonne National Laboratory under Dr. Julie Bessac
+                        and Dr. Franck Cappello. David’s research explores lossy compression for optimizations in HPC scientific applications. He plans to start his PhD at Northwestern University in
+                        January ‘23, advised by Dr. Peter Dinda. He has an interest reducing memory transfers through new architecture configurations and low-level stack design. He is interested in a summer ‘23
+                        internships at industry research labs and national labs.
+                    </div>
+                </div>
+                <div class="terminal">
+                    <div class="command">
+                        david:~$ origin
+                    </div>
+                    <div class="response">
+                        Chicago, IL
+                    </div>
+                </div>
+                <div class="terminal">
+                    <div class="command">
+                        david:~$ education
+                    </div>
+                    <div class="response">
+                        Northwestern University (2023-Current) | Computer Science Ph.D. Student<br>
+                        Clemson University (2019-2022) | Computer Engineering Undergraduate |  GPA: 3.7<br>
+                        Academy for the Arts, Science, and Technology (2015-2019) | UGP GPA: 4.93
+                    </div>
+                </div>
+                <div class="terminal">
+                    <div class="command">
+                        david:~$ interests
+                    </div>
+                    <div class="response">
+                        Running. Biking. Hiking. Outdoors. Coding. Friendship. Achievement.
+                    </div>
+                </div>
+                <div class="terminal">
+                    <div class="command">
+                        david:~$ resume
+                    </div>
+                    <div class="response">
+                        <a href="assets/documents/Krasowska_David_resume.pdf"> "Krasowska_David_resume.pdf" </a>
+                    </div>
+                </div>
+                <div class="terminal">
+                    <div class="command">
+                        david:~$ email
+                    </div>
+                    <div class="response">
+                        <a href="mailto:krasow@u.northwestern.edu">
+                            krasow@u.northwestern.edu</a>
+                    </div>
+                </div>
+                <div class="terminal">
+                    <div class="command">
+                        david:~$ number
+                    </div>
+                    <div class="response">
+                        +1 (843) 283-7758
+                    </div>
+                </div>
             </div>
 
             <hr>
-            <div class="about m-auto">
-                <div class ="command">
-                    <h5> david:~$ summary</h5>
+            <a id="experience">
+            <div class="events">
+                <div class="events-title">Experience</div>
+
+                <div class="event">
+                    <div class="event-title">Research Assistant</div>
+                    <div class="event-date">May 2021 - Current</div>
+                    <div class="event-description">
+                        Lossy compression research with Argonne National Laboratories and Clemson University FTHPC using the Palmetto Cluster.
+                        Analyzing statistical correlations within datasets in comparison to compression performance.
+                        Presented during Super Computing (SC) ’21 at the 7th International Workshop on Data Analysis and Reduction for Big Scientific Data workshop with a publication. 
+                        Presented and won best undergraduate poster during the ACM Student Research Competition at SC’22. Currently submitting a paper to SC ’23. 
+                        Contributed to Libpressio, an Argonne library for compression.
+                    </div>
                 </div>
-                <div class ="response"> 
-                    David Krasowska is an NSF REU student at Clemson University, advised by Dr. Jon C. Calhoun. He also is a visiting student at Argonne National Laboratory under Dr. Julie Bessac and Dr. Franck Cappello. David’s research explores lossy compression for optimizations in HPC scientific applications. He plans to start his PhD at Northwestern University in January ‘23, advised by Dr. Peter Dinda. He has an interest reducing memory transfers through new architecture configurations and low-level stack design. He is interested in a summer ‘23 internships at industry research labs and national labs.
+
+                <div class="event">
+                    <div class="event-title">High Performance Computing Creative Inquiry</div>
+                    <div class="event-date">June 2021 - December 2022</div>
+                    <div class="event-description">
+                        Participant in the Student Cluster Competition at Super Computing ’21. Collaboration with Dell and Intel to 
+                        build a cluster with greatest performance per watt. Azure Cyclecloud was learned due to the competition 
+                        switching modalities. Set up: schedulers (OpenPBS), package managers (Spack), applications (Quantum 
+                        Espresso), and benchmarks (HPCG). Gained knowledge of parallel computing with MPI.
+                    </div>
                 </div>
-                <div class="command">
-                    <h5> david:~$ origin </h5>
+
+                <div class="event">
+                    <div class="event-title">Undergraduate Student Researcher</div>
+                    <div class="event-date">January 2022 - May 2022</div>
+                    <div class="event-description">
+                        Region of interest compressibility research in collaboration with Los Alamos National Laboratory and Clemson University
+                        FTHPC using the Palmetto Cluster. Determining methods to achieve the highest compressibility for images from a Laser Powdered Fusion 
+                        (LPBF) EOS X printer in the SIGMA division within LANL.
+                    </div>
                 </div>
-                <div class="response">
-                    Greenville, SC
+                
+
+                <div class="event">
+                    <div class="event-title">Clemson Running Club Webmaster</div>
+                    <div class="event-date">June 2020 - June 2021</div>
+                    <div class="event-description">
+                        In charge of the Clemson Running Club website. Added Django functionalities, including user accounts, for use by our members.
+                        AWS Lightsail in combination with NGINX and Gunicorn is used to host it.
+                    </div>
                 </div>
-                <div class="command">
-                    <h5> david:~$ education </h5>
+        
+                <div class="event">
+                    <div class="event-title">Django TRACE Camp Student</div>
+                    <div class="event-date">June 2020</div>
+                    <div class="event-description">
+                        Bootcamp through Clemson University where I developed multiple projects using Django. Specific tasks were assigned on a weekly basis in
+                        order to strengthen teamwork and web-development skills. Using APIs, creating a chat system, and creating a portfolio were some projects.
+                    </div>
                 </div>
-                <div class="response">
-                    Northwestern University (Starting 2023) | PhD in Computer Science  <br>
-                    Clemson University (2019-Current) | Computer Engineering Undergraduate |  GPA: 3.7<br>
-                    Academy for the Arts, Science, and Technology (2015-2019) | UGP GPA: 4.93
-                </div>
-                <div class="command">
-                    <h5> david:~$ interests </h5>
-                </div>
-                <div class="response">
-                    Running. Biking. Hiking. Outdoors. Coding. Friendship. Achievement.
-                </div>
-                <div class="command">
-                    <h5>david:~$ resume </h5>
-                </div>
-                <div class="response">
-                    <a href="assets/documents/Krasowska_David_resume.pdf"> "Krasowska_David_resume.pdf" </a>
-                </div>
-                <div class="command">
-                    <h5> david:~$ email </h5>
-                </div>
-                <div class="response">
-                    <a href="mailto:krasow@u.northwestern.edu">
-                        krasow@u.northwestern.edu</a>
-                </div>
-                <div class="command">
-                    <h5> david:~$ number </h5>
-                </div>
-                <div class="response">
-                    +1 (843) 283-7758
+
+
+                <div class="event">
+                    <div class="event-title">FIRST Robotics Student</div>
+                    <div class="event-date">2015-2019</div>
+                    <div class="event-description">
+                        Robotics team where I created and wired assemblies (using motor controllers and a roboRIO) for the robot that 
+                        were designed in Solidworks. Learned robust team building skills during the many competitions. 
+                    </div>
                 </div>
             </div>
-            </div>
-            </div>
+            </a>
             <hr>
-
-            <div class=" work container m-auto">
-                <h2>Experience<h2>
-
-                          <div class="event">
-                              <h4>Research Assistant</h4>
-                              <h6>May 2021 - Current</h6>
-                              <p>
-                         Lossy compression research with Argonne National Laboratories and Clemson University FTHPC using the Palmetto Cluster.
-                         Analyzing statistical correlations within datasets in comparison to compression performance.
-                         Presented during Super Computing (SC) ’21 at the 7th International Workshop on Data Analysis and Reduction for Big Scientific Data workshop with a publication. 
-                         Presented and won best undergraduate poster during the ACM Student Research Competition at SC’22. Currently submitting a paper to IPDPS ’23. 
-                         Contributed to Libpressio, an Argonne library for compression.
-                              </p>
-                         </div>
-                        
-                         <div class="event">
-                             <h4>High Performance Computing Creative Inquiry</h4>
-                             <h6>June 2021 - Current</h6>
-                             <p>Participant in the Student Cluster Competition at Super Computing ’21. Collaboration with Dell and Intel to 
-                             build a cluster with greatest performance per watt. Azure Cyclecloud was learned due to the competition 
-                             switching modalities. Set up: schedulers (OpenPBS), package managers (Spack), applications (Quantum 
-                             Espresso), and benchmarks (HPCG). Gained knowledge of parallel computing with MPI.</p>
-                         </div>
-
-                        <div class="event">
-                            <h4>Undergraduate Student Researcher</h4>
-                            <h6>January 2022 - May 2022</h6>
-                            <p>	Region of interest compressibility research in collaboration with Los Alamos National Laboratory and Clemson University
-                            FTHPC using the Palmetto Cluster. Determining methods to achieve the highest compressibility for images from a Laser Powdered Fusion 
-                            (LPBF) EOS X printer in the SIGMA division within LANL.</p>
-                        </div>
-
-
-                        <div class="event">
-                            <h4>Clemson Running Club Webmaster</h4>
-                            <h6>June 2020 - June 2021</h6>
-                            <p>In charge of the Clemson Running Club website. Added Django functionalities, including user accounts, for use by our members.
-                            AWS Lightsail in combination with NGINX and Gunicorn is used to host it.
-
-                            </p>
-                        </div>
-                        <div class="event">
-                            <h4>Django TRACE Camp Student</h4>
-                            <h6>June 2020</h6>
-                            <p>Bootcamp through Clemson University where I developed multiple projects using Django. Specific tasks were assigned on a weekly basis in
-                            order to strengthen teamwork and web-development skills. Using APIs, creating a chat system, and creating a portfolio were some projects.</p>
-                        </div>
-                        <div class="event">
-                            <h4>FIRST Robotics Student</h4>
-                            <h6>2015-2019</h6>
-                            <p>Robotics team where I created and wired assemblies (using motor controllers and a roboRIO) for the robot that 
-                            were designed in Solidworks. Learned robust team building skills during the many competitions.  </p>
-                        </div>
-                        <br>
-                        <hr>
-                        <h2>Peer-Reviewed Publications</h2>
-                        <div class="event">
-                            <h4>Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets </h4>
-                            <h6>2021</h6>
-                            <p>David Krasowska, Julie Bessac, Robert Underwood, Sheng Di, Jon Calhoun, and Franck Cappello. 7th 
-                            International Workshop on Data Analysis and Reduction for Big Scientific Data in conjunction with SC ’21: The 
-                            International Conference for High Performance Computing, Networking, Storage and Analysis, 2021.</p>
-                            <p><a href="https://arxiv.org/abs/2111.13789">ARXIV</a></p>
-                        </div>
-
+            <a id="publications">
+            <div class="events">
+                <div class="events-title">Peer-Reviewed Publications</div>
+                <div class="event">
+                    <div class="event-title">Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets</div>
+                    <div class="event-date">2021</div>
+                    <div class="event-description">
+                        David Krasowska, Julie Bessac, Robert Underwood, Sheng Di, Jon Calhoun, and Franck Cappello. 7th 
+                        International Workshop on Data Analysis and Reduction for Big Scientific Data in conjunction with SC ’21: The 
+                        International Conference for High Performance Computing, Networking, Storage and Analysis, 2021.
+                    <a href="https://arxiv.org/abs/2111.13789">ARXIV</a>
+                    </div>
+                </div>
             </div>
-            <hr>
+            </a>
+
             <div class="language container">
-                <ul>
-                    <span>Skills:</span> &ensp;
-                    <li> Unix </l1>
-                        <li> MPI </li>
-                        <li> Git </l1>
-                            <li> C  </l1>
-                                <li> C++ </l1>
-                                    <li> Python </l1>
-                                        <li> Javascript </l1>
-                                            <li> HTML </l1>
-                                                <li> CSS </l1>
-                                                    <li> Django </l1>
-                </ul>
+                <div class="language-item"> Skills:</div> &ensp;
+                <div class="language-item"> Unix </div>
+                <div class="language-item"> MPI </div>
+                <div class="language-item"> CUDA </div>
+                <div class="language-item"> C  </div>
+                <div class="language-item"> C++ </div>
+                <div class="language-item"> Python </div>
+                <div class="language-item"> LLVM </div>
+                <div class="language-item"> VHDL </div>
+                <div class="language-item"> Databases </div>
+                <div class="language-item"> RISC-V </div>
             </div>
         </div>
         <!-- end content -->
     </body>
 
     <!-- footer -->
-    <footer class="footer text-white text-center">
-        &copy; 2022 David Krasowska
+    <footer class="footer">
+        &copy; 2023 David Krasowska
         <a class="btn btn-github " href="https://github.com/Krasow">
             <i class="fa fa-github"></i>
         </a>
         <a class="btn btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
             <i class="fa fa-linkedin"></i>
         </a>
-        <a class="btn btn-paper-plane " href="mailto:dkrasow@g.clemson.edu">
+        <a class="btn btn-paper-plane " href="mailto:krasow@u.northwestern.edu">
             <i class="fa fa-paper-plane"></i>
         </a>
     </footer>
