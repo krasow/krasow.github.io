@@ -71,7 +71,7 @@ hr {
   transition: 0.3s;
 }
 
-.left-side-navbar a:hover {
+.left-side-navbar a:hover{
   color: #f1f1f1;
 }
 
@@ -204,7 +204,7 @@ hr {
   }
 }
 
-.command:hover + .response, .response:hover {
+.command:hover  + .response, .response:hover {
   display: block !important;
 }
 
