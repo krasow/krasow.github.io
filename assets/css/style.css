@@ -192,7 +192,7 @@ hr {
 
 @media (max-width: 1050px) {
   .command, .response {
-    width: 65vw;
+    width: 60vw;
   }
 }
 
@@ -247,7 +247,7 @@ hr {
 
 
 .event {
-  width: calc(70% - 10px);
+  width: calc(75% - 10px);
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
