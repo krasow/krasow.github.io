@@ -211,12 +211,14 @@ hr {
   }
 }
 
-.command:hover  + .response, .response:hover {
-  display: block !important;
+.command:hover  + .response {
+  display: block;
+  transform: translateY(-20px);
 }
 
-.terminal:hover + .response {
-  display: block !important;
+.response:hover  {
+  display: block;
+  transform: translateY(-20px);
 }
 
 .events {
