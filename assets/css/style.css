@@ -230,7 +230,7 @@ hr {
   padding-left: 200px;
 }
 
-.events-title{
+.events-title, .presentations-title{
   font-family: 'Montserrat', sans-serif;
   font-size: 36px;
   font-weight: 700;
@@ -332,6 +332,16 @@ hr {
   text-align: center;
 }
 
+.presentations-title{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-left: 200px;
+}
 
 .presentation {
   width: calc(65% - 10px);
@@ -348,22 +358,18 @@ hr {
     margin-left: 6%;
     width: calc(100% - 10px);
   }
+  .presentations-title{
+    padding-left: 0px;
+    font-size: 30px;
+  }
 }
 
 .presentation img {
+  align-items: center;
   max-width: 70%;
   height: auto;
 }
 
-.presentations-title{
-  font-family: 'Montserrat', sans-serif;
-  font-size: 36px;
-  font-weight: 700;
-  text-align: center;
-  color: #333;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
 
 .presentation-session {
   font-size: 18px;
