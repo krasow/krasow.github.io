@@ -352,6 +352,10 @@ hr {
   margin-bottom: 20px;
   margin-left: 200px;
 }
+.presentation:hover {
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
 
 @media (max-width: 850px) {
   .presentation {
