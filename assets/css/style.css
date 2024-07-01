@@ -195,6 +195,8 @@ hr {
   width: 745px;
   max-width: 100%;
   margin-left: 200px !important;
+  transition: 0s;
+  transition-delay:0.2s;
 }
 
 @media (max-width: 1050px) {
