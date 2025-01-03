@@ -167,37 +167,40 @@ hr {
 }
 
 .command {
-  margin: 0 auto;
+  margin-left: 200px !important;
+  margin: 10px auto;
   text-align: left;
   font-size: 20px;
   font-weight: 500;
   padding: 20px;
   border: 1px solid black;
-  border-radius: 5px;
+  border-radius: 0px;
   display: block;
+  background: white;
+  width: 745px; 
+  max-width: 100%;
 }
 
 .response {
-  margin: 20px auto;
+  margin-left: 200px !important;
+  position: absolute; 
+  width: 745px; 
+  background: rgba(255, 255, 255, 0.95); 
+  border: 1px solid #3F51B5;
+  border-radius: 0px;
   text-align: center;
   font-size: 18px;
   padding: 20px;
-  border: 2px solid #3F51B5;
-  border-radius: 5px;
   display: none;
+  z-index: 10; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  min-height: 75px; 
 }
 
 .terminal {
   display: block;
 }
 
-.command, .response {
-  width: 745px;
-  max-width: 100%;
-  margin-left: 200px !important;
-  transition: 0s;
-  transition-delay:0.2s;
-}
 
 @media (max-width: 1050px) {
   .command, .response {
@@ -207,20 +210,24 @@ hr {
 
 
 @media (max-width: 850px) {
-  .command, .response {
-    margin-left: 6% !important;
+  .command {
+    margin-left: 5% !important;
+    width: 82vw;
+  } 
+  .response {
+    margin-left: 4% !important;
     width: 82vw;
   }
 }
 
 .command:hover  + .response {
   display: block;
-  transform: translateY(-20px);
+  transform: translateY(-85px);
 }
 
 .response:hover  {
   display: block;
-  transform: translateY(-20px);
+  transform: translateY(-85px);
 }
 
 .events {
@@ -375,6 +382,13 @@ hr {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 10px;
+}
+.presentation-session a {
+  color: #333;
+}
+.presentation-session a:hover {
+  text-decoration: none;
+  outline: none;
 }
 
 .presentation-session b{
