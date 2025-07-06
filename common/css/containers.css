@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  text-align: center;
+  text-align: left;
   padding-left: 200px;
 }
 
@@ -31,7 +31,7 @@
   margin-bottom: 10px;
 }
 
-.description, .abstract {
+.description, .abstract, p {
   font-size: 16px;
   margin-bottom: 10px;
 }
@@ -85,7 +85,7 @@
   .date, .venue, .publication-title {
     font-size: 16px;
   }
-  .description, .abstract {
+  .description, .abstract, p {
     font-size: 14px;
   }
 }

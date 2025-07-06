@@ -37,17 +37,17 @@ hr {
   letter-spacing: 2px;
 }
 
-.title-sm { 
+.title-sm, h3 { 
   font-size: 20px;
   font-weight: 100;
 }
 
-.title {
+.title, h2 {
   font-size: 24px;
   font-weight: 400;
 }
 
-.title-lg {
+.title-lg, h1 {
   font-size: 36px;
   font-weight: 600;
 }
@@ -75,13 +75,13 @@ hr {
 }
 
 @media (max-width: 850px) {
-  .title-sm {
+  .title-sm, h3 {
     font-size: 16px;
   }
-  .title {
+  .title, h2 {
     font-size: 18px;
   }
-  .title-lg {
+  .title-lg, h1 {
     font-size: 20px;
   }
   .title-xlg {

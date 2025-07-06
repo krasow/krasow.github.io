@@ -1,9 +1,13 @@
 .markdown-content {
-  max-width: 100%;
-  padding: 1rem;
   box-sizing: border-box;
   overflow-wrap: break-word;
-  padding-left: 200px;
+  align-items: left;
+  text-align: left;
+  padding-left: 100px;
+}
+
+h1 {
+  text-align: center;
 }
 
 pre {
@@ -21,32 +25,15 @@ code {
 .markdown-content img {
   max-width: 100%;
   height: auto;
-  display: block;
-  margin: 1rem auto;
 }
-
 
 
 @media (max-width: 1450px) {
   .markdown-content img {
     margin-left: 0%;
     max-width: 100%;
-    margin-bottom: 0px;
   }
-
-}
-
-@media (max-width: 1150px) {
   .markdown-content {
-    margin-left: 10%;
-    width: calc(100% - 10px);
-  }
-}
-
-@media (max-width: 850px) {
-  .markdown-content {
-    padding-left: 0px;
-    margin-left: 10%;
-    width: calc(100% - 10px);
+    padding-left: 6%;
   }
 }
