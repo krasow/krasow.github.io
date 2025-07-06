@@ -43,23 +43,23 @@
     <script>
     document.addEventListener("DOMContentLoaded", function () {
         Promise.all([
-        fetch("/common/navbar.html").then(res => res.text()),
-        fetch("/common/header.html").then(res => res.text()),
-        fetch("/common/footer.html").then(res => res.text()),
-        fetch("/homepage/terminal.html").then(res => res.text()),
-        fetch("/homepage/experience.html").then(res => res.text()),
-        fetch("/homepage/publications.html").then(res => res.text())
+            fetch("/common/navbar.html").then(res => res.text()),
+            fetch("/common/header.html").then(res => res.text()),
+            fetch("/common/footer.html").then(res => res.text()),
+            fetch("/homepage/terminal.html").then(res => res.text()),
+            fetch("/homepage/experience.html").then(res => res.text()),
+            fetch("/homepage/publications.html").then(res => res.text())
         ]).then(([navbar, header, footer, terminal, experience, publications]) => {
-        document.getElementById("navbar").innerHTML = navbar;
-        document.getElementById("header").innerHTML = header;
-        document.getElementById("footer").innerHTML = footer;
-        document.getElementById("terminal").innerHTML = terminal;
-        document.getElementById("experience").innerHTML = experience;
-        document.getElementById("publications").innerHTML = publications;
+            document.getElementById("navbar").innerHTML = navbar;
+            document.getElementById("header").innerHTML = header;
+            document.getElementById("footer").innerHTML = footer;
+            document.getElementById("terminal").innerHTML = terminal;
+            document.getElementById("experience").innerHTML = experience;
+            document.getElementById("publications").innerHTML = publications;
 
-        requestAnimationFrame(() => {
-            document.getElementById("content").style.display = "flex";
-        });
+            requestAnimationFrame(() => {
+                    document.getElementById("content").style.display = "flex";
+            });
         });
     });
     </script>

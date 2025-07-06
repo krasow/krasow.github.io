@@ -28,8 +28,6 @@ hr {
   color: #3F51B5
 }
 
-/* end page */
-
 .title-lg {
   font-family: 'Montserrat', sans-serif;
   font-size: 36px;
@@ -45,3 +43,5 @@ hr {
     font-size: 30px;
   }
 }
+
+/* end page */
