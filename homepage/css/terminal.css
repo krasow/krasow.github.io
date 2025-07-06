@@ -1,7 +1,7 @@
 .command, .response  {
   display: block;
   align-items: center;
-  font-family: monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-weight: bold;
   margin-left: 200px !important;
   font-size: 20px;
