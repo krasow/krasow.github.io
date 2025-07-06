@@ -4,12 +4,6 @@
   padding-left: 200px;
 }
 
-@media (max-width: 850px) {
-  .projects-container {
-    padding-left: 6%;
-  }
-}
-
 .projects-grid {
   display: flex; 
   flex-wrap: wrap;
@@ -68,4 +62,19 @@
   font-size: 0.95rem;
   font-weight: bold;
   color: #000;
+}
+
+@media (max-width: 850px) {
+  .projects-container {
+    padding-left: 6%;
+  }
+  .project-card {
+    width: 350px;
+  }
+  .project-name {
+  font-size: 1.30rem;
+  }
+  .project-org {
+    font-size: 0.75rem;
+  }
 }
