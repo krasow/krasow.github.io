@@ -1,31 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <div id="header"></div>
-
-    <script>
-        fetch('/common/header.html')
-            .then(response => response.text())
-            .then(data => {
-            document.getElementById('header').innerHTML = data;
-            });
-    </script>
-    
     <link rel="stylesheet" type = "text/css" href="/pages/css/presentations.css">
-
     <title>David Krasowska | About </title>
 
     <body>
-        <div class="content">
+        <div class="content" id="content" style="display: none;">
             <div id="navbar"></div>
-
-            <script>
-            fetch('/common/navbar.html')
-                .then(response => response.text())
-                .then(data => {
-                document.getElementById('navbar').innerHTML = data;
-                });
-            </script>
-
 
             <!-- content of projects -->
             <div class=" presentations">
@@ -79,10 +60,19 @@
     <div id="footer"></div>
 
     <script>
-    fetch('/common/footer.html')
-        .then(response => response.text())
-        .then(data => {
-        document.getElementById('footer').innerHTML = data;
+    document.addEventListener("DOMContentLoaded", function () {
+        Promise.all([
+        fetch("/common/navbar.html").then(res => res.text()),
+        fetch("/common/header.html").then(res => res.text()),
+        fetch("/common/footer.html").then(res => res.text())
+        ]).then(([navbar, header, footer]) => {
+        document.getElementById("navbar").innerHTML = navbar;
+        document.getElementById("header").innerHTML = header;
+        document.getElementById("footer").innerHTML = footer;
+
+        const content = document.getElementById("content");
+        content.style.display = "flex";
         });
+    });
     </script>
 </html>
