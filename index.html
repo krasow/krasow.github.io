@@ -8,19 +8,13 @@
         <div class="content" id="content" style="display: none;">
             <div id="navbar"></div>
 
-            <!-- content of experience -->
             <div class="intro m-auto">
                Hello World! I'm David Krasowska.
             </div>
 
             <div id="terminal"></div>
-
             <hr> <div id="experience"></div>
-          
-            <!-- <hr>
-            <div id="projects"></div>
-            -->
-
+            <hr> <div id="projects"></div>
             <hr> <div id="publications"></div>
 
             <div class="language container">
@@ -48,14 +42,16 @@
             fetch("/common/footer.html").then(res => res.text()),
             fetch("/homepage/terminal.html").then(res => res.text()),
             fetch("/homepage/experience.html").then(res => res.text()),
-            fetch("/homepage/publications.html").then(res => res.text())
-        ]).then(([navbar, header, footer, terminal, experience, publications]) => {
+            fetch("/homepage/publications.html").then(res => res.text()),
+            fetch("/homepage/projects.html").then(res => res.text())
+        ]).then(([navbar, header, footer, terminal, experience, publications, projects]) => {
             document.getElementById("navbar").innerHTML = navbar;
             document.getElementById("header").innerHTML = header;
             document.getElementById("footer").innerHTML = footer;
             document.getElementById("terminal").innerHTML = terminal;
             document.getElementById("experience").innerHTML = experience;
             document.getElementById("publications").innerHTML = publications;
+            document.getElementById("projects").innerHTML = projects;
 
             requestAnimationFrame(() => {
                     document.getElementById("content").style.display = "flex";
