@@ -46,11 +46,13 @@
 }
 
 @media (max-width: 850px) {
-  .command, .response{
+  .command {
     margin-left: 5% !important;
     width: 82vw;
   } 
   .response {
+    margin-left: 4% !important;
+    width: 82vw;
     font-size: 14px;
   }
 }
