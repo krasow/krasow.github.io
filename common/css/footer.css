@@ -1,0 +1,21 @@
+.footer {
+  flex-shrink: 0;
+  background-color: #3F51B5;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  font-size: 14px;
+  font-weight: bolder;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  padding-left: 200px
+}
+
+@media (max-width: 850px) {
+  .footer {
+    padding-left: 6%;
+  }
+}

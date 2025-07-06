@@ -1,0 +1,18 @@
+<!-- 404.html -->
+<script>
+  const redirects = {
+    '/resume': 'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
+    '/pim': 'https://northwestern.zoom.us/j/5406080251',
+    '/village': 'https://northwestern.zoom.us/j/92716568456?pwd=0YxLTlbjAIXLJvvKgDLBigEQXpy2PZ.1',
+    '/zoom': 'https://northwestern.zoom.us/my/krasow',
+    '/github': 'https://github.com/krasow',
+    '/contact': 'https://linktr.ee/krasow',
+  };
+
+  const path = location.pathname;
+  if (redirects[path]) {
+    location.replace(redirects[path]);
+  } else {
+    document.body.innerHTML = `<h1>404 - Not Found</h1>`;
+  }
+</script>

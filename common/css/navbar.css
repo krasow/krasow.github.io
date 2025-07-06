@@ -1,0 +1,90 @@
+/* Left Side Navbar */
+.left-side-navbar {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0px;
+  left: 0;
+  background-color: #000;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 50px;
+  text-align: left;
+}
+
+.left-side-navbar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.left-side-navbar a:hover{
+  color: #f1f1f1;
+}
+
+.left-side-navbar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+
+@media screen and (max-height: 450px) {
+  .left-side-navbar {padding-top: 15px;}
+  .left-side-navbar a {font-size: 18px;}
+}
+
+@media only screen and (max-width: 850px) {
+  .left-side-navbar {
+    width: 6%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #000;
+  }
+  .left-side-navbar a {padding-left: 300px;}
+}
+
+.left-side-navbar:hover {
+  width: 250px;
+  display: block;
+  background-color: #000;
+}
+.left-side-navbar:hover a {padding-left: 15px;}
+
+/* Page content */
+.main {
+  margin-left: 200px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.social {
+  padding-top: 150px;
+}
+
+
+@media screen and (max-height: 650px) {
+  .left-side-navbar {
+    padding-top: 15px;
+  }
+  .left-side-navbar a {
+    font-size: 18px;
+  }
+  .social {
+    padding-top: 0px;
+  }
+  
+}
+
+/* endnav */

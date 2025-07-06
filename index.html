@@ -1,208 +1,80 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/" />
-        <meta property="og:image" content="/assets/images/"/>
-        <meta property="og:image:secure_url" content="/assets/images/"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>David Krasowska | Experience</title>
-        <!-- custom css  -->
-        <link rel="stylesheet" type = "text/css" href="assets/css/style.css">
-        <!-- Bootstrap 4.5.0 -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-        <!-- Font awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <div id="header"></div>
 
-    </head>
+    <script>
+        fetch('/common/header.html')
+            .then(response => response.text())
+            .then(data => {
+            document.getElementById('header').innerHTML = data;
+            });
+    </script>
+
+    <link rel="stylesheet" type = "text/css" href="/homepage/css/index.css">
+
+    <title>David Krasowska</title>
 
     <body>
         <div class="content">
-            <!-- Navbar -->
-            <div class="left-side-navbar" id="myTopnav">
-                <div class="links">
-                    <a href="index.html">SUMMARY</a>
-                    <a href="index.html#experience">EXPERIENCE</a>
-                    <a href="index.html#publications">PUBLICATIONS</a>
-                    <a href="presentations.html">PRESENTATIONS</a>
-                    <a href="about.html">ABOUT</a>
-                    <a href="resume.html">RESUME</a>
-                    <a href="news.html">NEWS</a>
-                </div>
-                <div class="social">
-                    <a class="btn btn-lg btn-github" href="https://github.com/Krasow">
-                        <i class="fa fa-github"></i>
-                    </a>
-                    <a class="btn btn-lg btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
-                        <i class="fa fa-linkedin"></i>
-                    </a>
-                    <a class="btn btn-paper-plane" href="mailto:krasow@u.northwestern.edu">
-                    <i class="fa fa-paper-plane"></i>
-                    </a>
-                </div>
-                <!-- Navbar end -->
-            </div>
+            <div id="navbar"></div>
+
+            <script>
+            fetch('/common/navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                document.getElementById('navbar').innerHTML = data;
+                });
+            </script>
+
 
             <!-- content of experience -->
             <div class="intro m-auto">
                Hello World! I'm David Krasowska.
             </div>
 
+            <div id="terminal"></div>
 
-            <div class="m-auto">
-                <div class="terminal">
-                    <div class="command">
-                        david:~$ resume
-                    </div>
-                    <div class="response">
-                        <a href="assets/documents/Krasowska_David_resume.pdf"> "Krasowska_David_resume.pdf" </a>
-                    </div>
-                </div>
-                <div class="terminal">
-                    <div class="command">
-                        david:~$ location
-                    </div>
-                    <div class="response">
-                        Chicago, IL
-                    </div>
-                </div>
-                <div class="terminal">
-                    <div class="command">
-                        david:~$ education
-                    </div>
-                    <div class="response">
-                        Northwestern University (2023-Current) | Computer Science Ph.D. Candidate<br>
-                        Clemson University (2019-2022) | Computer Engineering BS | GPA: 3.7<br>
-                    </div>
-                </div>
-                <div class="terminal">
-                    <div class="command">
-                        david:~$ email
-                    </div>
-                    <div class="response">
-                        <a href="mailto:krasow@u.northwestern.edu">
-                            krasow@u.northwestern.edu</a>
-                    </div>
-                </div>
-                <div class="terminal">
-                    <div class="command">
-                        david:~$ number
-                    </div>
-                    <div class="response">
-                        +1 (843) 283-7758
-                    </div>
-                </div>
-                <div class="terminal">
-                    <div class="command">
-                        david:~$ summary
-                    </div>
-                    <div class ="response"> 
-                        David Krasowska is a Ph.D. candidate at Northwestern University, advised by Dr. Peter Dinda. His research
-                        journey began during his undergraduate studies at Clemson University where he collaborated with Argonne
-                        National Laboratory to explore lossy compression for optimizations in HPC scientific applications. He received the
-                        DOE Computational Science Graduate Fellowship to fund his graduate studies. Currently, he is exploring
-                        scheduling applications across distributed heterogeneous systems with Dr. Pat McCormick and Dr. Li Tang at Los
-                        Alamos National Laboratory.
-                    </div>
-                </div>
-            </div>
+            <script>
+            fetch('/homepage/terminal.html')
+                .then(response => response.text())
+                .then(data => {
+                document.getElementById('terminal').innerHTML = data;
+                });
+            </script>
 
             <hr>
-            <a id="experience">
-            <div class="events">
-                <div class="events-title">Experience</div>
+            <div id="experience"></div>
 
+            <script>
+            fetch('/homepage/experience.html')
+                .then(response => response.text())
+                .then(data => {
+                document.getElementById('experience').innerHTML = data;
+                });
+            </script>
+          
+            <!-- <hr>
+            <div id="projects"></div>
 
-                <div class="event">
-                    <div class="event-title">Visiting Student</div>
-                    <div class="event-date">Los Alamos National Laboratory</div>
-                    <div class="event-date">June 2024 - August 2024</div>
-                    <div class="event-description">
-                        Task based heterogeneous runtime research for UPMEM processing in memory (PIM).
-                        Adding backend support for UPMEM PIM into <a href="https://legion.stanford.edu">Legion</a> runtime programming system (<a href="https://github.com/PrescienceLab/upmem-legion">Github</a>). 
-                        Currently (as of January 3, 2025) working on HPDC submission. Presented current state of the work at the <a href="https://legion.stanford.edu/retreat2024/">Legion Retreat</a>.
-                    </div>
-                </div>
-
-
-
-
-                <div class="event">
-                    <div class="event-title">Research Assistant</div>
-                    <div class="event-date">Argonne National Laboratory</div>
-                    <div class="event-date">June 2022 - June 2023</div>
-                    <div class="event-description">
-                        Continuation of prior work at Clemson University to create black-box regression model with 3D dataset capabilities. 
-                        Led to multiple <a href="index.html#publications">publications</a> and <a href="news.html">awards</a>.            
-                        Contributed to <a href="https://github.com/CODARcode/libpressio">Libpressio</a>, an Argonne library for compression.
-                    </div>
-                </div>
-
-
-                <div class="event">
-                    <div class="event-title">Undergraduate Student Researcher</div>
-                    <div class="event-date">Clemson University</div>
-                    <div class="event-date">May 2021 - May 2022</div>
-                    <div class="event-description">
-                        Lossy compression research with collaboration Argonne National Laboratory and Clemson University FTHPC using the Palmetto Cluster.
-                        Analyzing statistical correlations within datasets in comparison to compression performance. First ever publication: <a href="assets/documents/papers/Exploring_Lossy_Compressibility_through_Statistical_Correlations_of_Scientific_Datasets.pdf">DRBSD-7</a>. 
-                    </div>
-                </div>
-            <hr>
-                <div class="events-title">Projects</div>
-                <div class="event">
-                    <div class="event-title">High Performance Computing Creative Inquiry</div>
-                    <div class="event-date">Clemson University</div>
-                    <div class="event-date">June 2021 - December 2022</div>
-                    <div class="event-description">
-                        Participant in the Student Cluster Competition (SCC) at SC '21 and INDY SCC at SC '22. 
-                        Collaboration with Dell and Intel to build a cluster with greatest performance per watt. 
-                        Set up a distributed cluster with package managers, applications, and benchmarks. Gained knowledge of parallel computing with MPI.
-                    </div>
-                </div>
-            </div>
-            </a>
+            <script>
+            fetch('/homepage/projects.html')
+                .then(response => response.text())
+                .then(data => {
+                document.getElementById('projects').innerHTML = data;
+                });
+            </script> -->
 
             <hr>
-            <a id="publications">
-            <div class="events">
-                <div class="events-title">Peer-Reviewed Publications</div>
-                <div class="event">
-                    <div class="event-title"><a href="https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ">
-                        A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression</a></div>
-                    <div class="event-date">2023
-                        &ensp; <a href="assets/documents/papers/A_Lightweight_Effective_Compressibility_Estimation_Method_for_Error-bounded_Lossy_Compression.pdf"> [PDF] </a>
-                    </div>
-                    <div class="event-description">
-                        A. Ganguli, R. Underwood, J. Bessac, <b>D. Krasowska</b>, J. C. Calhoun, S. Di, and F. Cappello. "A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression,"
-                        IEEE International Conference on Cluster Computing (CLUSTER), Santa Fe, NM, 2023, pp. 247-258, doi:10.1109/CLUSTER52292.2023.00028
-                    </div>
-                </div>
-                <div class="event">
-                    <div class="event-title"><a href="https://journals.sagepub.com/doi/abs/10.1177/10943420231179417">
-                        Black-Box Statistical Prediction of Lossy Compression Ratios for Scientific Data</a></div>
-                    <div class="event-date">2023
-                        &ensp; <a href="https://arxiv.org/pdf/2305.08801.pdf"> [PDF] </a>
-                    </div>
-                    <div class="event-description">
-                        R. Underwood, J. Bessac, <b>D. Krasowska</b>, J. C. Calhoun, S. Di, and F. Cappello. "Black-box statistical prediction of lossy compression ratios for scientific data," 
-                        The International Journal of High Performance Computing Applications (IJHPCA), 2023, pp. 412-433, doi:10.1177/10943420231179417
-                    </div>
-                </div>
-                <div class="event">
-                    <div class="event-title"><a href="https://ieeexplore.ieee.org/abstract/document/9652575">
-                        Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets</a></div>
-                    <div class="event-date">2021
-                        &ensp; <a href="assets/documents/papers/Exploring_Lossy_Compressibility_through_Statistical_Correlations_of_Scientific_Datasets.pdf"> [PDF] </a>
-                        &ensp; <a href="assets/documents/DRBSB-7-Krasowska.pdf"> [Slides] </a>
-                    </div>
-                    <div class="event-description">
-                        <b>D. Krasowska</b>, J. Bessac, R. Underwood, J. C. Calhoun, S. Di, and F. Cappello. "Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets," 
-                        2021 7th International Workshop on Data Analysis and Reduction for Big Scientific Data (DRBSD-7), St. Louis, MO, USA, 2021, pp. 47-53, doi:10.1109/DRBSD754563.2021.00011
-                    </div>
-                </div>
-            </div>
-            </a>
+            <div id="publications"></div>
+
+            <script>
+            fetch('/homepage/publications.html')
+                .then(response => response.text())
+                .then(data => {
+                document.getElementById('publications').innerHTML = data;
+                });
+            </script>
+          
 
             <div class="language container">
                 <div class="language-item"> MPI </div>
@@ -218,19 +90,14 @@
         <!-- end content -->
     </body>
 
-    <!-- footer -->
-    <footer class="footer">
-        &copy; 2025 David Krasowska
-        <a class="btn btn-github " href="https://github.com/Krasow">
-            <i class="fa fa-github"></i>
-        </a>
-        <a class="btn btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
-            <i class="fa fa-linkedin"></i>
-        </a>
-        <a class="btn btn-paper-plane " href="mailto:krasow@u.northwestern.edu">
-            <i class="fa fa-paper-plane"></i>
-        </a>
-    </footer>
-    <!-- footer end -->
+    <div id="footer"></div>
+
+    <script>
+    fetch('/common/footer.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('footer').innerHTML = data;
+        });
+    </script>
 
 </html>

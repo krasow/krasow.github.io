@@ -1,0 +1,114 @@
+.presentations {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.presentations-title{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding-left: 200px;
+}
+
+.presentation {
+  width: calc(65% - 10px);
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 20px;
+  margin-left: 200px;
+}
+.presentation:hover {
+  padding-top: 25px;
+  padding-bottom: 15px;
+}
+
+
+.presentation img {
+  align-items: center;
+  text-align: center;
+  margin: auto;
+  margin-left: 50%;
+  max-width: 50%;
+  height: auto;
+  margin-bottom: -70px;
+}
+
+.presentation-session {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.presentation-session a {
+  color: #333;
+}
+.presentation-session a:hover {
+  text-decoration: none;
+  outline: none;
+}
+
+.presentation-session b{
+  font-weight: 700;
+}
+
+
+.presentation-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.presentation-title a {
+  color: black;
+}
+
+.presentation-bgtitle {
+  font-size: 60px;
+  font-weight: 600;
+}
+
+.presentation-text {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.presentation-text b{
+  font-weight: 700;
+}
+
+.presentation-cite {
+  font-size: 12px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 1450px) {
+  .presentation img {
+    margin-left: 0%;
+    max-width: 100%;
+    margin-bottom: 0px;
+  }
+
+}
+
+@media (max-width: 850px) {
+  .presentation {
+    margin-left: 6%;
+    width: calc(100% - 10px);
+  }
+  .presentations-title{
+    padding-left: 0px;
+    font-size: 24px;
+  }
+  .presentation-bgtitle {
+    font-size: 24px;
+  }
+}

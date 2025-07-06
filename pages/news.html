@@ -1,46 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/" />
-        <meta property="og:image" content="/assets/images/"/>
-        <meta property="og:image:secure_url" content="/assets/images/"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>David Krasowska | News </title>
-        <!-- custom css  -->
-        <link rel="stylesheet" type = "text/css" href="assets/css/style.css">
-        <!-- Bootstrap 4.5.0 -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-        <!-- Font awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    </head>
+    <div id="header"></div>
+
+    <script>
+        fetch('/common/header.html')
+            .then(response => response.text())
+            .then(data => {
+            document.getElementById('header').innerHTML = data;
+            });
+    </script>
+
+    <title>David Krasowska | News </title>
+
+    <link rel="stylesheet" type = "text/css" href="/pages/css/news.css">
 
     <body>
         <div class="content">
-        <!-- Navbar -->
-        <div class="left-side-navbar" id="myTopnav">
-            <div class="links">
-                <a href="index.html">SUMMARY</a>
-                <a href="index.html#experience">EXPERIENCE</a>
-                <a href="index.html#publications">PUBLICATIONS</a>
-                <a href="presentations.html">PRESENTATIONS</a>
-                <a href="about.html">ABOUT</a>
-                <a href="resume.html">RESUME</a>
-                <a href="news.html">NEWS</a>
-            </div>
-            <div class="social">
-                <a class="btn btn-lg btn-github" href="https://github.com/Krasow">
-                    <i class="fa fa-github"></i>
-                </a>
-                <a class="btn btn-lg btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
-                    <i class="fa fa-linkedin"></i>
-                </a>
-                <a class="btn btn-paper-plane" href="mailto:krasow@u.northwestern.edu">
-                <i class="fa fa-paper-plane"></i>
-                </a>
-            </div>
-            <!-- Navbar end -->
-        </div>
+            <div id="navbar"></div>
+
+            <script>
+            fetch('/common/navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                document.getElementById('navbar').innerHTML = data;
+                });
+            </script>
 
             <!-- content of projects -->
             <div class="articles">
@@ -56,7 +40,7 @@
                         are advised by Peter Dinda, professor of computer science and (by courtesy) electrical and computer engineering at the McCormick School of Engineering.
                         <a href="https://www.mccormick.northwestern.edu/electrical-computer/news-events/news/articles/2023/david-krasowska-and-kirill-nagaitsev-awarded-doe-computational-science-graduate-fellowships.html">See More</a>
                     </div>
-                    <a href="https://www.mccormick.northwestern.edu/electrical-computer/news-events/news/articles/2023/david-krasowska-and-kirill-nagaitsev-awarded-doe-computational-science-graduate-fellowships.html"> <img src="assets/images/nw_news.png"></a>
+                    <a href="https://www.mccormick.northwestern.edu/electrical-computer/news-events/news/articles/2023/david-krasowska-and-kirill-nagaitsev-awarded-doe-computational-science-graduate-fellowships.html"> <img src="/assets/images/nw_news.png"></a>
                 </div>
                 <div class="article">
                     <a href="https://www.krellinst.org/csgf/about-doe-csgf/news-events/2023-incoming-class">
@@ -67,7 +51,7 @@
                         DOE CSGF Strengthens Diversity With 2023-2024 Class 
                     </div>
                     <div class="article-abstract">The Department of Energy Computational Science Graduate Fellowship (DOE CSGF) will receive 39 new students for 2023-24,
-                         a new class size record. The incoming fellows will attend 25 universities – five of which are new to the program – across the country as they learn 
+                         a new class size record. The incoming fellows will attend 25 universities - five of which are new to the program - across the country as they learn 
                          to apply high-performance computing (HPC) to research across a variety of fields, including computer science, astrophysics, electrical engineering, 
                          applied mathematics, and environmental fluid mechanics. 
                         <a href="https://www.krellinst.org/csgf/about-doe-csgf/news-events/2023-incoming-class">See more</a>
@@ -84,7 +68,7 @@
                         (MCS) division at Argonne National Laboratory have received awards in the ACM Student Research Competition held at SC22. 
                         <a href="https://www.anl.gov/mcs/article/summer-internships-at-argonne-lead-to-awardwinning-posters">See more</a>
                     </div>
-                    <a href="https://www.anl.gov/mcs/article/summer-internships-at-argonne-lead-to-awardwinning-posters"> <img src="assets/images/mcs-award.png"></a>
+                    <a href="https://www.anl.gov/mcs/article/summer-internships-at-argonne-lead-to-awardwinning-posters"> <img src="/assets/images/mcs-award.png"></a>
                 </div>
                 <div class="article">
                     <div class="article-venue"><a href="https://news.clemson.edu/computer-engineering-graduate-enriched-his-clemson-experience-with-supercomputer-research/">
@@ -97,26 +81,23 @@
                          after winning a student research competition at a leading supercomputer conference.
                          <a href="https://news.clemson.edu/computer-engineering-graduate-enriched-his-clemson-experience-with-supercomputer-research/">See more</a>
                     </div>
-                    <a href="https://news.clemson.edu/computer-engineering-graduate-enriched-his-clemson-experience-with-supercomputer-research/"> <img src="assets/images/clemson-award.png"></a>
+                    <a href="https://news.clemson.edu/computer-engineering-graduate-enriched-his-clemson-experience-with-supercomputer-research/"> <img src="/assets/images/clemson-award.png"></a>
                 </div>
             </div>
             <!-- end content -->
         </div>
     </body>
-    <!-- footer -->
-    <footer class="footer">
-        &copy; 2025 David Krasowska
-        <a class="btn btn-github " href="https://github.com/Krasow">
-            <i class="fa fa-github"></i>
-        </a>
-        <a class="btn btn-linkedin" href="https://www.linkedin.com/in/davidkrasowska/">
-            <i class="fa fa-linkedin"></i>
-        </a>
-        <a class="btn btn-paper-plane " href="mailto:krasow@u.northwestern.edu">
-            <i class="fa fa-paper-plane"></i>
-        </a>
-    </footer>
-    <!-- footer end -->
+    
+    <div id="footer"></div>
+
+    <script>
+    fetch('/common/footer.html')
+        .then(response => response.text())
+        .then(data => {
+        document.getElementById('footer').innerHTML = data;
+        });
+    </script>
+
 </html>
 
 
