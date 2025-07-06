@@ -1,0 +1,91 @@
+.holder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  padding-left: 200px;
+}
+
+.event, .article {
+  width: calc(75% - 10px);
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.article {
+  margin-bottom: 75px;
+}
+
+.event:hover, .article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.date, .venue, .session, .publication-title {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 10px;
+}
+
+.description, .abstract {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.cite {
+  font-size: 12px;
+  font-weight: 300;
+  margin-bottom: 10px;
+}
+
+.session a {
+  color: black;
+}
+
+.session a:hover {
+  text-decoration: none;
+  outline: none;
+}
+
+.event img {
+  align-items: center;
+  text-align: center;
+  margin: auto;
+  margin-left: 50%;
+  max-width: 50%;
+  height: auto;
+  margin-bottom: -70px;
+}
+
+.article img {
+  max-width:  95%;
+  height: auto;
+}
+
+@media (max-width: 1450px) {
+  .event img {
+    margin-left: 0%;
+    max-width: 100%;
+    margin-bottom: 0px;
+  }
+}
+
+@media (max-width: 850px) {
+  .holder {
+    padding-left: 6%;
+  }
+  .event, .article {
+    width: calc(90% - 10px);
+  }
+
+  .date, .venue, .publication-title {
+    font-size: 16px;
+  }
+  .description, .abstract {
+    font-size: 14px;
+  }
+}
