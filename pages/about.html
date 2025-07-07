@@ -12,42 +12,36 @@
                     <a href="https://sc22.supercomputing.org/presentation/?id=spostu110&sess=sess227#038;sess=sess227"> <img src="/assets/images/sc.JPG"></a>
                     <div class="title-xlg">My background.</div>
                     <div class="description">
-                        [outdated June 2024.]
                         <br>
                         I am a Computer Science Ph.D. candidate at Northwestern University under Dr. Peter Dinda and a recipient of the Department of Energy Computational Science Graduate Fellowship.
-                        Currently, my focus is data-centric computing and processing near memory for domain specific applications. This focus is part of the <a href="https://constellation-project.net">Constellation Project</a> which enables frictionless heterogeneous parallelism.
+                        I've become interested in helping domain scientists run their workloads on distributed, heterogeneous computing systems. This focus is part of the <a href="https://constellation-project.net">Constellation Project</a> which enables frictionless heterogeneous parallelism.
                         My research introduction began with research within the FTHPC group at Clemson University under Dr. Jon C. Calhoun. 
                         Within this group, I collaborated with Argonne National Laboratory as a visiting student on lossy data compression research.
                         Our goal was to determine different statistical predictions that would allow for estimation of lossy compression ratios. This had lead to 
                         <a href="/index.html#publications">publications</a> and <a href="/pages/news.html">awards</a>.
-                        Also, I participated in the Student Cluster Competition at Super Computing (SC) ’21 and INDYSCC at SC ’22.
+                        Also, I participated in the Student Cluster Competition at Super Computing (SC) '21 and INDYSCC at SC '22.
+
                     </div>
                 </div>
                 <div class="event">
-                    <div class="title-xlg">What is my research proposal?</div>
+                    <div class="title-lg">David's interests?</div>
                     <div class="description">
-                        The end of Moore’s law has resulted in development of new specialized architectures for computing [3]. There has been countless prior work in the area of increasing computational 
-                        speed using processing in memory (PIM) accelerators. However, there are a few issues that require a demanding amount of work for adoption for these newer ideas. 
-                        This is due to the general approach taken and requiring domain scientists to rewrite their code with directives in order to make use of this functionality. 
+                        The end of Moore's law has resulted in development of new specialized architectures for computing [1]. AI companies are driving the current accelerator boom, but I find this question particularly compelling:
+                        <b>How can we leverage emerging AI-focused heterogeneous accelerators to support the workloads of HPC domain scientists?</b>
                         <br><br>
-                        I have an interest in designing a PIM system for HPC domain specific applications. I would like to focus on HPC infrastructures; however, this approach would 
-                        generalize to other infrastructures, such as data centers. Data centers are used all over the world and utilize lots of valuable resources/energy. 
-                        Improving data center architecture and programmability can reduce the environmental footprint. Northwestern has multiple labs working towards the goal of optimizing 
-                        performance in computing systems. I am currently working with the Prescience lab that focuses on optimizing higher level code to reduce programmer intervention. 
-                        My goal is to take high level languages that are popular within a specific domain and automatically detect parallel code to generate PIM instructions. 
-                        Using today’s PIM hardware, I expect to be able to develop a software approach to achieve this goal. I can leverage my group’s compiler and language expertise in pursuit of the goal. 
-                        This approach would allow domain scientists to keep their high level code and not spend time rewriting it for the new system. Based on my experience in the software approach, 
-                        I will next consider improvements to hardware design. This plan will hopefully lead to increased performance and allow for less energy consumption, 
-                        thus improving efficiency and environmental impact.
+                        I've became interested in utilizing higher-level languages in a performant way. I am working on a project that brings the ability to run Julia applications across a distributed system using NVIDIA GPUs.
+                        This takes advantage of Julia's abstract array interface to implement distributed heterogeneous arrays managed by a novel HPC runtime- Legion (more info <a href="/pages/show.html?page=cunumeric">here</a>).
+                        <br><br>
+                        Outside of GPUs, I've worked with CGRAs, FPGAs, etc. However, one specific accelerator that has peaked my interest in Processing in Memory (PIM). There has been countless prior work in the area of increasing computational 
+                        speed using processing in memory (PIM) accelerators. There are a few issues that require a demanding amount of work for adoption for these newer ideas. 
+                        This challenge stems from the fact that domain scientists are often required to rewrite their code using specialized directives to take advantage of new hardware. Unfortunately, this portability issue isn't unique to PIM- many emerging AI accelerators face the same barrier.
+                        
+                        Using the same novel runtime mentioned above (Legion), I have made progress towards resolving the complexities of programming PIM systems (more info <a href="/pages/show.html?page=legionpim">here</a>).
                     </div>
                 </div>
                 <div class="event">
                     <div class="cite">
-                        [1] A. Petitet, R. Whaley, J. Dongarra, and A. Cleary, ‘HPL – a Portable Implementation of the High-Performance Linpack Benchmark for Distributed-Memory Computers’, 01 2008.
-                        <br>
-                        [2] P. Giannozzi et al., ‘QUANTUM ESPRESSO: a modular and open-source software project for quantum simulations of materials’, Journal of Physics: Condensed Matter, vol. 21, no. 39, p. 395502, Sep. 2009.
-                        <br>
-                        [3] T. N. Theis and H. . -S. P. Wong, "The End of Moore's Law: A New Beginning for Information Technology," in Computing in Science & Engineering, vol. 19, no. 2, pp. 41-50, Mar.-Apr. 2017, doi: 10.1109/MCSE.2017.29.
+                        [1] T. N. Theis and H. . -S. P. Wong, "The End of Moore's Law: A New Beginning for Information Technology," in Computing in Science & Engineering, vol. 19, no. 2, pp. 41-50, Mar.-Apr. 2017, doi: 10.1109/MCSE.2017.29.
                         <br>
                     </div>
                 </div>
