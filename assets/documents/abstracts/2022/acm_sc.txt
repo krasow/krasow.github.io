@@ -1,0 +1,14 @@
+In the fields of science and engineering, lossy compression plays a growing 
+role in running scientific simulations, as output data is on the scale of
+terabytes. Using error bounded lossy compression reduces the amount of 
+storage for each simulation; however, there is no known bound for the upper
+limit of lossy compressibility. Data correlation structures, compressors and
+error bounds are factors allowing larger compression ratios and improved 
+quality metrics. This provides one direction towards quantifying lossy 
+compressibility. Our previous work explored 2D statistical methods to 
+characterize the data correlation structures and their relationships, through 
+functional models, to compression ratios and quality metrics for 2D scientific
+data. In this poster, we explore the expansion of our statistical methods to 
+3D scientific data. The method was comparable to 2D. Our work is the next step
+towards evaluating the theoretical limits of lossy compressibility used to 
+predict compression performance and optimally adapt compressors.

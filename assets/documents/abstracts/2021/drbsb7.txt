@@ -1,0 +1,13 @@
+Lossy compression plays a growing role in scientific simulations where the cost
+of storing their output data can span terabytes. Using error bounded lossy
+compression reduces the amount of storage for each simulation; however, there is
+no known bound for the upper limit on lossy compressibility. Correlation structures
+in the data, choice of compressor and error bound are factors allowing larger compression
+ratios and improved quality metrics. Analyzing these three factors provides one direction 
+towards quantifying lossy compressibility. As a first step, we explore statistical methods
+to characterize the correlation structures present in the data and their relationships, 
+through functional regression models, to compression ratios. We observed a relationship 
+between compression ratios and several statistics summarizing the correlation structure of 
+the data, which is a first step towards evaluating the theoretical limits of lossy 
+compressibility used to eventually predict compression performance and adapt compressors
+to correlation structures present in the data.
