@@ -29,12 +29,17 @@ hr {
   color: #3F51B5
 }
 
-.title-sm, .title, .title-lg, .title-xlg {
+.title-sm, .title, .title-lg, .title-xlg, h1, h2, h3, h4 {
   font-family: 'JetBrains Mono', monospace;
   margin-bottom: 10px;
   color: black;
   text-transform: uppercase;
   letter-spacing: 2px;
+}
+
+h4 { 
+  font-size: 18px;
+  font-weight: 100;
 }
 
 .title-sm, h3 { 
@@ -75,6 +80,9 @@ hr {
 }
 
 @media (max-width: 850px) {
+  h4 {
+    font-size: 14px;
+  }
   .title-sm, h3 {
     font-size: 16px;
   }

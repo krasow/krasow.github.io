@@ -1,7 +1,7 @@
 .markdown-content {
   box-sizing: border-box;
   overflow-wrap: break-word;
-  align-items: left;
+  align-items: center;
   text-align: left;
   padding-left: 100px;
 }
@@ -23,7 +23,10 @@ code {
 }
 
 .markdown-content img {
-  max-width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 700px;
   height: auto;
 }
 
@@ -31,7 +34,7 @@ code {
 @media (max-width: 1450px) {
   .markdown-content img {
     margin-left: 0%;
-    max-width: 100%;
+    max-width: 600px;
   }
   .markdown-content {
     padding-left: 6%;
