@@ -3,10 +3,11 @@
 [JuliaCon 2025](/pages/presentations.html#juliacon)
 
 cuNumeric.jl enables heterogenous distributed code execution with minimal effort. The core type is the
-NDArray- a drop-in replacement for the Base.Array within Julia. Some of the key differences include
-1) operations are broadcast by default
-2) slices are always view references
-3) important to avoid scalar indexing to achieve decent performance
+NDArray- a drop-in replacement for the Base.Array within Julia. Some of the key differences include:
+
+* operations are broadcast by default
+* slices are always view references
+* important to avoid scalar indexing to achieve decent performance
 
 ## Legate
 This library is enabled through the Legate runtime. Legate provides data and task management abstractions
