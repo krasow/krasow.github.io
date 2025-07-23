@@ -22,6 +22,7 @@ Legate stores implement common array protocols, allowing task bodies to reuse ex
 
 ## Our contributions
 ![ ](/assets/images/projects/cunumeric/stack.png)
+
 ## Benchmarks
 ```julia
 N = 1000
