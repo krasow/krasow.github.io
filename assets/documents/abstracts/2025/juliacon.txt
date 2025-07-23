@@ -1,0 +1,22 @@
+In high-performance computing, reducing complexity for domain scientists is crucial.
+Performance portability enables a code base to be executed on heterogeneous architectures
+with zero code changes. In addition, for many scientific applications the ability to scale
+from one to many processors is necessary. cuNumeric.jl tackles these challenges by exposing
+a high-level array interface which automatically maps code onto available hardware by 
+leveraging distributed kernels implemented in prior work - cuPyNumeric. cuPyNumeric uses 
+nv-legate and Legion which provide abstractions to represent coherence and program structure 
+in order to build a dependency graph before mapping to underlying hardware resources.
+
+The centerpiece of cuNumeric.jl is the NDArray type. NDArrays are flexible, supporting arbitrary
+dimensions and integral data types while behaving like Julia Arrays. However, a key advantage is
+that data can be split across available hardware resources on a distributed system. High level 
+operations acting on NDArrays are not executed immediately. Instead, cuNumeric.jl’s underlying
+C++ API translates these operations into asynchronous tasks, which are then scheduled and managed
+by the Legion programming system. This enables efficient load balancing across resources. The
+current cuNumeric.jl API implements common linear algebra operations like matrix multiplication
+and einsum and many unary and binary operations. Additionally it supports stencil based operations
+which are crucial for solving partial differential equations (PDEs) numerically.
+
+In this talk we will describe the core technologies which enable cuNumeric.jl, provide an 
+overview of the API and demonstrate the scaling of a stencil based PDE solver, Monte Carlo 
+integration and common kernels like SGEMM.

@@ -1,5 +1,6 @@
 # cuNumeric.jl [![GitHub](https://github.githubassets.com/favicons/favicon.svg)](https://github.com/JuliaLegate/cuNumeric.jl)
 
+[JuliaCon 2025](/pages/presentations.html#juliacon)
 
 cuNumeric.jl enables heterogenous distributed code execution with minimal effort. The core type is the
 NDArray- a drop-in replacement for the Base.Array within Julia. Some of the key differences include
