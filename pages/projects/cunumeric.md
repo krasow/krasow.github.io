@@ -79,12 +79,14 @@ Due to this lack of heap usage, the Julia garbage collector never gets called du
 
 
 We looked into other existing backends that deal with external memory references. In short, they have three phases of the GC:
+
 * Calculate array memory footprint in the constructor
 * Manually call GC based on a memory pressure heuristic
 * Try-catch on allocation to avoid out-of-memory errors
 
 
 Two things that make this above approach difficult for cuNumeric.jl:
+
 * Deferred execution model conceals Julia object's physical size at creation 
 * Runtime cannot recover from failed mapping allocation
 

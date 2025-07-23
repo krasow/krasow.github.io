@@ -78,13 +78,19 @@ gets called during the execution of a cuNumeric.jl program. This is the
 reason why the above Gray-Scott reaction-diffusion code fails to
 run.</p>
 <p>We looked into other existing backends that deal with external memory
-references. In short, they have three phases of the GC: * Calculate
-array memory footprint in the constructor * Manually call GC based on a
-memory pressure heuristic * Try-catch on allocation to avoid
-out-of-memory errors</p>
-<p>Two things that make this above approach difficult for cuNumeric.jl:
-* Deferred execution model conceals Julia object’s physical size at
-creation * Runtime cannot recover from failed mapping allocation</p>
+references. In short, they have three phases of the GC:</p>
+<ul>
+<li>Calculate array memory footprint in the constructor</li>
+<li>Manually call GC based on a memory pressure heuristic</li>
+<li>Try-catch on allocation to avoid out-of-memory errors</li>
+</ul>
+<p>Two things that make this above approach difficult for
+cuNumeric.jl:</p>
+<ul>
+<li>Deferred execution model conceals Julia object’s physical size at
+creation</li>
+<li>Runtime cannot recover from failed mapping allocation</li>
+</ul>
 <p>In order to run Gray-Scott, we experimented with manually inserting
 <code>GC.gc()</code> calls within the main loop body. We varied the
 iteration interval with values <code>1,3,6</code>.</p>
