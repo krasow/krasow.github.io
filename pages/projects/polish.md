@@ -46,3 +46,14 @@ A potem, ja wracam do biura i pracuję do dziewiętnastej. Ja jadę pociągiem d
 
 O dwudziestej, wracam do domu. Jem kolację. Potem oglądam Youtube albo gram w gry. 
 O dwudziestej trzeciej, idę spać.
+
+
+# Installment 4
+Zwykle noszę koszulkę i dżinsy. Lubię nosić buty adidasy.
+
+Codziennie noszę okulary. Nie widzę bez okularów.
+Też zawsze noszę zegarek. Lubię zegarki. 
+
+Kiedy wychodzę, ubieram ładne ubrania. Miałem na sobie kurtkę i długie spodnie. 
+
+Ale teraz mam na sobie szarą koszulkę i szorty. Mam białe skarpetki. Nie noszę butów w domu.
