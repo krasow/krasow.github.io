@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Override branches by setting environment variables when invoking the script.
 # Example:
-# LEGATE_BRANCH=main CUNUMERIC_BRANCH=main curl -fsSL https://krasow.dev/scripts/cunumeric-install.sh | bash -s --
+# curl -fsSL https://krasow.dev/scripts/cunumeric-install.sh | LEGATE_BRANCH=develop CUNUMERIC_BRANCH=benchmark-fusion-again bash
 # Defaults to 'develop' when not provided.
 
 LEGATE_BRANCH=${LEGATE_BRANCH:-develop}
