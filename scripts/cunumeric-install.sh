@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Override branches by setting environment variables when invoking the script.
 # Example:
-#   LEGATE_BRANCH=main CUNUMERIC_BRANCH=main curl -fsSL https://krasow.dev/scripts/cunumeric-install.sh | bash -s --
+# LEGATE_BRANCH=main CUNUMERIC_BRANCH=main curl -fsSL https://krasow.dev/scripts/cunumeric-install.sh | bash -s --
 # Defaults to 'develop' when not provided.
 
 LEGATE_BRANCH=${LEGATE_BRANCH:-develop}
@@ -10,10 +10,13 @@ CUNUMERIC_BRANCH=${CUNUMERIC_BRANCH:-develop}
 cd $HOME
 curl -fsSL https://install.julialang.org | bash -s -- --default-channel 1.11 --yes
 
-source ~/.bashrc
+# ~/.bashrc returns early non-interactively, so set PATH directly.
+export PATH="$HOME/.juliaup/bin:$HOME/.local/bin:$PATH"
 
 # Install CMAKE v3.30
+# The CMake self-extractor cd's into --prefix, so the directory must exist first.
 cd $HOME && \
+    mkdir -p "$HOME/.local" && \
     wget https://github.com/Kitware/CMake/releases/download/v3.30.7/cmake-3.30.7-linux-x86_64.sh --no-check-certificate && \
     sh cmake-3.30.7-linux-x86_64.sh --skip-license --prefix=$HOME/.local
 
@@ -23,9 +26,12 @@ cd $HOME && \
 
 
 cd $HOME/cuNumeric.jl
-julia --project=. -e 'using Pkg; Pkg.develop("../"); Pkg.develop("../lib/LegatePreferences"); Pkg.develop("./lib/CNPreferences")'
+julia --project=. -e 'using Pkg; Pkg.develop(path="../Legate.jl"); Pkg.develop(path="../Legate.jl/lib/LegatePreferences"); Pkg.develop(path="./lib/CNPreferences")'
 julia --project=. -e 'using LegatePreferences; LegatePreferences.use_developer_mode(); using CNPreferences; CNPreferences.use_developer_mode();'
 julia --project=. -e 'using Pkg; Pkg.build("cuNumeric")'
+
+cd $HOME/cuNumeric.jl/benchmark
+julia --project=. -e 'using Pkg; Pkg.develop(path="../"); Pkg.resolve(); Pkg.instantiate();'
 
 # conda install for cupynumeric
 mkdir -p ~/miniconda3 && \
