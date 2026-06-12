@@ -7,6 +7,9 @@
 LEGATE_BRANCH=${LEGATE_BRANCH:-develop}
 CUNUMERIC_BRANCH=${CUNUMERIC_BRANCH:-develop}
 
+echo "Legate branch set to: ${LEGATE_BRANCH}"
+echo "cuNumeric branch set to ${CUNUMERIC_BRANCH}"
+
 cd $HOME
 curl -fsSL https://install.julialang.org | bash -s -- --default-channel 1.11 --yes
 
