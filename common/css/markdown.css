@@ -46,3 +46,24 @@ h1 img, h2 img, h3 img, h4 img {
     padding-left: 6%;
   }
 }
+
+@media (max-width: 850px) {
+  .markdown-content {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+  }
+  .markdown-content p img,
+  .markdown-content img {
+    max-width: 100%;
+    margin-left: 0;
+  }
+  pre {
+    font-size: 13px;
+  }
+  .markdown-content table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}

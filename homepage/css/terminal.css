@@ -3,7 +3,7 @@
   align-items: center;
   font-family: 'JetBrains Mono', monospace;
   font-weight: bold;
-  margin-left: 200px !important;
+  margin-left: 260px !important;
   font-size: 20px;
   padding: 20px;
   width: 1000px; 
@@ -20,20 +20,20 @@
 }
 
 .response {
-  position: absolute; 
-  border: 1px solid #3F51B5;
+  position: absolute;
+  border: 1px solid #7986CB;
   text-align: center;
   display: none;
-  z-index: 10; 
-  min-height: 75px; 
+  z-index: 10;
+  min-height: 75px;
   box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  color: #3F51B5;
+  color: #e8eaf6;
   border-radius: 4px;
   background: #000;
 }
 
 .response a {
-  color: #3F51B5;
+  color: #9fa8da;
 }
 
 @media (max-width: 1450px) {

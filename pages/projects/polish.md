@@ -57,3 +57,13 @@ Też zawsze noszę zegarek. Lubię zegarki.
 Kiedy wychodzę, ubieram ładne ubrania. Miałem na sobie kurtkę i długie spodnie. 
 
 Ale teraz mam na sobie szarą koszulkę i szorty. Mam białe skarpetki. Nie noszę butów w domu.
+
+# Installment 5
+
+
+# Installment 6
+Będę miał pięćdziesiąt pięć lat. Może będę miał żonę i dzieci. Będę miał psa i kota. Będę dużo podróżował do Polski i do innych krajów.
+
+
+Będę profesorem na uniwersytecie. Będę dużo pracował. Będę robił ciekawe projekty i spotykał ciekawych ludzi.
+

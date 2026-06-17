@@ -34,6 +34,25 @@
   margin-left: 50px;
 }
 
+/* Hamburger toggle button — hidden on desktop */
+.navbar-toggle {
+  display: none;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  color: #818181;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+  z-index: 2;
+}
+.navbar-toggle:hover {
+  color: #f1f1f1;
+}
 
 @media screen and (max-height: 450px) {
   .left-side-navbar {padding-top: 15px;}
@@ -48,19 +67,61 @@
     left: 0;
     background-color: #000;
   }
-  .left-side-navbar a {padding-left: 300px;}
+  /* Show hamburger */
+  .navbar-toggle {
+    display: block;
+  }
+  /* Links are hidden and non-interactive when nav is collapsed */
+  .left-side-navbar .links a,
+  .left-side-navbar .social {
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  /* Prevent CSS :hover from expanding the nav on touch devices */
+  .left-side-navbar:hover {
+    width: 6%;
+  }
+  .left-side-navbar:hover a {
+    padding-left: 300px;
+  }
+  /* Open state — toggled by JS */
+  .left-side-navbar.open {
+    width: 250px;
+  }
+  .left-side-navbar.open:hover {
+    width: 250px;
+  }
+  .left-side-navbar.open .links a,
+  .left-side-navbar.open .social {
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .left-side-navbar.open .links a,
+  .left-side-navbar.open:hover a {
+    padding-left: 15px;
+  }
+  /* Move toggle button to top-right when open */
+  .left-side-navbar.open .navbar-toggle {
+    left: auto;
+    right: 15px;
+    transform: none;
+  }
 }
 
-.left-side-navbar:hover {
-  width: 250px;
-  display: block;
-  background-color: #000;
+/* Desktop hover expand */
+@media only screen and (min-width: 851px) {
+  .left-side-navbar:hover {
+    width: 250px;
+    display: block;
+    background-color: #000;
+  }
+  .left-side-navbar:hover a {padding-left: 15px;}
 }
-.left-side-navbar:hover a {padding-left: 15px;}
 
 /* Page content */
 .main {
-  margin-left: 200px;
+  margin-left: 260px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -84,7 +145,7 @@
   .social {
     padding-top: 0px;
   }
-  
+
 }
 
 /* endnav */
