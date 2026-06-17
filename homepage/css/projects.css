@@ -39,7 +39,10 @@
 
 @media (max-width: 850px) {
   .project-card {
-    height: 250px;
-    width: 350px;
+    width: 100%;
+    height: auto;
+  }
+  .project-image {
+    height: 100px;
   }
 }

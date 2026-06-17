@@ -77,15 +77,16 @@
 @media (max-width: 850px) {
   .holder {
     padding-left: 6%;
+    padding-right: 6%;
   }
   .event, .article {
-    width: calc(90% - 10px);
+    width: 100%;
+    padding: 14px;
   }
-
   .date, .venue, .publication-title {
-    font-size: 16px;
+    font-size: 13px;
   }
   .description, .abstract, p {
-    font-size: 14px;
+    font-size: 13px;
   }
 }

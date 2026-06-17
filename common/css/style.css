@@ -80,20 +80,26 @@ h4 {
 }
 
 @media (max-width: 850px) {
+  .content {
+    padding-top: 30px;
+  }
+  .title-sm, .title, .title-lg, .title-xlg, h1, h2, h3, h4 {
+    letter-spacing: 0;
+  }
   h4 {
-    font-size: 14px;
+    font-size: 12px;
   }
   .title-sm, h3 {
-    font-size: 16px;
+    font-size: 13px;
   }
   .title, h2 {
-    font-size: 18px;
+    font-size: 15px;
   }
   .title-lg, h1 {
-    font-size: 20px;
+    font-size: 17px;
   }
   .title-xlg {
-    font-size: 24px;
+    font-size: 20px;
   }
 }
 

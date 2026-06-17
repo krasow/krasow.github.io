@@ -47,22 +47,37 @@
 
 @media (max-width: 850px) {
   .command {
-    margin-left: 5% !important;
-    width: 82vw;
-  } 
+    margin-left: 6% !important;
+    margin-right: 6% !important;
+    width: auto;
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+  /* Show responses inline on mobile — hover doesn't work on touch */
   .response {
-    margin-left: 4% !important;
-    width: 82vw;
-    font-size: 14px;
+    display: block;
+    position: static;
+    margin-left: 6% !important;
+    margin-right: 6% !important;
+    width: auto;
+    font-size: 13px;
+    padding: 10px 14px;
+    min-height: unset;
+    margin-bottom: 6px;
+  }
+  .command:hover + .response,
+  .response:hover {
+    transform: none;
   }
 }
 
-.command:hover  + .response {
-  display: block;
-  transform: translateY(-85px);
-}
-
-.response:hover  {
-  display: block;
-  transform: translateY(-85px);
+@media (min-width: 851px) {
+  .command:hover + .response {
+    display: block;
+    transform: translateY(-85px);
+  }
+  .response:hover {
+    display: block;
+    transform: translateY(-85px);
+  }
 }
