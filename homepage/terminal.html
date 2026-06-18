@@ -1,6 +1,31 @@
 <link rel="stylesheet" type = "text/css" href="homepage/css/terminal.css">
 
-<div class="terminal">
+<!-- Mobile: business card -->
+<div class="mobile-card">
+    <div class="mobile-card-command">david:~$ whoami</div>
+    <div class="mobile-card-header">
+        <div>
+            <div class="mobile-card-name">David Krasowska</div>
+            <div class="mobile-card-title">Ph.D. Candidate &middot; Northwestern University</div>
+        </div>
+        <div class="mobile-card-links">
+            <a href="assets/documents/Krasowska_David_contact.vcf" download class="mobile-card-save">Save Contact</a>
+            <a href="assets/documents/Krasowska_David_resume.pdf" class="mobile-card-save">Resume</a>
+        </div>
+    </div>
+    <hr class="mobile-card-divider">
+    <div class="mobile-card-row">Chicago, IL</div>
+    <div class="mobile-card-row"><a href="mailto:krasow@u.northwestern.edu">krasow@u.northwestern.edu</a></div>
+    <div class="mobile-card-row">+1 (843) 283-7758</div>
+    <hr class="mobile-card-divider">
+    <div class="mobile-card-row">Northwestern University (2023&ndash;Current)</div>
+    <div class="mobile-card-sub">Computer Science Ph.D.</div>
+    <div class="mobile-card-row">Clemson University (2019&ndash;2022)</div>
+    <div class="mobile-card-sub">Computer Engineering B.S., GPA 3.7</div>
+</div>
+
+<!-- Desktop: individual command blocks -->
+<div class="terminal terminal-desktop-only">
     <div class="command">
         david:~$ resume
     </div>
@@ -8,7 +33,7 @@
         <a href="assets/documents/Krasowska_David_resume.pdf"> "Krasowska_David_resume.pdf" </a>
     </div>
 </div>
-<div class="terminal">
+<div class="terminal terminal-desktop-only">
     <div class="command">
         david:~$ location
     </div>
@@ -16,7 +41,7 @@
         Chicago, IL
     </div>
 </div>
-<div class="terminal">
+<div class="terminal terminal-desktop-only">
     <div class="command">
         david:~$ education
     </div>
@@ -27,7 +52,7 @@
         <span class="response-sub">&nbsp;&nbsp;Computer Engineering BS, GPA: 3.7</span>
     </div>
 </div>
-<div class="terminal">
+<div class="terminal terminal-desktop-only">
     <div class="command">
         david:~$ email
     </div>
@@ -36,7 +61,7 @@
             krasow@u.northwestern.edu</a>
     </div>
 </div>
-<div class="terminal">
+<div class="terminal terminal-desktop-only">
     <div class="command">
         david:~$ number
     </div>
@@ -44,11 +69,11 @@
         +1 (843) 283-7758
     </div>
 </div>
-<div class="terminal">
+<div class="terminal terminal-desktop-only">
     <div class="command">
         david:~$ summary
     </div>
-    <div class ="response"> 
+    <div class ="response">
         David Krasowska is a Ph.D. candidate at Northwestern University, advised by Dr. Peter Dinda. His research
         journey began during his undergraduate studies at Clemson University where he collaborated with Argonne
         National Laboratory to explore lossy compression for optimizations in HPC scientific applications. He received the
@@ -57,4 +82,3 @@
         Alamos National Laboratory.
     </div>
 </div>
-

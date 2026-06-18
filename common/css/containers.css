@@ -87,6 +87,12 @@
     font-size: 13px;
   }
   .description, .abstract, p {
-    font-size: 13px;
+    font-size: 11px;
+  }
+  .cite {
+    display: none !important;
+  }
+  .citation {
+    display: none !important;
   }
 }

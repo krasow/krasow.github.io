@@ -80,6 +80,8 @@ h4 {
 }
 
 @media (max-width: 850px) {
+  .hello-world { display: none !important; }
+
   .content {
     padding-top: 30px;
     padding-left: 3.5rem;
@@ -99,7 +101,7 @@ h4 {
     font-size: 15px;
   }
   .title-lg, h1 {
-    font-size: 17px;
+    font-size: 22px;
   }
   .title-xlg {
     font-size: 20px;
