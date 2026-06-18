@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Krasowska;David;
+TITLE:Student Reasearcher
+EMAIL;TYPE=personal:krasow@u.northwestern.edu
+TEL;TYPE=mobile:8432837758
+ADR;:;;Chicago;Illinois;United States
+URL;TYPE=linktree:https://linktr.ee/krasow
+END:VCARD
