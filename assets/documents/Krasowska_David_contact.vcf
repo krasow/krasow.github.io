@@ -1,9 +1,12 @@
 BEGIN:VCARD
 VERSION:3.0
 N:Krasowska;David;
-TITLE:Student Reasearcher
+FN:David Krasowska
+TITLE:Northwestern PhD Candidate on the job market
 EMAIL;TYPE=personal:krasow@u.northwestern.edu
 TEL;TYPE=mobile:8432837758
 ADR;:;;Chicago;Illinois;United States
-URL;TYPE=linktree:https://linktr.ee/krasow
+URL;TYPE=website:https://krasow.dev
+X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/davidkrasowska
+X-SOCIALPROFILE;TYPE=github:https://github.com/krasow
 END:VCARD
