@@ -16,6 +16,8 @@ body {
   justify-content: center;
   align-items: center;
   padding-top: 50px;
+  line-height: 1.6;
+  color: #222;
 }
 
 hr {

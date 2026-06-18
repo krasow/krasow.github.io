@@ -36,6 +36,11 @@
   color: #9fa8da;
 }
 
+.response-block {
+  display: inline-block;
+  text-align: left;
+}
+
 .response-sub {
   font-size: 0.75em;
   opacity: 0.75;

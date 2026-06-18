@@ -8,12 +8,18 @@
 }
 
 .event, .article {
-  width: calc(75% - 10px);
+  width: 90%;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 14px;
   text-align: left;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 1450px) {
+  .event, .article {
+    width: calc(75% - 10px);
+  }
 }
 
 .article {
@@ -26,14 +32,14 @@
 }
 
 .date, .venue, .session, .publication-title {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 400;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .description, .abstract, p {
-  font-size: 16px;
-  margin-bottom: 10px;
+  font-size: 14px;
+  margin-bottom: 6px;
 }
 
 .cite {
@@ -56,7 +62,7 @@
   text-align: center;
   margin: auto;
   margin-left: 50%;
-  max-width: 50%;
+  max-width: 70%;
   height: auto;
   margin-bottom: -70px;
 }
@@ -66,11 +72,28 @@
   height: auto;
 }
 
+@media (max-width: 1100px) and (min-width: 851px) {
+  .holder {
+    padding-left: 260px;
+  }
+  .event, .article {
+    width: 95%;
+  }
+}
+
 @media (max-width: 1450px) {
   .event img {
     margin-left: 0%;
-    max-width: 100%;
+    max-width: 50%;
     margin-bottom: 0px;
+  }
+}
+
+@media (max-width: 850px) {
+  .event img {
+    max-width: 60%;
+    margin: 0 auto 10px auto;
+    display: block;
   }
 }
 
@@ -81,10 +104,11 @@
   }
   .event, .article {
     width: 100%;
-    padding: 14px;
+    padding: 10px;
+    margin-bottom: 8px;
   }
-  .date, .venue, .publication-title {
-    font-size: 13px;
+  .date, .venue, .publication-title, .session {
+    font-size: 11px;
   }
   .description, .abstract, p {
     font-size: 11px;
