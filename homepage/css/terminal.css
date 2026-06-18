@@ -60,14 +60,14 @@
 
 .mobile-card-command {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 14px;
   color: #aaa;
   margin-bottom: 12px;
 }
 
 .mobile-card-name {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 600;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -75,7 +75,7 @@
 
 .mobile-card-title {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 14px;
   color: #555;
   margin-bottom: 8px;
 }
@@ -89,7 +89,7 @@
 
 .mobile-card-row {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 4px;
 }
 
@@ -97,6 +97,12 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.mobile-card-contact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .mobile-card-links {
@@ -109,7 +115,8 @@
 
 .mobile-card-save {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 15px;
+  font-weight: 700;
   color: #3F51B5;
   white-space: nowrap;
   padding-left: 8px;
@@ -117,7 +124,7 @@
 
 .mobile-card-sub {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
+  font-size: 13px;
   color: #555;
   padding-left: 12px;
   margin-bottom: 4px;
