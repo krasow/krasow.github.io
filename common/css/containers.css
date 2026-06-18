@@ -58,17 +58,14 @@
 }
 
 .event img {
-  align-items: center;
-  text-align: center;
-  margin: auto;
-  margin-left: 50%;
-  max-width: 70%;
+  display: block;
+  margin: 0 auto 16px auto;
+  max-width: 60%;
   height: auto;
-  margin-bottom: -70px;
 }
 
 .article img {
-  max-width:  95%;
+  max-width: 95%;
   height: auto;
 }
 
@@ -81,19 +78,9 @@
   }
 }
 
-@media (max-width: 1450px) {
-  .event img {
-    margin-left: 0%;
-    max-width: 50%;
-    margin-bottom: 0px;
-  }
-}
-
 @media (max-width: 850px) {
   .event img {
-    max-width: 60%;
-    margin: 0 auto 10px auto;
-    display: block;
+    max-width: 80%;
   }
 }
 
