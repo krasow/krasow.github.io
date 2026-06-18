@@ -58,9 +58,9 @@
 }
 
 .event img {
-  display: block;
-  margin: 0 auto 16px auto;
-  max-width: 60%;
+  float: right;
+  margin: 0 0 16px 20px;
+  max-width: 40%;
   height: auto;
 }
 
@@ -80,7 +80,10 @@
 
 @media (max-width: 850px) {
   .event img {
-    max-width: 80%;
+    float: none;
+    display: block;
+    margin: 0 auto 12px auto;
+    max-width: 70%;
   }
 }
 
