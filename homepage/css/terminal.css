@@ -113,6 +113,11 @@
   padding-left: 8px;
 }
 
+.mobile-card-icon {
+  font-size: 20px;
+  vertical-align: middle;
+}
+
 .mobile-card-save {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 15px;
@@ -120,6 +125,9 @@
   color: #3F51B5;
   white-space: nowrap;
   padding-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .mobile-card-sub {
