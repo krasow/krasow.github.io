@@ -76,8 +76,8 @@
 
 @media (max-width: 850px) {
   .holder {
-    padding-left: 6%;
-    padding-right: 6%;
+    padding-left: 0;
+    padding-right: 0;
   }
   .event, .article {
     width: 100%;

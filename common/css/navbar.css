@@ -61,7 +61,7 @@
 
 @media only screen and (max-width: 850px) {
   .left-side-navbar {
-    width: 6%;
+    width: 2rem;
     position: fixed;
     top: 0;
     left: 0;
@@ -80,7 +80,7 @@
   }
   /* Prevent CSS :hover from expanding the nav on touch devices */
   .left-side-navbar:hover {
-    width: 6%;
+    width: 2rem;
   }
   .left-side-navbar:hover a {
     padding-left: 300px;

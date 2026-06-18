@@ -82,6 +82,9 @@ h4 {
 @media (max-width: 850px) {
   .content {
     padding-top: 30px;
+    padding-left: 3.5rem;
+    padding-right: 1rem;
+    align-items: stretch;
   }
   .title-sm, .title, .title-lg, .title-xlg, h1, h2, h3, h4 {
     letter-spacing: 0;
