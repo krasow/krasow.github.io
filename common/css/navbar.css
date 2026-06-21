@@ -109,8 +109,17 @@
   }
 }
 
+/* Tablet */
+@media only screen and (max-width: 1250px) and (min-width: 851px) {
+  .left-side-navbar { width: 175px; }
+  .left-side-navbar a { font-size: 16px; padding-left: 20px; }
+  .left-side-navbar:hover { width: 175px; }
+  .left-side-navbar:hover a { padding-left: 15px; }
+  .main { margin-left: 185px; }
+}
+
 /* Desktop hover expand */
-@media only screen and (min-width: 851px) {
+@media only screen and (min-width: 1251px) {
   .left-side-navbar:hover {
     width: 250px;
     display: block;

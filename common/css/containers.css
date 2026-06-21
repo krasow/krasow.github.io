@@ -159,7 +159,8 @@
 }
 
 /* tablet */
-@media (max-width: 1100px) and (min-width: 851px) {
+@media (max-width: 1250px) and (min-width: 851px) {
+  .holder { padding-left: 185px; }
   .event, .article { width: 95%; }
   .pub-year { font-size: 13px; }
 }
