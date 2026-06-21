@@ -27,6 +27,18 @@ hr {
   border: none;
 }
 
+.section-divider {
+  width: 90%;
+  height: 1px;
+  background-color: #eee;
+  margin: 8px 0;
+}
+
+.holder:has(.section-divider) {
+  padding-top: 16px;
+  padding-bottom: 0;
+}
+
 .content a {
   color: #3F51B5
 }
