@@ -1,3 +1,7 @@
+#experience, #publications {
+  width: 100%;
+}
+
 .holder {
   display: flex;
   flex-direction: column;
@@ -13,7 +17,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   padding: 14px;
   text-align: left;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 @media (min-width: 1450px) {
@@ -23,7 +27,7 @@
 }
 
 .article {
-  margin-bottom: 75px;
+  margin-bottom: 16px;
 }
 
 .event:hover, .article:hover {
@@ -33,13 +37,111 @@
 
 .date, .venue, .session, .publication-title {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
+  color: #3F51B5;
   margin-bottom: 6px;
+}
+
+.venue a, .session a,
+.pub-content .title-sm a,
+.pub-content .title a {
+  color: inherit;
+  text-decoration: none;
 }
 
 .description, .abstract, p {
   font-size: 14px;
   margin-bottom: 6px;
+}
+
+.pub-event {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.pub-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.pub-year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: #3F51B5;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pub-content {
+  flex: 1;
+}
+
+.pub-content .title {
+  font-size: 16px;
+}
+
+.pub-content .title-sm {
+  margin-bottom: 4px;
+}
+
+.pub-content .description {
+  font-size: 12px;
+}
+
+.pub-month {
+  font-size: 13px;
+  font-weight: 400;
+  color: #888;
+}
+
+.exp-logo {
+  width: 70px;
+  max-width: 70px;
+  height: auto;
+  object-fit: contain;
+  margin: 8px 0 0 0;
+  opacity: 0.85;
+}
+
+.pub-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: #3F51B5;
+  line-height: 1.6;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.pub-links {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.pub-links a {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #3F51B5;
+  border: 1.5px solid #3F51B5;
+  border-radius: 20px;
+  padding: 2px 10px;
+  text-decoration: none;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.pub-links a:hover {
+  background-color: #3F51B5;
+  color: white;
 }
 
 .cite {
@@ -57,7 +159,7 @@
   outline: none;
 }
 
-.event img {
+.event img:not(.exp-logo) {
   float: right;
   margin: 0 0 16px 20px;
   max-width: 40%;
@@ -75,6 +177,9 @@
   }
   .event, .article {
     width: 95%;
+  }
+  .pub-year {
+    font-size: 13px;
   }
 }
 
@@ -108,5 +213,8 @@
   }
   .citation {
     display: none !important;
+  }
+  .pub-year {
+    font-size: 12px;
   }
 }

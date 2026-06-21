@@ -44,18 +44,18 @@ h4 {
   font-weight: 100;
 }
 
-.title-sm, h3 { 
-  font-size: 20px;
+.title-sm, h3 {
+  font-size: 15px;
   font-weight: 100;
 }
 
 .title, h2 {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 400;
 }
 
 .title-lg, h1 {
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 600;
 }
 
@@ -74,7 +74,7 @@ h4 {
 
 @media (max-width: 1450px) {
   .title-lg {
-    font-size: 28px;
+    font-size: 24px;
   }
   .title-xlg {
     font-size: 36px;
