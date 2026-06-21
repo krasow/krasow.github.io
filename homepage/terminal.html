@@ -28,63 +28,41 @@
     <div class="mobile-card-sub">Computer Engineering B.S.</div>
 </div>
 
-<!-- Desktop: individual command blocks -->
-<div class="terminal terminal-desktop-only">
-    <div class="command">
-        david:~$ resume
+<!-- Desktop: split terminal -->
+<div class="terminal-split terminal-desktop-only">
+    <div class="terminal-cmds">
+        <div class="command active" data-idx="0">david:~$ summary</div>
+        <div class="command" data-idx="1">david:~$ education</div>
+        <div class="command" data-idx="2">david:~$ contact</div>
+        <div class="command" data-idx="3">david:~$ resume</div>
     </div>
-    <div class="response">
-        <a href="assets/documents/Krasowska_David_resume.pdf"> "Krasowska_David_resume.pdf" </a>
-    </div>
-</div>
-<div class="terminal terminal-desktop-only">
-    <div class="command">
-        david:~$ location
-    </div>
-    <div class="response">
-        Chicago, IL
-    </div>
-</div>
-<div class="terminal terminal-desktop-only">
-    <div class="command">
-        david:~$ education
-    </div>
-    <div class="response">
-        <div class="response-block">
-            Northwestern University (2023-Current)<br>
-            <span class="response-sub">&nbsp;&nbsp;Computer Science Ph.D. Candidate</span><br>
-            Clemson University (2019-2022)<br>
-            <span class="response-sub">&nbsp;&nbsp;Computer Engineering B.S.</span>
+    <div class="terminal-output">
+        <div class="response response-sm active" data-idx="0">
+            David Krasowska is a Ph.D. candidate at Northwestern University, advised by Dr. Peter Dinda.
+            His research began at Clemson University collaborating with Argonne National Laboratory on lossy
+            compression for HPC scientific applications. He received the DOE Computational Science Graduate
+            Fellowship for his graduate studies. Currently he explores scheduling across distributed heterogeneous
+            systems with Dr. Pat McCormick at Los Alamos National Laboratory.
         </div>
-    </div>
-</div>
-<div class="terminal terminal-desktop-only">
-    <div class="command">
-        david:~$ email
-    </div>
-    <div class="response">
-        <a href="mailto:krasow@u.northwestern.edu">
-            krasow@u.northwestern.edu</a>
-    </div>
-</div>
-<div class="terminal terminal-desktop-only">
-    <div class="command">
-        david:~$ number
-    </div>
-    <div class="response">
-        +1 (843) 283-7758
-    </div>
-</div>
-<div class="terminal terminal-desktop-only">
-    <div class="command">
-        david:~$ summary
-    </div>
-    <div class ="response">
-        David Krasowska is a Ph.D. candidate at Northwestern University, advised by Dr. Peter Dinda. His research
-        journey began during his undergraduate studies at Clemson University where he collaborated with Argonne
-        National Laboratory to explore lossy compression for optimizations in HPC scientific applications. He received the
-        DOE Computational Science Graduate Fellowship to fund his graduate studies. Currently, he is exploring
-        scheduling applications across distributed heterogeneous systems with Dr. Pat McCormick at Los
-        Alamos National Laboratory.
+        <div class="response response-md" data-idx="1">
+            <div class="response-block">
+                Northwestern&nbsp;University&nbsp;(2023&ndash;Current)<br>
+                <span class="response-sub">&nbsp;&nbsp;Computer&nbsp;Science&nbsp;Ph.D.&nbsp;Candidate</span><br>
+                Clemson&nbsp;University&nbsp;(2019&ndash;2022)<br>
+                <span class="response-sub">&nbsp;&nbsp;Computer Engineering B.S.</span>
+            </div>
+        </div>
+        <div class="response response-sm" data-idx="2">
+            <div class="response-block">
+                David Krasowska<br>
+                Chicago, IL<br>
+                <a href="mailto:krasow@u.northwestern.edu">krasow@u.northwestern.edu</a><br>
+                +1 (843) 283-7758<br><br>
+                <a href="assets/documents/Krasowska_David_contact.vcf" download class="mobile-card-save">Download Contact</a>
+            </div>
+        </div>
+        <div class="response" data-idx="3">
+            <a href="assets/documents/Krasowska_David_resume.pdf">"Krasowska_David_resume.pdf"</a>
+        </div>
     </div>
 </div>

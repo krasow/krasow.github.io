@@ -53,8 +53,33 @@
             document.getElementById("projects").innerHTML = projects;
             document.getElementById("content").style.display = "flex";
 
+            // terminal hover + arrow keys
+            const termCmds = document.querySelectorAll('.terminal-split .command');
+            const termResponses = document.querySelectorAll('.terminal-split .response');
+
+            function activateTerminal(idx) {
+                termCmds.forEach(c => c.classList.remove('active'));
+                termResponses.forEach(r => r.classList.remove('active'));
+                termCmds[idx].classList.add('active');
+                document.querySelector(`.terminal-split .response[data-idx="${idx}"]`).classList.add('active');
+            }
+
+            termCmds.forEach(cmd => {
+                cmd.addEventListener('mouseenter', () => activateTerminal(+cmd.dataset.idx));
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+                const active = document.querySelector('.terminal-split .command.active');
+                if (!active) return;
+                e.preventDefault();
+                const cur = +active.dataset.idx;
+                const next = e.key === 'ArrowDown' ? Math.min(cur + 1, termCmds.length - 1) : Math.max(cur - 1, 0);
+                activateTerminal(next);
+            });
+
             // this is used for scrolling to hash
-            // the anchor now exists. 
+            // the anchor now exists.
             if (window.location.hash) {
                 const id = window.location.hash.substring(1);
                 const el = document.getElementById(id);
