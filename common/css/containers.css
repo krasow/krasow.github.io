@@ -158,6 +158,30 @@
   height: auto;
 }
 
+.news-img-wrap {
+  position: relative;
+  max-height: 150px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.news-img-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: linear-gradient(to bottom, transparent, white);
+  pointer-events: none;
+}
+
+.news-img-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* tablet */
 @media (max-width: 1250px) and (min-width: 851px) {
   .holder { padding-left: 185px; }
