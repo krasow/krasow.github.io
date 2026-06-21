@@ -4,6 +4,7 @@
   box-sizing: border-box;
   overflow-wrap: break-word;
   text-align: left;
+  font-size: 14px;
 }
 
 .markdown-content h1 {
@@ -93,6 +94,10 @@ code {
   .markdown-content h2 { font-size: 15px; }
   .markdown-content h3 { font-size: 13px; }
   .markdown-content h4 { font-size: 12px; }
+
+  .markdown-content ul,
+  .markdown-content ol,
+  .markdown-content li { font-size: 12px; }
 
   .markdown-content p img,
   .markdown-content p img.wide {
