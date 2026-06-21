@@ -61,14 +61,14 @@
   }
   .terminal-cmds { width: 200px; }
   .command { font-size: 12px; padding: 4px 8px; }
-  .terminal-output { font-size: 16px; padding: 16px; height: 190px; overflow-y: auto; align-items: flex-start; }
+  .terminal-output { font-size: 16px; padding: 16px; height: 190px; overflow: hidden; align-items: flex-start; }
   .response.response-sm { font-size: 12px; }
   .response.response-md { font-size: 16px; }
 }
 
 @media (max-width: 1250px) and (min-width: 1051px) {
   .terminal-split { max-width: 820px; }
-  .terminal-output { font-size: 18px; height: 210px; }
+  .terminal-output { font-size: 18px; height: 210px; overflow: hidden; }
   .response.response-sm { font-size: 14px; }
   .response.response-md { font-size: 18px; }
 }
