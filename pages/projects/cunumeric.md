@@ -1,5 +1,13 @@
 # cuNumeric.jl [![GitHub](https://github.githubassets.com/favicons/favicon.svg)](https://github.com/JuliaLegate/cuNumeric.jl)
 
+## Collaborators
+
+- **Carnegie Mellon University** · Ethan Meitz
+- **Los Alamos National Laboratory** · Pat McCormick
+- **NVIDIA** · Wonchan Lee
+
+---
+
 [JuliaCon 2025](/pages/presentations.html#juliacon)
 
 cuNumeric.jl enables heterogenous distributed code execution with minimal effort. The core type is the
@@ -22,7 +30,7 @@ API calls to add to a task graph.
 Legate stores implement common array protocols, allowing task bodies to reuse existing single processor libraries (e.g., NumPy, CuPy, or Numba)
 
 ## Our contributions
-![ ](/assets/images/projects/cunumeric/stack.png)
+![ ](/assets/images/projects/cunumeric/stack.png){.wide}
 
 ## Benchmarks
 ```julia
@@ -34,7 +42,7 @@ mul!(C, A, B)
 ```
 ### GEMM
 First, we start off with a GEMM that scales to 8xA100 GPUs.
-![ ](/assets/images/projects/cunumeric/gemm.png) We see that GEMM weak scales and matches cuPyNumeric. Additionally, we notice our naive CUDA.jl implementation is falling behind in terms of parallel efficiency.
+![ ](/assets/images/projects/cunumeric/gemm.png){.wide} We see that GEMM weak scales and matches cuPyNumeric. Additionally, we notice our naive CUDA.jl implementation is falling behind in terms of parallel efficiency.
 
 ### Monte Carlo
 ```julia
@@ -46,7 +54,7 @@ domain = [-x_max, x_max]
 samples = Ω*cuNumeric.rand(NDArray, N) - x_max
 estimate = (Ω/N) * sum(integrand(samples))
 ```
-![ ](/assets/images/projects/cunumeric/mc.png)
+![ ](/assets/images/projects/cunumeric/mc.png){.wide}
 Using the same 8xA100 GPUs, we see Monte Carlo integration matches cuPyNumeric in parallel efficiency. Also, we are able to achieve speedup relative to cuPyNumeric in terms of FLOPS. This is due to the several layers of Python that cuPyNumeric handles while we rely directly on a minimum Julia front end that calls directly into C++.
 
 ## Gray Scott Reaction-Diffusion

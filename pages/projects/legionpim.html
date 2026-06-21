@@ -2,6 +2,13 @@
 href="https://github.com/PrescienceLab/upmem-legion"><img
 src="https://github.githubassets.com/favicons/favicon.svg"
 alt="GitHub" /></a></h1>
+<h2 id="collaborators">Collaborators</h2>
+<ul>
+<li><strong>Los Alamos National Laboratory</strong> · Li Tang, Pat
+McCormick</li>
+<li><strong>Northwestern University</strong> · Peter Dinda</li>
+</ul>
+<hr />
 <h3 id="processing-in-memory-pim">Processing in Memory (PIM)</h3>
 <p>PIM provides a novel approach of energy efficiency to computing. It
 attempts to lower the critical path for loading/storing data to/from
@@ -18,7 +25,8 @@ Processing Units (DPUs) that are capable of 24 hardware threads with a
 DPUs (64 DPUs per rank). The UPMEM PIM architecture is shown below<a
 href="#fn1" class="footnote-ref" id="fnref1"
 role="doc-noteref"><sup>1</sup></a>.</p>
-<p><img src="/assets/images/projects/legion-pim/upmem_arch.png" /></p>
+<p><img src="/assets/images/projects/legion-pim/upmem_arch.png"
+class="wide" /></p>
 <p>The host has direct access to the DPUs main RAM (MRAM) through a
 standard DDR4 interface. Calls within the UPMEM API will orchestrate
 device and host data movements. Additionally, the device kernel

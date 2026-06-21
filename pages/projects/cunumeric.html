@@ -2,6 +2,13 @@
 href="https://github.com/JuliaLegate/cuNumeric.jl"><img
 src="https://github.githubassets.com/favicons/favicon.svg"
 alt="GitHub" /></a></h1>
+<h2 id="collaborators">Collaborators</h2>
+<ul>
+<li><strong>Carnegie Mellon University</strong> · Ethan Meitz</li>
+<li><strong>Los Alamos National Laboratory</strong> · Pat McCormick</li>
+<li><strong>NVIDIA</strong> · Wonchan Lee</li>
+</ul>
+<hr />
 <p><a href="/pages/presentations.html#juliacon">JuliaCon 2025</a></p>
 <p>cuNumeric.jl enables heterogenous distributed code execution with
 minimal effort. The core type is the NDArray- a drop-in replacement for
@@ -27,7 +34,8 @@ graph.</p>
 to reuse existing single processor libraries (e.g., NumPy, CuPy, or
 Numba)</p>
 <h2 id="our-contributions">Our contributions</h2>
-<p><img src="/assets/images/projects/cunumeric/stack.png" /></p>
+<p><img src="/assets/images/projects/cunumeric/stack.png"
+class="wide" /></p>
 <h2 id="benchmarks">Benchmarks</h2>
 <pre class="julia"><code>N = 1000
 A = cuNumeric.rand(Float32, N, N)
@@ -36,9 +44,9 @@ C = cuNumeric.zeros(Float32, N, N)
 mul!(C, A, B)</code></pre>
 <h3 id="gemm">GEMM</h3>
 <p>First, we start off with a GEMM that scales to 8xA100 GPUs. <img
-src="/assets/images/projects/cunumeric/gemm.png" /> We see that GEMM
-weak scales and matches cuPyNumeric. Additionally, we notice our naive
-CUDA.jl implementation is falling behind in terms of parallel
+src="/assets/images/projects/cunumeric/gemm.png" class="wide" /> We see
+that GEMM weak scales and matches cuPyNumeric. Additionally, we notice
+our naive CUDA.jl implementation is falling behind in terms of parallel
 efficiency.</p>
 <h3 id="monte-carlo">Monte Carlo</h3>
 <pre class="julia"><code>integrand = (x) -&gt; exp(-square(x))
@@ -48,12 +56,12 @@ domain = [-x_max, x_max]
 Ω = domain[2] - domain[1]
 samples = Ω*cuNumeric.rand(NDArray, N) - x_max
 estimate = (Ω/N) * sum(integrand(samples))</code></pre>
-<p><img src="/assets/images/projects/cunumeric/mc.png" /> Using the same
-8xA100 GPUs, we see Monte Carlo integration matches cuPyNumeric in
-parallel efficiency. Also, we are able to achieve speedup relative to
-cuPyNumeric in terms of FLOPS. This is due to the several layers of
-Python that cuPyNumeric handles while we rely directly on a minimum
-Julia front end that calls directly into C++.</p>
+<p><img src="/assets/images/projects/cunumeric/mc.png" class="wide" />
+Using the same 8xA100 GPUs, we see Monte Carlo integration matches
+cuPyNumeric in parallel efficiency. Also, we are able to achieve speedup
+relative to cuPyNumeric in terms of FLOPS. This is due to the several
+layers of Python that cuPyNumeric handles while we rely directly on a
+minimum Julia front end that calls directly into C++.</p>
 <h2 id="gray-scott-reaction-diffusion">Gray Scott
 Reaction-Diffusion</h2>
 <pre class="julia"><code>N = 100
