@@ -80,6 +80,48 @@
 .response-block { text-align: left; }
 .response-sub { font-size: 0.8em; opacity: 0.75; }
 
+.contact-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 100%;
+  gap: 16px;
+}
+
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-self: stretch;
+}
+
+.contact-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  align-self: flex-end;
+  gap: 8px;
+}
+
+.contact-icons {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  font-size: 36px;
+}
+
+@media (max-width: 1250px) and (min-width: 851px) {
+  .contact-buttons {
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    align-self: flex-end;
+    gap: 10px;
+  }
+  .mobile-card-save { font-size: 11px; padding: 3px 8px; }
+}
+
 /* mobile card */
 .mobile-card { display: none; }
 
@@ -149,6 +191,16 @@
   padding: 4px 12px;
   text-decoration: none;
 }
+
+.mobile-card-icons {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  font-size: 24px;
+  padding: 4px 0;
+}
+
+.mobile-card-icons a { color: #3F51B5; }
 
 .mobile-card-sub {
   font-family: 'IBM Plex Mono', monospace;
