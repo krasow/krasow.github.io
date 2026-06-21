@@ -47,7 +47,8 @@
   height: 240px;
   overflow: hidden;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
 }
 
 .response.response-sm { font-size: 17px; }
@@ -61,7 +62,7 @@
   }
   .terminal-cmds { width: 200px; }
   .command { font-size: 12px; padding: 4px 8px; }
-  .terminal-output { font-size: 16px; padding: 16px; height: 190px; overflow-x: hidden; overflow-y: hidden; align-items: flex-start; }
+  .terminal-output { font-size: 16px; padding: 16px; height: 190px; overflow-x: hidden; overflow-y: hidden; align-items: center; justify-content: center; }
   .response.response-sm { font-size: 12px; }
   .response.response-md { font-size: 16px; }
 }
@@ -74,7 +75,7 @@
 }
 
 .response { display: none; }
-.response.active { display: block; }
+.response.active { display: block; width: 100%; }
 
 .response a { color: #9fa8da; }
 
