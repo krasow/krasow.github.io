@@ -56,11 +56,11 @@
     width: calc(100vw - 300px);
     max-width: calc(100vw - 300px);
   }
-  .terminal-cmds { width: 220px; }
+  .terminal-cmds { width: 200px; }
   .command { font-size: 13px; padding: 10px 12px; }
-  .terminal-output { font-size: 16px; padding: 16px; }
+  .terminal-output { font-size: 18px; padding: 16px; height: 190px; overflow-y: auto; align-items: flex-start; }
   .response.response-sm { font-size: 12px; }
-  .response.response-md { font-size: 12px; }
+  .response.response-md { font-size: 15px; }
 }
 
 .response { display: none; }
