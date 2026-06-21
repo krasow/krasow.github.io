@@ -2,8 +2,10 @@
 
 ## Collaborators
 
-- **Los Alamos National Laboratory** · Li Tang, Pat McCormick
-- **Northwestern University** · Peter Dinda
+- **Los Alamos National Laboratory**\
+  Li Tang, Pat McCormick
+- **Northwestern University**\
+  Peter Dinda
 
 ---
 

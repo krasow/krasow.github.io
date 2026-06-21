@@ -18,8 +18,10 @@ Scientific research increasingly uses error-bounded lossy compressors to achieve
 
 ## Collaborators
 
-- **Argonne National Laboratory** · Robert Underwood, Sheng Di, Franck Cappello, Julie Bessac, Arkaprabha Ganguli
-- **Clemson University, FTHPC Lab** · Jon C. Calhoun
+- **Argonne National Laboratory**\
+  Robert Underwood, Sheng Di, Franck Cappello, Julie Bessac, Arkaprabha Ganguli
+- **Clemson University, FTHPC Lab**\
+  Jon C. Calhoun
 
 ---
 

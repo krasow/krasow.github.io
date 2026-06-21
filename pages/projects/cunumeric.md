@@ -2,9 +2,12 @@
 
 ## Collaborators
 
-- **Carnegie Mellon University** · Ethan Meitz
-- **Los Alamos National Laboratory** · Pat McCormick
-- **NVIDIA** · Wonchan Lee
+- **Carnegie Mellon University**\
+  Ethan Meitz
+- **Los Alamos National Laboratory**\
+  Pat McCormick
+- **NVIDIA**\
+  Wonchan Lee
 
 ---
 
