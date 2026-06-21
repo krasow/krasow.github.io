@@ -30,7 +30,7 @@
 
 .command:last-child { border-bottom: 1px solid #ccc; }
 
-.command.active, .command:hover {
+.command.active {
   background: #000;
   color: #e8eaf6;
   border-color: #000;
