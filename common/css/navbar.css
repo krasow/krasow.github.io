@@ -6,7 +6,7 @@
   z-index: 1;
   top: 0px;
   left: 0;
-  background-color: #000;
+  background-color: var(--surface-dark-bg);
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 50px;
@@ -17,13 +17,13 @@
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 25px;
-  color: #818181;
+  color: var(--surface-dark-text);
   display: block;
   transition: 0.3s;
 }
 
 .left-side-navbar a:hover{
-  color: #f1f1f1;
+  color: var(--surface-dark-text-hover);
 }
 
 .left-side-navbar .closebtn {
@@ -43,7 +43,7 @@
   transform: translateX(-50%);
   background: none;
   border: none;
-  color: #818181;
+  color: var(--surface-dark-text);
   font-size: 22px;
   cursor: pointer;
   padding: 5px;
@@ -51,7 +51,27 @@
   z-index: 2;
 }
 .navbar-toggle:hover {
-  color: #f1f1f1;
+  color: var(--surface-dark-text-hover);
+}
+
+/* Dark/light mode toggle */
+.theme-toggle {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: var(--surface-dark-text);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  line-height: 1;
+  z-index: 3;
+  transition: color 0.3s, transform 0.3s;
+}
+.theme-toggle:hover {
+  color: var(--surface-dark-text-hover);
+  transform: rotate(20deg);
 }
 
 @media screen and (max-height: 450px) {
@@ -65,7 +85,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    background-color: #000;
+    background-color: var(--surface-dark-bg);
   }
   /* Show hamburger */
   .navbar-toggle {
@@ -107,6 +127,19 @@
     right: 15px;
     transform: none;
   }
+  /* Theme toggle hidden while collapsed; shown top-left when open */
+  .left-side-navbar .theme-toggle {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, color 0.3s;
+  }
+  .left-side-navbar.open .theme-toggle {
+    opacity: 1;
+    pointer-events: auto;
+    top: 12px;
+    left: 15px;
+    right: auto;
+  }
 }
 
 /* Tablet */
@@ -123,7 +156,7 @@
   .left-side-navbar:hover {
     width: 250px;
     display: block;
-    background-color: #000;
+    background-color: var(--surface-dark-bg);
   }
   .left-side-navbar:hover a {padding-left: 15px;}
 }

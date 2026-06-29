@@ -1,8 +1,8 @@
 .footer {
   flex-shrink: 0;
   font-family: 'IBM Plex Mono', monospace;
-  background-color: #3F51B5;
-  color: white;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
   display: flex;
   justify-content: center;
   align-items: center;

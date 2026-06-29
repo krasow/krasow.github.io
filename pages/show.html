@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+    <script>
+      /* Set theme before paint to avoid a flash of the wrong colors. */
+      (function () {
+        try {
+          var t = localStorage.getItem('theme') || 'light';
+          var d = document.documentElement;
+          d.setAttribute('data-theme', t);
+          d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
+        } catch (e) {}
+      })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <!-- Highlight.js CSS theme -->
@@ -27,6 +38,7 @@
     <div id="footer"></div>
 
     <script src="/common/js/navbar.js"></script>
+    <script src="/common/js/theme.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const params = new URLSearchParams(window.location.search);

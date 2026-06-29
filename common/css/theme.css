@@ -1,0 +1,80 @@
+/* Theme variables — light (default) and dark.
+   Toggled via [data-theme="dark"] on <html>. See /common/js/theme.js */
+:root {
+  --bg-page: #ffffff;
+  --text-body: #222;
+  --text-heading: #000;
+  --text-muted: #555;
+  --text-muted-2: #888;
+
+  --accent: #3F51B5;
+  --accent-contrast: #ffffff;
+
+  --divider: #ddd;
+  --divider-soft: #eee;
+
+  --card-bg: #ffffff;
+  --card-border: #ccc;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(0, 0, 0, 0.12);
+  --img-fade: #ffffff;
+
+  --table-head-bg: #f5f5f5;
+  --code-bg: #1e1e2e;
+
+  /* Surfaces that are dark in both themes (navbar, terminal) */
+  --surface-dark-bg: #000;
+  --surface-dark-text: #818181;
+  --surface-dark-text-hover: #f1f1f1;
+  --terminal-bg: #000;
+  --terminal-text: #e8eaf6;
+  --terminal-accent: #9fa8da;
+
+  --footer-bg: #3F51B5;
+  --footer-text: #ffffff;
+}
+
+html[data-theme="dark"] {
+  --bg-page: #121212;
+  --text-body: #d4d4d4;
+  --text-heading: #f1f1f1;
+  --text-muted: #aaaaaa;
+  --text-muted-2: #999999;
+
+  --accent: #9fa8da;
+  --accent-contrast: #121212;
+
+  --divider: #333333;
+  --divider-soft: #2a2a2a;
+
+  --card-bg: #1e1e1e;
+  --card-border: #383838;
+  --shadow: rgba(0, 0, 0, 0.5);
+  --shadow-hover: rgba(0, 0, 0, 0.6);
+  --img-fade: #1e1e1e;
+
+  --table-head-bg: #262626;
+  --code-bg: #1e1e2e;
+
+  --surface-dark-bg: #000;
+  --surface-dark-text: #818181;
+  --surface-dark-text-hover: #f1f1f1;
+  --terminal-bg: #000;
+  --terminal-text: #e8eaf6;
+  --terminal-accent: #9fa8da;
+
+  --footer-bg: #1a1a1a;
+  --footer-text: #d4d4d4;
+}
+
+html {
+  background-color: var(--bg-page);
+}
+
+/* `html body` (specificity 0,0,2) beats Bootstrap reboot's `body { background-color:#fff }`
+   (0,0,1), which loads after this file and would otherwise keep the page white. */
+html body {
+  background-color: var(--bg-page);
+  color: var(--text-body);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
