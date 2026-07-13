@@ -34,7 +34,7 @@ julia --project=. -e 'using LegatePreferences; LegatePreferences.use_developer_m
 julia --project=. -e 'using Pkg; Pkg.build("cuNumeric")'
 
 cd $HOME/cuNumeric.jl/benchmark
-julia --project=. -e 'using Pkg; Pkg.develop(path="../"); Pkg.resolve(); Pkg.instantiate();'
+julia --project=. -e 'using Pkg; Pkg.develop(path="../"); Pkg.develop(path="../lib/CNPreferences/"); Pkg.resolve(); Pkg.instantiate();'
 
 # conda install for cupynumeric
 mkdir -p ~/miniconda3 && \
