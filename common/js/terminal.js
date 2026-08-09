@@ -95,8 +95,8 @@
     pwd: 'pwd',
     tree: 'tree',
     theme: 'theme [light|dark]',
-    cat: 'cat <file>',
-    ls: 'ls [folder]',
+    cat: 'cat <file|pattern> [...]',
+    ls: 'ls [folder|pattern]',
     cd: 'cd [folder|..|-]',
     show: 'show <script>',
   };
@@ -107,10 +107,10 @@
 
   const HELP = [
     ['Navigation', [
-      ['ls [folder]', 'list pages or folder contents'],
+      ['ls [folder|pattern]', 'list pages or matching files'],
       ['cd folder · cd .. · cd -', 'change directory'],
       ['pwd · tree', 'inspect the current directory'],
-      ['cat file', 'read a text file'],
+      ['cat file|pattern', 'read one or more text files'],
       ['show script', 'print an install command'],
     ]],
     ['Information', [
@@ -190,7 +190,11 @@
         ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
         ['tree', (args) => this.withArity(args, 0, () => this.showTree())],
         ['theme', (args) => this.withMaximumArity(args, 1, () => this.setTheme(args[0]))],
-        ['cat', (args) => this.withArity(args, 1, () => this.readFile(args[0]))],
+        ['cat', (args) => {
+          if (!args.length) return false;
+          this.readFiles(args);
+          return true;
+        }],
         ['ls', (args) => {
           this.list(args.join(' '));
           return true;
@@ -294,19 +298,52 @@
     }
 
     list(path) {
-      const directory = path ? this.directoryFromPath(path) : this.currentDirectory;
-      if (!directory) {
-        this.write(ROOT_ENTRIES.join('   '), 'pth');
+      if (/[*?]/.test(path)) {
+        this.listMatches(path);
         return;
       }
-      if (!FOLDERS[directory]) {
+      const directory = path ? this.directoryFromPath(path) : this.currentDirectory;
+      const entries = this.entriesIn(directory);
+      if (!entries) {
         this.write(`ls: ${path}: not a directory`, 'err');
         return;
       }
+      this.write(entries.join('   '), 'pth');
+    }
 
-      const names = FOLDERS[directory].map(([name]) => name);
-      if (directory === 'projects') names.sort((a, b) => a.localeCompare(b));
-      this.write(names.join('   '), 'pth');
+    listMatches(path) {
+      const { directoryPath, matches } = this.matchingEntries(path);
+      if (matches === null) {
+        this.write(`ls: ${directoryPath}: not a directory`, 'err');
+      } else if (matches.length) {
+        this.write(matches.join('   '), 'pth');
+      } else {
+        this.write(`ls: no matches found: ${path}`, 'err');
+      }
+    }
+
+    matchingEntries(path) {
+      const parts = path.trim().split('/');
+      const pattern = parts.pop();
+      const directoryPath = parts.join('/');
+      const directory = parts.length
+        ? this.directoryFromPath(directoryPath || '/')
+        : this.currentDirectory;
+      const entries = this.entriesIn(directory);
+
+      if (!entries) return { directory, directoryPath, matches: null };
+
+      const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
+      const expression = new RegExp(`^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`);
+      const matches = entries.filter((entry) => expression.test(entry));
+      return { directory, directoryPath, matches };
+    }
+
+    entriesIn(directory) {
+      if (!directory) return [...ROOT_ENTRIES];
+      const entries = FOLDERS[directory]?.map(([name]) => name);
+      if (directory === 'projects') entries?.sort((a, b) => a.localeCompare(b));
+      return entries;
     }
 
     changeDirectory(target) {
@@ -366,6 +403,24 @@
         this.write((await response.text()).trim(), 'pth');
       } catch (error) {
         this.write(`cat: ${path}: unable to read file`, 'err');
+      }
+    }
+
+    async readFiles(paths) {
+      for (const path of paths) {
+        if (!/[*?]/.test(path)) {
+          await this.readFile(path);
+          continue;
+        }
+
+        const { directory, matches } = this.matchingEntries(path);
+        if (!matches?.length) {
+          this.write(`cat: no matches found: ${path}`, 'err');
+          continue;
+        }
+        for (const name of matches) {
+          await this.readFile(directory ? `${directory}/${name}` : name);
+        }
       }
     }
 
