@@ -47,7 +47,16 @@
     }
     .wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
     /* No navbar on this page, so drop the footer's navbar gutter. */
-    .footer { padding-left: 0 !important; }
+    .footer { padding-left: 0 !important; gap: 6px; }
+    /* Bootstrap normally styles .btn; it isn't loaded here, so style the
+       footer's icon buttons directly (on-theme, matching the site). */
+    .footer .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      color: var(--footer-text); font-size: 18px; line-height: 1;
+      padding: 4px 8px; text-decoration: none;
+      transition: opacity .18s ease;
+    }
+    .footer .btn:hover { opacity: .72; }
 
     /* Same look as the homepage terminal: black panel on the page background,
        with the active-command accent stripe on the left. */
