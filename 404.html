@@ -128,19 +128,8 @@
       caret-color: var(--terminal-accent);
     }
 
-    /* ---- Hint + quick links --------------------------------------------- */
+    /* ---- Hint ----------------------------------------------------------- */
     .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
-    .acts { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; }
-    .acts a {
-      padding: 7px 14px;
-      color: var(--terminal-accent);
-      font-size: 13px;
-      text-decoration: none;
-      border: 1px solid var(--card-border);
-      border-radius: 4px;
-      transition: background .18s ease, color .18s ease, border-color .18s ease;
-    }
-    .acts a:hover { background: var(--terminal-accent); color: var(--terminal-bg); border-color: var(--terminal-accent); }
 
     /* ---- Responsive / motion -------------------------------------------- */
     @media (max-width: 560px) { .term { padding: 28px 20px 24px; } }
@@ -157,20 +146,13 @@
       <div id="log">
         <p class="ln"><span class="pr">david:~$</span> cat <span class="pth req">/</span></p>
         <p class="ln err">cat: <span class="req">/</span>: No such file or directory</p>
-        <p class="hint"># that page doesn't exist. type <span class="pth">ls</span> to see where you can go — or a page name to jump there.</p>
+        <p class="hint"># that page didn't exist. use <span class="pth">ls</span> to explore.</p>
       </div>
 
       <form id="cmd" class="ln" autocomplete="off">
         <span class="pr">david:~$</span>
         <input id="in" type="text" spellcheck="false" autocomplete="off" aria-label="terminal input">
       </form>
-
-      <nav class="acts">
-        <a href="/index.html">home</a>
-        <a href="/index.html#projects">projects</a>
-        <a href="/index.html#publications">publications</a>
-        <a href="/pages/cv.html">cv</a>
-      </nav>
     </main>
   </div>
 
