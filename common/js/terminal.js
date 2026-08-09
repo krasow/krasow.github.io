@@ -19,6 +19,7 @@
   const FILES = {
     'about.pg': ROUTES.about,
     'ai-notice.md': '/assets/documents/notice/ai-notice.md',
+    'contact.md': '/assets/documents/terminal/contact.md',
     'contact.vcf': ROUTES.contact,
     'cv.pg': ROUTES.cv,
     'education.md': '/assets/documents/terminal/education.md',
@@ -39,7 +40,7 @@
   };
   const READABLE_FILES = {
     'ai-notice.md': FILES['ai-notice.md'],
-    'contact.vcf': FILES['contact.vcf'],
+    'contact.md': FILES['contact.md'],
     'summary.md': FILES['summary.md'],
     'education.md': FILES['education.md'],
   };
@@ -77,7 +78,7 @@
   };
 
   const ROOT_ENTRIES = [
-    'about.pg', 'ai-notice.md', 'contact.vcf', 'cv.pg', 'education.md',
+    'about.pg', 'ai-notice.md', 'contact.md', 'contact.vcf', 'cv.pg', 'education.md',
     'experience.pg', 'news.pg',
     'posters/', 'presentations/', 'projects/', 'publications/',
     'resume.pdf', 'scripts/', 'summary.md',
@@ -114,7 +115,7 @@
     ]],
     ['Information', [
       ['whoami', 'show name'],
-      ['cat contact.vcf', 'show contact details'],
+      ['cat contact.md', 'show contact details'],
     ]],
     ['Links', [
       ['github · zoom', 'open an external page'],
