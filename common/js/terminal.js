@@ -2,7 +2,6 @@
   'use strict';
 
   const ROUTES = {
-    home: '/index.html',
     projects: '/index.html#projects',
     publications: '/index.html#publications',
     posters: '/pages/presentations.html',
@@ -24,7 +23,6 @@
     'cv.pg': ROUTES.cv,
     'education.md': '/assets/documents/terminal/education.md',
     'experience.pg': ROUTES.experience,
-    'home.pg': ROUTES.home,
     'news.pg': ROUTES.news,
     'resume.pdf': ROUTES.resume,
     'summary.md': '/assets/documents/terminal/summary.md',
@@ -32,6 +30,12 @@
   const SHORTCUTS = {
     github: ROUTES.github,
     zoom: ROUTES.zoom,
+  };
+  const PAGE_SOURCES = {
+    'about.pg': { url: FILES['about.pg'], selector: '.holder' },
+    'cv.pg': { url: FILES['cv.pg'], selector: '.holder' },
+    'experience.pg': { url: '/homepage/experience.html', selector: '.holder' },
+    'news.pg': { url: FILES['news.pg'], selector: '.holder' },
   };
   const READABLE_FILES = {
     'ai-notice.md': FILES['ai-notice.md'],
@@ -74,7 +78,7 @@
 
   const ROOT_ENTRIES = [
     'about.pg', 'ai-notice.md', 'contact.vcf', 'cv.pg', 'education.md',
-    'experience.pg', 'home.pg', 'news.pg',
+    'experience.pg', 'news.pg',
     'posters/', 'presentations/', 'projects/', 'publications/',
     'resume.pdf', 'scripts/', 'summary.md',
   ];
@@ -206,6 +210,11 @@
         'theme light',
         'theme dark',
         ...Object.keys(READABLE_FILES).map((name) => `cat ${name}`),
+        ...Object.keys(PAGE_SOURCES).map((name) => `cat ${name}`),
+        ...FOLDERS.scripts.flatMap(([name]) => [
+          `cat ${name}`,
+          `cat scripts/${name}`,
+        ]),
         ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
         ...Object.keys(SHORTCUTS),
@@ -340,7 +349,12 @@
     }
 
     async readFile(path) {
-      const url = READABLE_FILES[path];
+      if (PAGE_SOURCES[path]) {
+        await this.readPage(PAGE_SOURCES[path], path);
+        return;
+      }
+      const scriptName = path.replace(/^scripts\//, '');
+      const url = READABLE_FILES[path] ?? this.folderMaps.scripts.get(scriptName);
       if (!url) {
         this.write(`cat: ${path}: no such text file`, 'err');
         return;
@@ -351,6 +365,30 @@
         this.write((await response.text()).trim(), 'pth');
       } catch (error) {
         this.write(`cat: ${path}: unable to read file`, 'err');
+      }
+    }
+
+    async readPage(source, path) {
+      try {
+        const response = await fetch(source.url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const content = await response.text();
+        if (source.markdown) {
+          this.write(content.trim(), 'pth');
+          return;
+        }
+
+        const document = new DOMParser().parseFromString(content, 'text/html');
+        const sections = [...document.querySelectorAll(source.selector)];
+        const text = sections
+          .map((section) => (section.innerText || section.textContent).trim())
+          .filter(Boolean)
+          .join('\n\n')
+          .replace(/\n{3,}/g, '\n\n');
+        if (!text) throw new Error('No readable content');
+        this.write(text, 'pth');
+      } catch (error) {
+        this.write(`cat: ${path}: unable to read page`, 'err');
       }
     }
 
