@@ -69,6 +69,8 @@
   };
 
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
+  const STORAGE_KEY = 'krasow-terminal-state';
+  const HISTORY_LIMIT = 10;
 
   const HELP = [
     ['Navigation', [
@@ -87,7 +89,7 @@
     ]],
     ['Controls', [
       ['clear', 'clear the terminal'],
-      ['Esc', 'clear current input'],
+      ['Esc · Ctrl+C', 'cancel current input'],
       ['↑ / ↓ · Tab', 'history and autocomplete'],
     ]],
   ];
@@ -117,6 +119,7 @@
       this.history = [];
       this.historyCursor = 0;
       this.completionCycle = null;
+      this.transcript = [];
 
       this.folderMaps = Object.fromEntries(
         Object.entries(FOLDERS).map(([name, entries]) => [name, new Map(entries)]),
@@ -124,6 +127,7 @@
       this.entryRoutes = new Map(Object.values(FOLDERS).flat());
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
+      this.restore();
     }
 
     start() {
@@ -146,7 +150,7 @@
 
     buildCommands() {
       return new Map([
-        ['clear', (args) => this.withArity(args, 0, () => this.ui.log.replaceChildren())],
+        ['clear', (args) => this.withArity(args, 0, () => this.clearLog())],
         ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
         ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
         ['tree', (args) => this.withArity(args, 0, () => this.showTree())],
@@ -193,7 +197,9 @@
       if (!command) return;
 
       this.history.push(command);
+      this.history = this.history.slice(-HISTORY_LIMIT);
       this.historyCursor = this.history.length;
+      this.persist();
 
       const [name, ...args] = command.split(/\s+/);
       if (this.commands.get(name)?.(args)) return;
@@ -270,6 +276,7 @@
       this.previousDirectory = this.currentDirectory;
       this.currentDirectory = next;
       this.ui.prompt.textContent = this.promptText();
+      this.persist();
     }
 
     showScript(path) {
@@ -301,7 +308,7 @@
       });
     }
 
-    showHelp() {
+    showHelp(track = true) {
       const help = makeElement('div', 'ln help');
       HELP.forEach(([heading, rows]) => {
         help.append(makeElement('span', 'help-section', heading));
@@ -311,30 +318,122 @@
         ));
       });
       help.append(makeElement('span', 'help-note', 'Type any item shown by ls to open it.'));
-      this.append(help);
+      this.append(help, track ? { type: 'help' } : null);
     }
 
     navigate(url) {
-      this.write(url.endsWith('.vcf') ? '→ downloading contact.vcf' : `→ ${url}`, 'go');
+      this.writeLink(
+        url,
+        url.endsWith('.vcf') ? '→ downloading contact.vcf' : `→ ${url}`,
+      );
       setTimeout(() => { location.href = url; }, 120);
     }
 
     write(text, className = '') {
-      this.append(makeElement('p', `ln ${className}`.trim(), text));
+      this.append(
+        makeElement('p', `ln ${className}`.trim(), text),
+        { type: 'line', text, className },
+      );
+    }
+
+    writeLink(url, text) {
+      const line = makeElement('p', 'ln go');
+      const link = makeElement('a', '', text);
+      link.href = url;
+      line.append(link);
+      this.append(line, { type: 'link', url, text });
     }
 
     echo(command) {
       const line = makeElement('p', 'ln');
-      line.append(makeElement('span', 'pr', this.promptText()), ` ${command}`);
-      this.append(line);
+      const prompt = this.promptText();
+      line.append(makeElement('span', 'pr', prompt), ` ${command}`);
+      this.append(line, { type: 'echo', prompt, command });
     }
 
-    append(node) {
+    append(node, record = null) {
       this.ui.log.append(node);
       this.ui.log.scrollTop = this.ui.log.scrollHeight;
+      if (!record) return;
+      this.transcript.push(record);
+      this.transcript = this.transcript.slice(-HISTORY_LIMIT);
+      this.persist();
+    }
+
+    clearLog() {
+      this.ui.log.replaceChildren();
+      this.transcript = [];
+      this.persist();
+    }
+
+    persist() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          currentDirectory: this.currentDirectory,
+          previousDirectory: this.previousDirectory,
+          history: this.history.slice(-HISTORY_LIMIT),
+          transcript: this.transcript.slice(-HISTORY_LIMIT),
+        }));
+      } catch (error) {
+        // Storage may be unavailable in private or restricted browser contexts.
+      }
+    }
+
+    restore() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!saved) return;
+
+        this.currentDirectory = FOLDERS[saved.currentDirectory]
+          ? saved.currentDirectory
+          : '';
+        this.previousDirectory = saved.previousDirectory === ''
+          || FOLDERS[saved.previousDirectory]
+          ? saved.previousDirectory
+          : null;
+        this.history = Array.isArray(saved.history)
+          ? saved.history.filter((item) => typeof item === 'string').slice(-HISTORY_LIMIT)
+          : [];
+        this.historyCursor = this.history.length;
+        this.transcript = Array.isArray(saved.transcript)
+          ? saved.transcript.slice(-HISTORY_LIMIT)
+          : [];
+
+        this.ui.prompt.textContent = this.promptText();
+        if (!this.transcript.length) return;
+        this.ui.log.replaceChildren();
+        this.transcript.forEach((record) => this.renderRecord(record));
+      } catch (error) {
+        // Ignore malformed or inaccessible storage and start fresh.
+      }
+    }
+
+    renderRecord(record) {
+      if (record.type === 'line') {
+        this.append(makeElement('p', `ln ${record.className ?? ''}`.trim(), record.text));
+      } else if (record.type === 'link') {
+        const line = makeElement('p', 'ln go');
+        const link = makeElement('a', '', record.text);
+        link.href = record.url;
+        line.append(link);
+        this.append(line);
+      } else if (record.type === 'echo') {
+        const line = makeElement('p', 'ln');
+        line.append(makeElement('span', 'pr', record.prompt), ` ${record.command}`);
+        this.append(line);
+      } else if (record.type === 'help') {
+        this.showHelp(false);
+      }
     }
 
     handleKey(event) {
+      if (event.ctrlKey && event.key.toLowerCase() === 'c') {
+        event.preventDefault();
+        this.echo(`${this.ui.input.value}^C`);
+        this.clearInput();
+        return;
+      }
+
       const actions = {
         ArrowUp: () => this.recall(-1),
         ArrowDown: () => this.recall(1),
