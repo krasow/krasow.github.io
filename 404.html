@@ -74,7 +74,7 @@
     /* ---- Terminal panel (black card + accent stripe, like the homepage) -- */
     .term {
       width: min(720px, 100%);
-      height: min(600px, calc(100dvh - 120px));
+      height: min(640px, calc(100dvh - 120px));
       padding: 36px 30px 30px;
       display: flex;
       flex-direction: column;
@@ -305,7 +305,6 @@
         'clear',
         'pwd',
         'tree',
-        'back',
         'whoami',
         'ls',
         ...Object.keys(folders).map((folder) => `ls ${folder}`),
@@ -360,7 +359,6 @@
           ['cd -', 'return to previous directory'],
           ['pwd · tree', 'show the current path or site tree'],
           ['whoami', 'show name'],
-          ['back', 'return to previous page'],
           ['name · email · phone · location', 'personal information'],
           ['github · zoom', 'open external page'],
           ['resume · contact', 'open or download a document'],
@@ -438,6 +436,15 @@
 
       const showTree = () => {
         const lines = ['.'];
+        if (currentDirectory) {
+          folders[currentDirectory].forEach(([name], index, entries) => {
+            const branch = index === entries.length - 1 ? '└──' : '├──';
+            lines.push(`${branch} ${name}`);
+          });
+          write(lines.join('\n'), 'pth');
+          return;
+        }
+
         rootEntries.forEach((entry, index) => {
           const isLast = index === rootEntries.length - 1;
           const branch = isLast ? '└──' : '├──';
@@ -470,7 +477,6 @@
         if (!args.length && name === 'help') { showHelp(); return; }
         if (!args.length && name === 'pwd') { write(`~${currentDirectory ? `/${currentDirectory}` : ''}`, 'pth'); return; }
         if (!args.length && name === 'tree') { showTree(); return; }
-        if (!args.length && name === 'back') { window.history.back(); return; }
         if (!args.length && name === 'whoami') { write(responses.name, 'pth'); return; }
         if (name === 'ls') { list(args.join(' ')); return; }
         if (name === 'cd' && args.length <= 1) { changeDirectory(args[0] ?? ''); return; }
