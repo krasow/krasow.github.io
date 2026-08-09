@@ -71,6 +71,8 @@
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
   const STORAGE_KEY = 'krasow-terminal-state';
   const HISTORY_LIMIT = 10;
+  const PAGE_PATH = location.pathname || '/';
+  const IS_TERMINAL_PAGE = PAGE_PATH.replace(/\/+$/, '') === '/terminal';
 
   const HELP = [
     ['Navigation', [
@@ -401,8 +403,13 @@
 
         this.ui.prompt.textContent = this.promptText();
         if (!this.transcript.length) return;
+        const warning = IS_TERMINAL_PAGE ? [] : [...this.ui.log.childNodes];
         this.ui.log.replaceChildren();
         this.transcript.forEach((record) => this.renderRecord(record));
+        if (warning.length) {
+          this.ui.log.append(...warning);
+          this.ui.log.scrollTop = this.ui.log.scrollHeight;
+        }
       } catch (error) {
         // Ignore malformed or inaccessible storage and start fresh.
       }
@@ -538,8 +545,7 @@
     }
   }
 
-  const path = location.pathname || '/';
-  if (path.replace(/\/+$/, '') === '/terminal') {
+  if (IS_TERMINAL_PAGE) {
     document.title = 'Terminal | David Krasowska';
     const banner = document.querySelector('.glitch');
     banner.textContent = 'krasow.dev';
@@ -550,7 +556,7 @@
       makeElement('p', 'hint', '# use help for more details.'),
     );
   } else {
-    document.querySelectorAll('.req').forEach((element) => { element.textContent = path; });
+    document.querySelectorAll('.req').forEach((element) => { element.textContent = PAGE_PATH; });
   }
 
   fetch('/common/footer.html')
