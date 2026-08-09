@@ -73,8 +73,8 @@
 
     /* ---- Terminal panel (black card + accent stripe, like the homepage) -- */
     .term {
-      width: min(720px, 100%);
-      height: min(640px, calc(100dvh - 120px));
+      width: min(72vw, 1100px);
+      height: min(74dvh, 760px);
       padding: 36px 30px 30px;
       display: flex;
       flex-direction: column;
@@ -173,8 +173,15 @@
     .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
 
     /* ---- Responsive / motion -------------------------------------------- */
+    @media (max-width: 900px) {
+      .term {
+        width: 88vw;
+        height: 80dvh;
+      }
+    }
     @media (max-width: 560px) {
       .term {
+        width: 100%;
         height: calc(100dvh - 96px);
         padding: 28px 20px 24px;
       }
@@ -207,7 +214,7 @@
   <div class="wrap">
     <main class="term">
       <div class="banner">
-        <span class="glitch" data-t="krasow.dev">krasow.dev 404</span>
+        <span class="glitch" data-t="404">krasow.dev</span>
       </div>
 
       <div id="log">
