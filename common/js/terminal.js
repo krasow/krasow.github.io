@@ -381,7 +381,11 @@
         const document = new DOMParser().parseFromString(content, 'text/html');
         const sections = [...document.querySelectorAll(source.selector)];
         const text = sections
-          .map((section) => (section.innerText || section.textContent).trim())
+          .map((section) => (section.innerText || section.textContent)
+            .split('\n')
+            .map((line) => line.trim())
+            .join('\n')
+            .trim())
           .filter(Boolean)
           .join('\n\n')
           .replace(/\n{3,}/g, '\n\n');
