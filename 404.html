@@ -147,6 +147,7 @@
       color: var(--terminal-text);
       caret-color: var(--terminal-accent);
     }
+    .mobile-keys { display: none; }
 
     /* ---- Hint ----------------------------------------------------------- */
     .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
@@ -160,6 +161,18 @@
       .help { grid-template-columns: 1fr; }
       .help-description { margin-bottom: 5px; }
       .help-note { grid-column: 1; }
+      .mobile-keys {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .mobile-key {
+        padding: 3px 9px;
+        color: var(--terminal-text);
+        background: transparent;
+        border: 1px solid var(--card-border);
+        font: inherit;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       .term, .glitch::before, .glitch::after { animation: none; }
@@ -183,6 +196,12 @@
         <span id="prompt" class="pr">david:~$</span>
         <input id="in" type="text" spellcheck="false" autocomplete="off" aria-label="terminal input">
       </form>
+      <div class="mobile-keys" aria-label="Terminal keys">
+        <button class="mobile-key" type="button" data-key="Tab">Tab</button>
+        <button class="mobile-key" type="button" data-key="ArrowUp">↑</button>
+        <button class="mobile-key" type="button" data-key="ArrowDown">↓</button>
+        <button class="mobile-key" type="button" data-key="Escape">Esc</button>
+      </div>
     </main>
   </div>
 
@@ -284,10 +303,15 @@
       const completions = [...new Set([
         'help',
         'clear',
+        'pwd',
+        'tree',
+        'back',
+        'whoami',
         'ls',
         ...Object.keys(folders).map((folder) => `ls ${folder}`),
         'cd',
         'cd ..',
+        'cd -',
         ...Object.keys(folders).map((folder) => `cd ${folder}`),
         ...Object.keys(routes),
         ...Object.keys(files),
@@ -297,9 +321,10 @@
         )),
       ])];
 
-      const history = [];
+      const commandHistory = [];
       let cursor = 0;
       let currentDirectory = '';
+      let previousDirectory = null;
 
       const promptText = () => (
         currentDirectory ? `david:~/${currentDirectory}$` : 'david:~$'
@@ -332,10 +357,15 @@
           ['ls', 'list pages'],
           ['ls folder', 'list folder contents'],
           ['cd folder · cd ..', 'change directory'],
+          ['cd -', 'return to previous directory'],
+          ['pwd · tree', 'show the current path or site tree'],
+          ['whoami', 'show name'],
+          ['back', 'return to previous page'],
           ['name · email · phone · location', 'personal information'],
           ['github · zoom', 'open external page'],
           ['resume · contact', 'open or download a document'],
           ['clear', 'clear the terminal'],
+          ['Esc', 'clear current input'],
           ['↑ / ↓', 'command history'],
           ['Tab', 'autocomplete'],
         ];
@@ -386,15 +416,41 @@
 
       const changeDirectory = (target) => {
         const directory = target.replace(/^\/+|\/+$/g, '');
-        if (!directory || directory === '~' || directory === '..') {
-          currentDirectory = '';
+        let nextDirectory;
+        if (directory === '-') {
+          if (previousDirectory === null) {
+            write('cd: no previous directory', 'err');
+            return;
+          }
+          nextDirectory = previousDirectory;
+        } else if (!directory || directory === '~' || directory === '..') {
+          nextDirectory = '';
         } else if (folders[directory]) {
-          currentDirectory = directory;
+          nextDirectory = directory;
         } else {
           write(`cd: no such file or directory: ${target}`, 'err');
           return;
         }
+        previousDirectory = currentDirectory;
+        currentDirectory = nextDirectory;
         prompt.textContent = promptText();
+      };
+
+      const showTree = () => {
+        const lines = ['.'];
+        rootEntries.forEach((entry, index) => {
+          const isLast = index === rootEntries.length - 1;
+          const branch = isLast ? '└──' : '├──';
+          lines.push(`${branch} ${entry}`);
+          const directory = entry.endsWith('/') ? entry.slice(0, -1) : '';
+          if (!directory) return;
+          const stem = isLast ? '    ' : '│   ';
+          folders[directory].forEach(([name], childIndex, children) => {
+            const childBranch = childIndex === children.length - 1 ? '└──' : '├──';
+            lines.push(`${stem}${childBranch} ${name}`);
+          });
+        });
+        write(lines.join('\n'), 'pth');
       };
 
       const navigate = (url) => {
@@ -406,12 +462,16 @@
         const command = raw.trim();
         echo(command);
         if (!command) return;
-        history.push(command);
-        cursor = history.length;
+        commandHistory.push(command);
+        cursor = commandHistory.length;
 
         const [name, ...args] = normalize(command).split(/\s+/);
         if (!args.length && name === 'clear') { log.replaceChildren(); return; }
         if (!args.length && name === 'help') { showHelp(); return; }
+        if (!args.length && name === 'pwd') { write(`~${currentDirectory ? `/${currentDirectory}` : ''}`, 'pth'); return; }
+        if (!args.length && name === 'tree') { showTree(); return; }
+        if (!args.length && name === 'back') { window.history.back(); return; }
+        if (!args.length && name === 'whoami') { write(responses.name, 'pth'); return; }
         if (name === 'ls') { list(args.join(' ')); return; }
         if (name === 'cd' && args.length <= 1) { changeDirectory(args[0] ?? ''); return; }
         const response = responses[name] ?? hiddenResponses[name];
@@ -426,8 +486,8 @@
       };
 
       const recall = (delta) => {
-        cursor = Math.max(0, Math.min(history.length, cursor + delta));
-        input.value = history[cursor] ?? '';
+        cursor = Math.max(0, Math.min(commandHistory.length, cursor + delta));
+        input.value = commandHistory[cursor] ?? '';
       };
 
       const complete = () => {
@@ -470,6 +530,15 @@
         if (e.key === 'ArrowUp')        { recall(-1); e.preventDefault(); }
         else if (e.key === 'ArrowDown') { recall(1);  e.preventDefault(); }
         else if (e.key === 'Tab')       { complete();  e.preventDefault(); }
+        else if (e.key === 'Escape')    { input.value = ''; }
+      });
+      document.querySelector('.mobile-keys').addEventListener('click', (e) => {
+        const key = e.target.closest('[data-key]')?.dataset.key;
+        if (key === 'Tab') complete();
+        else if (key === 'ArrowUp') recall(-1);
+        else if (key === 'ArrowDown') recall(1);
+        else if (key === 'Escape') input.value = '';
+        input.focus();
       });
       terminal.addEventListener('click', () => input.focus());
       input.focus();
