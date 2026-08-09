@@ -273,11 +273,11 @@
       const folderEntries = Object.fromEntries(
         Object.entries(folders).map(([folder, entries]) => [
           folder,
-          new Map(entries.map(([name, url]) => [name.toLowerCase(), url])),
+          new Map(entries),
         ]),
       );
       const entryRoutes = new Map(
-        Object.values(folders).flat().map(([name, url]) => [name.toLowerCase(), url]),
+        Object.values(folders).flat(),
       );
 
       const completions = [...new Set([
@@ -348,7 +348,7 @@
         append(help);
       };
 
-      const normalize = (value) => value.trim().toLowerCase();
+      const normalize = (value) => value.trim();
 
       const resolve = (command) => {
         const path = normalize(command).replace(/^\/+|\/+$/g, '');
@@ -408,7 +408,7 @@
         const typed = input.value.trim();
         if (!typed) return;
         const matches = completions.filter((command) => (
-          normalize(command).startsWith(normalize(typed))
+          command.startsWith(typed)
         ));
         if (!matches.length) return;
         if (matches.length === 1) {
@@ -416,11 +416,10 @@
           return;
         }
 
-        let common = normalize(matches[0]);
+        let common = matches[0];
         for (const match of matches.slice(1)) {
-          const candidate = normalize(match);
           let end = 0;
-          while (end < common.length && common[end] === candidate[end]) end += 1;
+          while (end < common.length && common[end] === match[end]) end += 1;
           common = common.slice(0, end);
         }
         if (common.length > typed.length) {
