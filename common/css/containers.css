@@ -254,6 +254,9 @@
     margin-top: 2px;
   }
 
+  /* Hide the author list on publications/tech reports to save space on mobile */
+  #publications .pub-event .pub-content .description { display: none; }
+
   /* experience: grid with title+venue left, logo+date right */
   #experience .pub-event {
     display: grid;
