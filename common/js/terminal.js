@@ -84,6 +84,17 @@
   };
 
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
+  const COMMAND_USAGE = {
+    clear: 'clear',
+    help: 'help',
+    pwd: 'pwd',
+    tree: 'tree',
+    theme: 'theme [light|dark]',
+    cat: 'cat <file>',
+    ls: 'ls [folder]',
+    cd: 'cd [folder|..|-]',
+    show: 'show <script>',
+  };
   const STORAGE_KEY = 'krasow-terminal-state';
   const HISTORY_LIMIT = 10;
   const PAGE_PATH = location.pathname || '/';
@@ -227,7 +238,12 @@
       this.persist();
 
       const [name, ...args] = command.split(/\s+/);
-      if (this.commands.get(name)?.(args)) return;
+      const handler = this.commands.get(name);
+      if (handler) {
+        if (handler(args)) return;
+        this.write(`${name}: usage: ${COMMAND_USAGE[name]}`, 'err');
+        return;
+      }
 
       const response = RESPONSES[name] ?? HIDDEN_RESPONSES[name];
       if (response && !args.length) {
