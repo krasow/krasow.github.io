@@ -226,19 +226,19 @@
           ['DRBSD21', 'https://ieeexplore.ieee.org/abstract/document/9652575'],
         ],
         posters: [
-          ['CSGF25', '/assets/documents/posters/2025_csgf_krasoska.pdf'],
           ['CSGF26', '/assets/documents/posters/2026_csgf_krasowska.pdf'],
           ['GCASR26', '/assets/documents/posters/2026_gcasr_krasowska.pdf'],
+          ['CSGF25', '/assets/documents/posters/2025_csgf_krasoska.pdf'],
           ['SC22', '/assets/documents/posters/poster_krasowska.pdf'],
         ],
         presentations: [
-          ['DRBSD21', '/assets/documents/slides/2021/DRBSB-7-Krasowska.pdf'],
-          ['SC22', '/assets/documents/slides/2022/best_krasowska.pdf'],
-          ['GRADSCHOOL22', '/assets/documents/slides/2022/grad_school_talk_dube_krasowska.pdf'],
-          ['SASSY22', '/assets/documents/slides/2022/prediction_lossy_compression_krasowska.pdf'],
-          ['CONSTELLATION23', '/assets/documents/slides/2023/Constellation_Krasowska.pdf'],
-          ['LEGION24', '/assets/documents/slides/2024/legion24.pdf'],
           ['JULIACON25', '/assets/documents/slides/2025/juliacon.pdf'],
+          ['LEGION24', '/assets/documents/slides/2024/legion24.pdf'],
+          ['CONSTELLATION23', '/assets/documents/slides/2023/Constellation_Krasowska.pdf'],
+          ['GRADSCHOOL22', '/assets/documents/slides/2022/grad_school_talk_dube_krasowska.pdf'],
+          ['SC22', '/assets/documents/slides/2022/best_krasowska.pdf'],
+          ['SASSY22', '/assets/documents/slides/2022/prediction_lossy_compression_krasowska.pdf'],
+          ['DRBSD21', '/assets/documents/slides/2021/DRBSB-7-Krasowska.pdf'],
         ],
       };
 
@@ -407,7 +407,10 @@
         if (common.length > typed.length) {
           input.value = matches[0].slice(0, common.length);
         } else {
-          write(matches.join('   '), 'pth');
+          const choices = normalize(typed).startsWith('ls')
+            ? matches.filter((match) => match.startsWith('ls ')).map((match) => match.slice(3))
+            : matches;
+          if (choices.length) write(choices.join('   '), 'pth');
         }
       };
 
