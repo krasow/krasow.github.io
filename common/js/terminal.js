@@ -265,6 +265,11 @@
         return;
       }
 
+      if (FOLDERS[this.directoryFromPath(command)]) {
+        this.write(`zsh: is a directory: ${command}`, 'err');
+        return;
+      }
+
       const url = this.resolve(command);
       if (url) this.navigate(url);
       else this.write(`zsh: no such command, file, or directory: ${command}`, 'err');
