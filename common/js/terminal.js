@@ -76,6 +76,18 @@
       ['cunumeric-install.sh', '/scripts/cunumeric-install.sh'],
     ],
   };
+  const HIDDEN_FILES = {
+    '/etc/hostname': '/assets/terminal/etc/hostname',
+    '/etc/motd': '/assets/terminal/etc/motd',
+    '/etc/os-release': '/assets/terminal/etc/os-release',
+    '/proc/version': '/assets/terminal/proc/version',
+  };
+  const HIDDEN_FOLDERS = Object.keys(HIDDEN_FILES).reduce((folders, path) => {
+    const [folder, name] = path.slice(1).split('/');
+    (folders[folder] ??= []).push([name, null]);
+    return folders;
+  }, {});
+  const ALL_FOLDERS = { ...FOLDERS, ...HIDDEN_FOLDERS };
 
   const ROOT_ENTRIES = [
     'about.pg', 'ai-notice.md', 'contact.md', 'contact.vcf', 'cv.pg', 'education.md',
@@ -99,6 +111,7 @@
     ls: 'ls [folder|pattern]',
     cd: 'cd [folder|..|-]',
     show: 'show <script>',
+    echo: 'echo [text]',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
   const HISTORY_LIMIT = 10;
@@ -111,6 +124,7 @@
       ['cd folder · cd .. · cd -', 'change directory'],
       ['pwd · tree', 'inspect the current directory'],
       ['cat file|pattern', 'read one or more text files'],
+      ['echo text', 'print text'],
       ['show script', 'print an install command'],
     ]],
     ['Information', [
@@ -157,9 +171,9 @@
       this.transcript = [];
 
       this.folderMaps = Object.fromEntries(
-        Object.entries(FOLDERS).map(([name, entries]) => [name, new Map(entries)]),
+        Object.entries(ALL_FOLDERS).map(([name, entries]) => [name, new Map(entries)]),
       );
-      this.entryRoutes = new Map(Object.values(FOLDERS).flat());
+      this.entryRoutes = new Map(Object.values(ALL_FOLDERS).flat());
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
       this.restore();
@@ -201,6 +215,10 @@
         }],
         ['cd', (args) => this.withMaximumArity(args, 1, () => this.changeDirectory(args[0] ?? ''))],
         ['show', (args) => this.withArity(args, 1, () => this.showScript(args[0]))],
+        ['echo', (args) => {
+          this.write(args.join(' '), 'pth');
+          return true;
+        }],
       ]);
     }
 
@@ -210,7 +228,7 @@
         items.flatMap(([name]) => [name, `${folder}/${name}`])
       ));
       return [...new Set([
-        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'show', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -265,7 +283,7 @@
         return;
       }
 
-      if (FOLDERS[this.directoryFromPath(command)]) {
+      if (ALL_FOLDERS[this.directoryFromPath(command)]) {
         this.write(`zsh: is a directory: ${command}`, 'err');
         return;
       }
@@ -346,7 +364,7 @@
 
     entriesIn(directory) {
       if (!directory) return [...ROOT_ENTRIES];
-      const entries = FOLDERS[directory]?.map(([name]) => name);
+      const entries = ALL_FOLDERS[directory]?.map(([name]) => name);
       if (directory === 'projects') entries?.sort((a, b) => a.localeCompare(b));
       return entries;
     }
@@ -361,7 +379,7 @@
           return;
         }
         next = this.previousDirectory;
-      } else if (requested && !FOLDERS[requested]) {
+      } else if (requested && !ALL_FOLDERS[requested]) {
         this.write(`cd: no such file or directory: ${target}`, 'err');
         return;
       }
@@ -392,6 +410,14 @@
     }
 
     async readFile(path) {
+      const absolutePath = path.startsWith('/')
+        ? path
+        : `/${this.currentDirectory ? `${this.currentDirectory}/` : ''}${path}`;
+      const hiddenUrl = HIDDEN_FILES[absolutePath];
+      if (hiddenUrl) {
+        await this.fetchTextFile(hiddenUrl, path);
+        return;
+      }
       if (PAGE_SOURCES[path]) {
         await this.readPage(PAGE_SOURCES[path], path);
         return;
@@ -402,6 +428,10 @@
         this.write(`cat: ${path}: no such text file`, 'err');
         return;
       }
+      await this.fetchTextFile(url, path);
+    }
+
+    async fetchTextFile(url, path) {
       try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -472,7 +502,7 @@
     showTree() {
       const lines = ['.'];
       if (this.currentDirectory) {
-        this.appendTreeEntries(lines, FOLDERS[this.currentDirectory]);
+        this.appendTreeEntries(lines, ALL_FOLDERS[this.currentDirectory]);
       } else {
         ROOT_ENTRIES.forEach((entry, index) => {
           const isLast = index === ROOT_ENTRIES.length - 1;
@@ -567,11 +597,11 @@
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
         if (!saved) return;
 
-        this.currentDirectory = FOLDERS[saved.currentDirectory]
+        this.currentDirectory = ALL_FOLDERS[saved.currentDirectory]
           ? saved.currentDirectory
           : '';
         this.previousDirectory = saved.previousDirectory === ''
-          || FOLDERS[saved.previousDirectory]
+          || ALL_FOLDERS[saved.previousDirectory]
           ? saved.previousDirectory
           : null;
         this.history = Array.isArray(saved.history)
