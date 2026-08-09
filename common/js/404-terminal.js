@@ -20,13 +20,15 @@
   const FILES = {
     'ai-notice.md': '/assets/documents/notice/ai-notice.md',
     'contact.vcf': ROUTES.contact,
+    education: '/assets/documents/terminal/education.md',
     'resume.pdf': ROUTES.resume,
+    summary: '/assets/documents/terminal/summary.md',
   };
   const READABLE_FILES = {
     'ai-notice.md': FILES['ai-notice.md'],
     'contact.vcf': FILES['contact.vcf'],
-    summary: '/assets/documents/terminal/summary.md',
-    education: '/assets/documents/terminal/education.md',
+    summary: FILES.summary,
+    education: FILES.education,
   };
 
   const FOLDERS = {
@@ -62,9 +64,9 @@
   };
 
   const ROOT_ENTRIES = [
-    'about', 'ai-notice.md', 'contact.vcf', 'cv', 'experience', 'home', 'news',
+    'about', 'ai-notice.md', 'contact.vcf', 'cv', 'education', 'experience', 'home', 'news',
     'posters/', 'presentations/', 'projects/', 'publications/',
-    'resume.pdf', 'scripts/',
+    'resume.pdf', 'scripts/', 'summary',
   ];
 
   const RESPONSES = {
@@ -99,6 +101,7 @@
     ]],
     ['Controls', [
       ['clear', 'clear the terminal'],
+      ['theme [light|dark]', 'change color theme'],
       ['Esc · Ctrl+C', 'cancel current input'],
       ['↑ / ↓ · Tab', 'history and autocomplete'],
     ]],
@@ -164,6 +167,7 @@
         ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
         ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
         ['tree', (args) => this.withArity(args, 0, () => this.showTree())],
+        ['theme', (args) => this.withMaximumArity(args, 1, () => this.setTheme(args[0]))],
         ['cat', (args) => this.withArity(args, 1, () => this.readFile(args[0]))],
         ['ls', (args) => {
           this.list(args.join(' '));
@@ -181,6 +185,9 @@
       ));
       return [...new Set([
         ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'show', 'ls', 'cd', 'cd ..', 'cd -'],
+        'theme',
+        'theme light',
+        'theme dark',
         ...Object.keys(READABLE_FILES).map((name) => `cat ${name}`),
         ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
@@ -296,6 +303,18 @@
       const url = this.folderMaps.scripts.get(name);
       if (url) this.write(`curl -fsSL https://krasow.dev${url} | bash`, 'pth');
       else this.write(`show: no such script: ${path}`, 'err');
+    }
+
+    setTheme(requestedTheme) {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const theme = requestedTheme ?? (current === 'dark' ? 'light' : 'dark');
+      if (!['light', 'dark'].includes(theme)) {
+        this.write(`theme: unknown theme: ${theme}`, 'err');
+        return;
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+      try { localStorage.setItem('theme', theme); } catch (error) {}
+      this.write(`theme: ${theme}`, 'pth');
     }
 
     async readFile(path) {

@@ -84,6 +84,12 @@
       border-left: 4px solid var(--terminal-accent);
       box-shadow: 0 20px 50px var(--shadow);
       animation: rise .5s ease both;
+      transition: background-color .3s ease, color .3s ease, border-color .3s ease;
+    }
+    html[data-theme="light"] .term {
+      --terminal-bg: #ffffff;
+      --terminal-text: #222222;
+      --terminal-accent: #3F51B5;
     }
     @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
 
