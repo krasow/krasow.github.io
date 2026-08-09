@@ -176,7 +176,7 @@
       <div id="log">
         <p class="ln"><span class="pr">david:~$</span> <span class="req">/</span></p>
         <p class="ln err">zsh: no such file or directory: <span class="req">/</span></p>
-        <p class="hint"># that page didn't exist. use <span class="pth">ls</span> to explore.</p>
+        <p class="hint"># that page didn't exist. use <span class="pth">help</span> for more details.</p>
       </div>
 
       <form id="cmd" class="ln" autocomplete="off">
@@ -201,6 +201,7 @@
         home:          '/index.html',
         projects:      '/index.html#projects',
         publications:  '/index.html#publications',
+        posters:       '/pages/presentations.html',
         experience:    '/index.html#experience',
         cv:            '/pages/cv.html',
         about:         '/pages/about.html',
@@ -223,6 +224,21 @@
           ['CLUSTER23', 'https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ'],
           ['IJHPCA23', 'https://journals.sagepub.com/doi/abs/10.1177/10943420231179417'],
           ['DRBSD21', 'https://ieeexplore.ieee.org/abstract/document/9652575'],
+        ],
+        posters: [
+          ['CSGF25', '/assets/documents/posters/2025_csgf_krasoska.pdf'],
+          ['CSGF26', '/assets/documents/posters/2026_csgf_krasowska.pdf'],
+          ['GCASR26', '/assets/documents/posters/2026_gcasr_krasowska.pdf'],
+          ['SC22', '/assets/documents/posters/poster_krasowska.pdf'],
+        ],
+        presentations: [
+          ['DRBSD21', '/assets/documents/slides/2021/DRBSB-7-Krasowska.pdf'],
+          ['SC22', '/assets/documents/slides/2022/best_krasowska.pdf'],
+          ['GRADSCHOOL22', '/assets/documents/slides/2022/grad_school_talk_dube_krasowska.pdf'],
+          ['SASSY22', '/assets/documents/slides/2022/prediction_lossy_compression_krasowska.pdf'],
+          ['CONSTELLATION23', '/assets/documents/slides/2023/Constellation_Krasowska.pdf'],
+          ['LEGION24', '/assets/documents/slides/2024/legion24.pdf'],
+          ['JULIACON25', '/assets/documents/slides/2025/juliacon.pdf'],
         ],
       };
 
@@ -289,6 +305,8 @@
           ['ls', 'list pages'],
           ['ls projects', 'list projects'],
           ['ls publications', 'list publications'],
+          ['ls posters', 'list posters'],
+          ['ls presentations', 'list presentations'],
           ['name · email · phone', 'contact details'],
           ['location', 'location'],
           ['zoom', 'open meeting page'],
