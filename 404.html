@@ -14,7 +14,7 @@
         '/village': 'https://northwestern.zoom.us/j/92716568456?pwd=0YxLTlbjAIXLJvvKgDLBigEQXpy2PZ.1',
         '/zoom': 'https://northwestern.zoom.us/my/krasow',
         '/github': 'https://github.com/krasow',
-        '/contact': 'https://linktr.ee/krasow',
+        '/contact': '/assets/documents/Krasowska_David_contact.vcf',
         '/cunumeric': 'https://krasow.dev/pages/show.html?page=cunumeric',
         '/legionpim': 'https://krasow.dev/pages/show.html?page=legionpim',
         '/compression': 'https://krasow.dev/pages/show.html?page=compression',
@@ -84,15 +84,18 @@
     }
     @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
 
-    /* ---- Glitchy 404 ---------------------------------------------------- */
+    /* ---- Glitchy banner ------------------------------------------------- */
+    .banner { margin: 0 auto 24px; }
     .glitch {
+      display: block;
       position: relative;
       width: max-content;
-      margin: 0 auto 22px;
+      max-width: 100%;
+      margin: 0 auto;
       color: var(--terminal-text);
-      font-size: clamp(68px, 17vw, 128px);
+      font-size: clamp(34px, 11vw, 74px);
       font-weight: 700;
-      line-height: 1;
+      line-height: 1.05;
       letter-spacing: 4px;
     }
     .glitch::before,
@@ -107,7 +110,7 @@
       font-size: 14px;
       line-height: 1.75;
       white-space: pre-wrap;
-      word-break: break-all;
+      overflow-wrap: break-word;
     }
     .pr  { color: var(--terminal-accent); }
     .pth { color: var(--terminal-text); }
@@ -141,7 +144,10 @@
 <body>
   <div class="wrap">
     <main class="term">
-      <div class="glitch" data-t="404">404</div>
+      <div class="banner">
+        <span class="glitch" data-t="KRASOW">KRASOW</span>
+        <span class="glitch" data-t="TERMINAL">TERMINAL</span>
+      </div>
 
       <div id="log">
         <p class="ln"><span class="pr">david:~$</span> cat <span class="pth req">/</span></p>
@@ -178,9 +184,17 @@
         presentations: '/pages/presentations.html',
         resume:        'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
         github:        'https://github.com/krasow',
-        contact:       'https://linktr.ee/krasow',
+        contact:       '/assets/documents/Krasowska_David_contact.vcf',
       };
       const ALIASES = { '~': 'home', pubs: 'publications', exp: 'experience', talks: 'presentations' };
+
+      // "projects" acts like a folder: `ls projects`, then a name (or projects/<name>).
+      const PROJECTS = {
+        cunumeric:   '/pages/show.html?page=cunumeric',
+        legionpim:   '/pages/show.html?page=legionpim',
+        compression: '/pages/show.html?page=compression',
+        polish:      '/pages/show.html?page=polish',
+      };
 
       const history = [];
       let cursor = 0;
@@ -204,10 +218,26 @@
         log.append(p);
       };
 
-      // Resolve a typed page name / path (with aliases) to a destination URL.
+      // Resolve a typed page name / path to a destination URL. Supports the
+      // "projects" folder: projects/<name>, or just a bare project name.
       const resolve = (command) => {
-        const key = command.toLowerCase().replace(/^cd\s+/, '').replace(/^\/+|\/+$/g, '').trim() || 'home';
-        return ROUTES[ALIASES[key] ?? key];
+        const clean = command.toLowerCase().replace(/^cd\s+/, '').replace(/^\/+|\/+$/g, '').trim() || 'home';
+        const [head, tail] = clean.split('/');
+        const key = ALIASES[head] ?? head;
+        if (key === 'projects' && tail) return PROJECTS[tail];
+        return ROUTES[key] ?? PROJECTS[key];
+      };
+
+      // `ls` (top level) and `ls projects`.
+      const list = (dir) => {
+        if (!dir) {
+          const entries = Object.keys(ROUTES).map((k) => (k === 'projects' ? 'projects/' : k));
+          write(entries.join('   '), 'pth');
+        } else if ((ALIASES[dir] ?? dir) === 'projects') {
+          write(Object.keys(PROJECTS).join('   '), 'pth');
+        } else {
+          write(`ls: ${dir}: not a directory`, 'err');
+        }
       };
 
       const run = (raw) => {
@@ -217,18 +247,17 @@
         history.push(command);
         cursor = history.length;
 
-        switch (command.toLowerCase()) {
-          case 'clear': log.replaceChildren(); return;
-          case 'help':  write('type a page name to go there. also: ls, clear · ↑/↓ for history.'); return;
-          case 'ls':    write(Object.keys(ROUTES).join('   '), 'pth'); return;
-        }
+        const lower = command.toLowerCase();
+        if (lower === 'clear') { log.replaceChildren(); return; }
+        if (lower === 'help')  { write('type a page name to go there. also: ls [dir], clear · ↑/↓ for history.'); return; }
+        if (lower === 'ls' || lower.startsWith('ls ')) { list(lower.slice(2).trim()); return; }
 
         const dest = resolve(command);
         if (!dest) {
           write(`zsh: no such file or directory: ${command}`, 'err');
           return;
         }
-        write(`→ ${dest}`, 'go');
+        write(dest.endsWith('.vcf') ? '→ downloading contact.vcf' : `→ ${dest}`, 'go');
         setTimeout(() => { location.href = dest; }, 120);
       };
 
