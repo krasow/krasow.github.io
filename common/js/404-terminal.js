@@ -18,6 +18,7 @@
   };
 
   const FILES = {
+    'ai-notice.md': '/assets/documents/notice/ai-notice.md',
     'contact.vcf': ROUTES.contact,
     'resume.pdf': ROUTES.resume,
   };
@@ -55,7 +56,7 @@
   };
 
   const ROOT_ENTRIES = [
-    'about', 'contact.vcf', 'cv', 'experience', 'home', 'news',
+    'about', 'ai-notice.md', 'contact.vcf', 'cv', 'experience', 'home', 'news',
     'posters/', 'presentations/', 'projects/', 'publications/',
     'resume.pdf', 'scripts/',
   ];
@@ -79,6 +80,7 @@
       ['ls [folder]', 'list pages or folder contents'],
       ['cd folder · cd .. · cd -', 'change directory'],
       ['pwd · tree', 'inspect the current directory'],
+      ['cat file', 'read a text file'],
       ['show script', 'print an install command'],
     ]],
     ['Information', [
@@ -156,6 +158,7 @@
         ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
         ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
         ['tree', (args) => this.withArity(args, 0, () => this.showTree())],
+        ['cat', (args) => this.withArity(args, 1, () => this.readFile(args[0]))],
         ['ls', (args) => {
           this.list(args.join(' '));
           return true;
@@ -171,7 +174,8 @@
         items.flatMap(([name]) => [name, `${folder}/${name}`])
       ));
       return [...new Set([
-        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'show', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'show', 'ls', 'cd', 'cd ..', 'cd -'],
+        'cat ai-notice.md',
         ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
         ...Object.keys(ROUTES),
@@ -286,6 +290,20 @@
       const url = this.folderMaps.scripts.get(name);
       if (url) this.write(`curl -fsSL https://krasow.dev${url} | bash`, 'pth');
       else this.write(`show: no such script: ${path}`, 'err');
+    }
+
+    async readFile(path) {
+      if (path !== 'ai-notice.md') {
+        this.write(`cat: ${path}: no such text file`, 'err');
+        return;
+      }
+      try {
+        const response = await fetch(FILES[path]);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        this.write((await response.text()).trim(), 'pth');
+      } catch (error) {
+        this.write(`cat: ${path}: unable to read file`, 'err');
+      }
     }
 
     showTree() {
