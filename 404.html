@@ -132,6 +132,15 @@
     }
     .help-command { color: var(--terminal-accent); }
     .help-description { opacity: .65; }
+    .help-section {
+      grid-column: 1 / -1;
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: .08em;
+      opacity: .5;
+      text-transform: uppercase;
+    }
+    .help-section:first-child { margin-top: 0; }
     .help-note { grid-column: 1 / -1; margin-top: 8px; }
 
     #cmd { display: flex; flex: none; align-items: center; }
@@ -358,29 +367,37 @@
       };
 
       const showHelp = () => {
-        const rows = [
-          ['ls', 'list pages'],
-          ['ls folder', 'list folder contents'],
-          ['cd folder · cd ..', 'change directory'],
-          ['cd -', 'return to previous directory'],
-          ['pwd · tree', 'show the current path or site tree'],
-          ['show script', 'show a copy-paste install command'],
-          ['whoami', 'show name'],
-          ['name · email · phone · location', 'personal information'],
-          ['github · zoom', 'open external page'],
-          ['resume · contact', 'open or download a document'],
-          ['clear', 'clear the terminal'],
-          ['Esc', 'clear current input'],
-          ['↑ / ↓', 'command history'],
-          ['Tab', 'autocomplete'],
+        const groups = [
+          ['Navigation', [
+            ['ls [folder]', 'list pages or folder contents'],
+            ['cd folder · cd .. · cd -', 'change directory'],
+            ['pwd · tree', 'inspect the current directory'],
+            ['show script', 'print an install command'],
+          ]],
+          ['Information', [
+            ['whoami · name', 'show name'],
+            ['email · phone · location', 'show contact details'],
+          ]],
+          ['Links', [
+            ['github · zoom', 'open an external page'],
+            ['resume · contact', 'open or download a document'],
+          ]],
+          ['Controls', [
+            ['clear', 'clear the terminal'],
+            ['Esc', 'clear current input'],
+            ['↑ / ↓ · Tab', 'history and autocomplete'],
+          ]],
         ];
 
         const help = element('div', 'ln help', '');
-        rows.forEach(([command, description]) => {
-          help.append(
-            element('span', 'help-command', command),
-            element('span', 'help-description', description),
-          );
+        groups.forEach(([heading, rows]) => {
+          help.append(element('span', 'help-section', heading));
+          rows.forEach(([command, description]) => {
+            help.append(
+              element('span', 'help-command', command),
+              element('span', 'help-description', description),
+            );
+          });
         });
         help.append(element(
           'span',
