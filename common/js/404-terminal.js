@@ -116,6 +116,7 @@
       this.previousDirectory = null;
       this.history = [];
       this.historyCursor = 0;
+      this.completionCycle = null;
 
       this.folderMaps = Object.fromEntries(
         Object.entries(FOLDERS).map(([name, entries]) => [name, new Map(entries)]),
@@ -361,9 +362,14 @@
 
     complete() {
       const typed = this.ui.input.value.trim();
-      const matches = typed
+      if (this.completionCycle?.value === typed) {
+        this.cycleCompletion();
+        return;
+      }
+
+      const matches = (typed
         ? this.completions.filter((command) => command.startsWith(typed))
-        : [];
+        : []).sort((a, b) => a.localeCompare(b));
 
       if (!matches.length) {
         this.hideCompletions();
@@ -384,26 +390,52 @@
 
       if (prefix.length > typed.length) {
         this.ui.input.value = prefix;
-        this.hideCompletions();
-        return;
+        const index = matches.indexOf(prefix);
+        this.completionCycle = { matches, index, value: prefix };
+      } else {
+        this.ui.input.value = matches[0];
+        this.completionCycle = { matches, index: 0, value: matches[0] };
       }
 
       const directoryCommand = /^(ls|cd)( |$)/.test(typed);
       const choices = directoryCommand
         ? matches.filter((match) => match.includes(' ')).map((match) => match.split(' ')[1])
         : [...matches];
-      choices.sort((a, b) => a.localeCompare(b));
-      this.showCompletions(choices);
+      const active = this.completionCycle.index < 0
+        ? ''
+        : this.completionCycle.matches[this.completionCycle.index];
+      this.showCompletions(choices, directoryCommand ? active.split(' ')[1] : active);
     }
 
-    showCompletions(choices) {
-      this.ui.autocomplete.textContent = choices.join('   ');
+    cycleCompletion() {
+      const cycle = this.completionCycle;
+      cycle.index = (cycle.index + 1) % cycle.matches.length;
+      cycle.value = cycle.matches[cycle.index];
+      this.ui.input.value = cycle.value;
+
+      const directoryCommand = /^(ls|cd)( |$)/.test(cycle.matches[0]);
+      const choices = directoryCommand
+        ? cycle.matches.filter((match) => match.includes(' ')).map((match) => match.split(' ')[1])
+        : cycle.matches;
+      const active = directoryCommand ? cycle.value.split(' ')[1] : cycle.value;
+      this.showCompletions(choices, active);
+    }
+
+    showCompletions(choices, active = '') {
+      this.ui.autocomplete.replaceChildren(...choices.map((choice) => (
+        makeElement(
+          'span',
+          `autocomplete-choice${choice === active ? ' active' : ''}`,
+          choice,
+        )
+      )));
       this.ui.autocomplete.hidden = !choices.length;
     }
 
     hideCompletions() {
+      this.completionCycle = null;
       this.ui.autocomplete.hidden = true;
-      this.ui.autocomplete.textContent = '';
+      this.ui.autocomplete.replaceChildren();
     }
   }
 
