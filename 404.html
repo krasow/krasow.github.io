@@ -5,139 +5,278 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>404 — Not Found | David Krasowska</title>
 
-  <!-- Shortlink redirects — runs before the body renders. -->
+  <!-- Shortlink redirects — run before anything renders. -->
   <script>
-    const redirects = {
-      '/resume': 'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
-      '/pim': 'https://northwestern.zoom.us/j/5406080251',
-      '/village': 'https://northwestern.zoom.us/j/92716568456?pwd=0YxLTlbjAIXLJvvKgDLBigEQXpy2PZ.1',
-      '/zoom': 'https://northwestern.zoom.us/my/krasow',
-      '/github': 'https://github.com/krasow',
-      '/contact': 'https://linktr.ee/krasow',
-      '/cunumeric': 'https://krasow.dev/pages/show.html?page=cunumeric',
-      '/legionpim': 'https://krasow.dev/pages/show.html?page=legionpim',
-      '/compression': 'https://krasow.dev/pages/show.html?page=compression',
-      '/polish': 'https://krasow.dev/pages/show.html?page=polish',
-    };
-    if (redirects[location.pathname]) location.replace(redirects[location.pathname]);
+    (() => {
+      const redirects = {
+        '/resume': 'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
+        '/pim': 'https://northwestern.zoom.us/j/5406080251',
+        '/village': 'https://northwestern.zoom.us/j/92716568456?pwd=0YxLTlbjAIXLJvvKgDLBigEQXpy2PZ.1',
+        '/zoom': 'https://northwestern.zoom.us/my/krasow',
+        '/github': 'https://github.com/krasow',
+        '/contact': 'https://linktr.ee/krasow',
+        '/cunumeric': 'https://krasow.dev/pages/show.html?page=cunumeric',
+        '/legionpim': 'https://krasow.dev/pages/show.html?page=legionpim',
+        '/compression': 'https://krasow.dev/pages/show.html?page=compression',
+        '/polish': 'https://krasow.dev/pages/show.html?page=polish',
+      };
+      const target = redirects[location.pathname];
+      if (target) location.replace(target);
+    })();
   </script>
 
-  <!-- Theme (match the rest of the site) before paint. -->
+  <!-- Match the site theme before paint. -->
   <script>
-    (function () {
+    (() => {
       try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light'); } catch (e) {}
     })();
   </script>
 
-  <!-- Google Analytics -->
   <script src="/common/gtag.js"></script>
 
-  <!-- Site theme variables (--bg-page, --terminal-*, --card-border, --shadow, …). -->
-  <link rel="stylesheet" type="text/css" href="/common/css/theme.css">
-  <!-- Font Awesome for the footer's social icons. -->
+  <!-- theme.css: --bg-page, --terminal-*, --card-border, --shadow, …  -  Font Awesome: footer icons -->
+  <link rel="stylesheet" href="/common/css/theme.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <style>
+    /* ---- Page layout ---------------------------------------------------- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
+    html, body { min-height: 100%; }
     body {
       font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-      display: flex; flex-direction: column;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
-    /* No navbar on this page, so drop the footer's navbar gutter. */
+    .wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* ---- Footer (Bootstrap's .btn isn't loaded here, so style it) -------- */
     .footer { padding-left: 0 !important; gap: 6px; }
-    /* Bootstrap normally styles .btn; it isn't loaded here, so style the
-       footer's icon buttons directly (on-theme, matching the site). */
     .footer .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--footer-text); font-size: 18px; line-height: 1;
-      padding: 4px 8px; text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+      color: var(--footer-text);
+      font-size: 18px;
+      line-height: 1;
+      text-decoration: none;
       transition: opacity .18s ease;
     }
     .footer .btn:hover { opacity: .72; }
 
-    /* Same look as the homepage terminal: black panel on the page background,
-       with the active-command accent stripe on the left. */
+    /* ---- Terminal panel (black card + accent stripe, like the homepage) -- */
     .term {
       width: min(640px, 100%);
+      padding: 36px 30px 30px;
       background: var(--terminal-bg);
       color: var(--terminal-text);
       border: 1px solid var(--card-border);
       border-left: 4px solid var(--terminal-accent);
       box-shadow: 0 20px 50px var(--shadow);
-      padding: 36px 30px 30px;
       animation: rise .5s ease both;
     }
     @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
 
+    /* ---- Glitchy 404 ---------------------------------------------------- */
     .glitch {
-      font-size: clamp(68px, 17vw, 128px);
-      font-weight: 700; line-height: 1; letter-spacing: 4px;
-      position: relative; width: max-content; margin: 0 auto 22px;
+      position: relative;
+      width: max-content;
+      margin: 0 auto 22px;
       color: var(--terminal-text);
+      font-size: clamp(68px, 17vw, 128px);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 4px;
     }
-    .glitch::before, .glitch::after { content: attr(data-t); position: absolute; inset: 0; overflow: hidden; }
-    .glitch::before { color: var(--terminal-accent); animation: g1 2.6s infinite steps(2); }
-    .glitch::after  { color: var(--terminal-accent); opacity: .5; animation: g2 3.3s infinite steps(2); }
+    .glitch::before,
+    .glitch::after { content: attr(data-t); position: absolute; inset: 0; overflow: hidden; color: var(--terminal-accent); }
+    .glitch::before { animation: g1 2.6s infinite steps(2); }
+    .glitch::after  { opacity: .5; animation: g2 3.3s infinite steps(2); }
     @keyframes g1 { 0%,100% { clip-path: inset(0 0 82% 0); transform: translateX(-2px); } 50% { clip-path: inset(68% 0 0 0); transform: translateX(2px); } }
     @keyframes g2 { 0%,100% { clip-path: inset(78% 0 0 0); transform: translateX(2px); } 50% { clip-path: inset(0 0 72% 0); transform: translateX(-2px); } }
 
-    .ln, .err { font-size: 14px; line-height: 1.75; white-space: pre-wrap; word-break: break-all; }
+    /* ---- Terminal session (log + prompt + input) ------------------------ */
+    .ln {
+      font-size: 14px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
     .pr  { color: var(--terminal-accent); }
     .pth { color: var(--terminal-text); }
-    .err { color: var(--terminal-text); opacity: .65; margin-bottom: 2px; }
-    .cur {
-      display: inline-block; width: 9px; height: 15px; vertical-align: -2px;
-      background: var(--terminal-text); animation: blink 1.05s steps(1) infinite;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
+    .go  { color: var(--terminal-accent); }
+    .err { color: var(--terminal-text); opacity: .65; }
 
-    .hint { color: var(--terminal-text); opacity: .55; font-size: 13px; margin-top: 24px; }
+    #cmd { display: flex; align-items: center; }
+    #in {
+      flex: 1;
+      min-width: 0;
+      margin-left: 8px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      color: var(--terminal-text);
+      caret-color: var(--terminal-accent);
+    }
+
+    /* ---- Hint + quick links --------------------------------------------- */
+    .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
     .acts { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; }
     .acts a {
-      color: var(--terminal-accent); text-decoration: none; font-size: 13px;
-      border: 1px solid var(--card-border); border-radius: 4px; padding: 7px 14px;
+      padding: 7px 14px;
+      color: var(--terminal-accent);
+      font-size: 13px;
+      text-decoration: none;
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
       transition: background .18s ease, color .18s ease, border-color .18s ease;
     }
     .acts a:hover { background: var(--terminal-accent); color: var(--terminal-bg); border-color: var(--terminal-accent); }
 
+    /* ---- Responsive / motion -------------------------------------------- */
     @media (max-width: 560px) { .term { padding: 28px 20px 24px; } }
     @media (prefers-reduced-motion: reduce) {
-      .term, .glitch::before, .glitch::after, .cur { animation: none; }
+      .term, .glitch::before, .glitch::after { animation: none; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-  <main class="term" role="main">
-    <div class="glitch" data-t="404">404</div>
-    <p class="ln"><span class="pr">david:~$</span> cat <span class="pth req">/</span></p>
-    <p class="err">cat: <span class="req">/</span>: No such file or directory</p>
-    <p class="ln"><span class="pr">david:~$</span> <span class="cur"></span></p>
+    <main class="term">
+      <div class="glitch" data-t="404">404</div>
 
-    <p class="hint"># that page doesn't exist — try one of these:</p>
-    <nav class="acts">
-      <a href="/index.html">home</a>
-      <a href="/index.html#projects">projects</a>
-      <a href="/index.html#publications">publications</a>
-      <a href="/pages/cv.html">cv</a>
-    </nav>
-  </main>
+      <div id="log">
+        <p class="ln"><span class="pr">david:~$</span> cat <span class="pth req">/</span></p>
+        <p class="ln err">cat: <span class="req">/</span>: No such file or directory</p>
+        <p class="hint"># that page doesn't exist. type <span class="pth">ls</span> to see where you can go — or a page name to jump there.</p>
+      </div>
+
+      <form id="cmd" class="ln" autocomplete="off">
+        <span class="pr">david:~$</span>
+        <input id="in" type="text" spellcheck="false" autocomplete="off" aria-label="terminal input">
+      </form>
+
+      <nav class="acts">
+        <a href="/index.html">home</a>
+        <a href="/index.html#projects">projects</a>
+        <a href="/index.html#publications">publications</a>
+        <a href="/pages/cv.html">cv</a>
+      </nav>
+    </main>
   </div>
 
   <div id="site-footer"></div>
 
   <script>
-    var p = location.pathname || '/';
-    document.querySelectorAll('.req').forEach(function (el) { el.textContent = p; });
+    (() => {
+      "use strict";
 
-    // Load the shared footer fragment (its <link> and markup apply on inject).
-    fetch('/common/footer.html')
-      .then(function (r) { return r.text(); })
-      .then(function (html) { document.getElementById('site-footer').innerHTML = html; })
-      .catch(function () {});
+      const terminal = document.querySelector('.term');
+      const log = document.getElementById('log');
+      const input = document.getElementById('in');
+
+      // What you can type -> where it goes.
+      const ROUTES = {
+        home:          '/index.html',
+        projects:      '/index.html#projects',
+        publications:  '/index.html#publications',
+        experience:    '/index.html#experience',
+        cv:            '/pages/cv.html',
+        about:         '/pages/about.html',
+        news:          '/pages/news.html',
+        presentations: '/pages/presentations.html',
+        resume:        'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
+        github:        'https://github.com/krasow',
+        contact:       'https://linktr.ee/krasow',
+      };
+      const ALIASES = { '~': 'home', pubs: 'publications', exp: 'experience', talks: 'presentations' };
+
+      const history = [];
+      let cursor = 0;
+
+      // Append a terminal line. textContent keeps typed input safe by construction.
+      const write = (text, cls) => {
+        const p = document.createElement('p');
+        p.className = cls ? `ln ${cls}` : 'ln';
+        p.textContent = text;
+        log.append(p);
+      };
+
+      // Echo the entered command beside the prompt.
+      const echo = (command) => {
+        const prompt = document.createElement('span');
+        prompt.className = 'pr';
+        prompt.textContent = 'david:~$';
+        const p = document.createElement('p');
+        p.className = 'ln';
+        p.append(prompt, ` ${command}`);
+        log.append(p);
+      };
+
+      // Resolve a typed page name / path (with aliases) to a destination URL.
+      const resolve = (command) => {
+        const key = command.toLowerCase().replace(/^cd\s+/, '').replace(/^\/+|\/+$/g, '').trim() || 'home';
+        return ROUTES[ALIASES[key] ?? key];
+      };
+
+      const run = (raw) => {
+        const command = raw.trim();
+        echo(command);
+        if (!command) return;
+        history.push(command);
+        cursor = history.length;
+
+        switch (command.toLowerCase()) {
+          case 'clear': log.replaceChildren(); return;
+          case 'help':  write('type a page name to go there. also: ls, clear · ↑/↓ for history.'); return;
+          case 'ls':    write(Object.keys(ROUTES).join('   '), 'pth'); return;
+        }
+
+        const dest = resolve(command);
+        if (!dest) {
+          write(`zsh: no such file or directory: ${command}`, 'err');
+          return;
+        }
+        write(`→ ${dest}`, 'go');
+        setTimeout(() => { location.href = dest; }, 120);
+      };
+
+      const recall = (delta) => {
+        cursor = Math.max(0, Math.min(history.length, cursor + delta));
+        input.value = history[cursor] ?? '';
+      };
+
+      document.getElementById('cmd').addEventListener('submit', (e) => {
+        e.preventDefault();
+        run(input.value);
+        input.value = '';
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp')        { recall(-1); e.preventDefault(); }
+        else if (e.key === 'ArrowDown') { recall(1);  e.preventDefault(); }
+      });
+      terminal.addEventListener('click', () => input.focus());
+      input.focus();
+
+      // Fill in the path that 404'd.
+      const path = location.pathname || '/';
+      document.querySelectorAll('.req').forEach((el) => { el.textContent = path; });
+
+      // Load the shared footer fragment.
+      fetch('/common/footer.html')
+        .then((res) => res.text())
+        .then((html) => { document.getElementById('site-footer').innerHTML = html; })
+        .catch(() => {});
+    })();
   </script>
 </body>
 </html>
