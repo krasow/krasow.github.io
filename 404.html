@@ -303,10 +303,10 @@
       const showHelp = () => {
         const rows = [
           ['ls', 'list pages'],
-          ['ls projects', 'list projects'],
-          ['ls publications', 'list publications'],
           ['ls posters', 'list posters'],
           ['ls presentations', 'list presentations'],
+          ['ls projects', 'list projects'],
+          ['ls publications', 'list publications'],
           ['name · email · phone', 'contact details'],
           ['location', 'location'],
           ['zoom', 'open meeting page'],
@@ -341,15 +341,19 @@
 
       const list = (directory) => {
         if (!directory) {
-          const names = Object.keys(routes).map((name) => (
-            folders[name] ? `${name}/` : name
-          ));
+          const names = Object.keys(routes)
+            .sort((a, b) => a.localeCompare(b))
+            .map((name) => (folders[name] ? `${name}/` : name));
           write(names.join('   '), 'pth');
           return;
         }
 
         const entries = folders[directory];
-        if (entries) write(entries.map(([name]) => name).join('   '), 'pth');
+        if (entries) {
+          const names = entries.map(([name]) => name);
+          if (directory === 'projects') names.sort((a, b) => a.localeCompare(b));
+          write(names.join('   '), 'pth');
+        }
         else write(`ls: ${directory}: not a directory`, 'err');
       };
 
@@ -410,6 +414,7 @@
           const choices = normalize(typed).startsWith('ls')
             ? matches.filter((match) => match.startsWith('ls ')).map((match) => match.slice(3))
             : matches;
+          choices.sort((a, b) => a.localeCompare(b));
           if (choices.length) write(choices.join('   '), 'pth');
         }
       };
