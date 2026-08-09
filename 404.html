@@ -170,7 +170,7 @@
   <div class="wrap">
     <main class="term">
       <div class="banner">
-        <span class="glitch" data-t="KRASOW">404 krasow.dev</span>
+        <span class="glitch" data-t="krasow.dev">krasow.dev 404</span>
       </div>
 
       <div id="log">
@@ -197,8 +197,7 @@
       const input = document.getElementById('in');
       const scrollLog = () => { log.scrollTop = log.scrollHeight; };
 
-      // What you can type -> where it goes.
-      const ROUTES = {
+      const routes = {
         home:          '/index.html',
         projects:      '/index.html#projects',
         publications:  '/index.html#publications',
@@ -212,66 +211,77 @@
         zoom:          'https://northwestern.zoom.us/my/krasow',
         contact:       '/assets/documents/Krasowska_David_contact.vcf',
       };
-      // "projects" acts like a folder: `ls projects`, then a name (or projects/<name>).
-      const PROJECTS = {
-        cunumeric:   '/pages/show.html?page=cunumeric',
-        legionpim:   '/pages/show.html?page=legionpim',
-        compression: '/pages/show.html?page=compression',
-        polish:      '/pages/show.html?page=polish',
+
+      const folders = {
+        projects: [
+          ['cunumeric', '/pages/show.html?page=cunumeric'],
+          ['legionpim', '/pages/show.html?page=legionpim'],
+          ['compression', '/pages/show.html?page=compression'],
+          ['polish', '/pages/show.html?page=polish'],
+        ],
+        publications: [
+          ['VILLAGE25', 'https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf'],
+          ['CLUSTER23', 'https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ'],
+          ['IJHPCA23', 'https://journals.sagepub.com/doi/abs/10.1177/10943420231179417'],
+          ['DRBSD21', 'https://ieeexplore.ieee.org/abstract/document/9652575'],
+        ],
       };
-      // Publication handles shown by `ls publications`.
-      const PUBLICATIONS = {
-        village25: {
-          label: 'VILLAGE25',
-          url: 'https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf',
-        },
-        cluster23: {
-          label: 'CLUSTER23',
-          url: 'https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ',
-        },
-        ijhpca23: {
-          label: 'IJHPCA23',
-          url: 'https://journals.sagepub.com/doi/abs/10.1177/10943420231179417',
-        },
-        drbsd21: {
-          label: 'DRBSD21',
-          url: 'https://ieeexplore.ieee.org/abstract/document/9652575',
-        },
-      };
-      const RESPONSES = {
+
+      const responses = {
         name:     'David Krasowska',
         email:    'david@krasow.dev',
         phone:    '+1 (224) 355-2715',
         location: 'Chicago, IL',
       };
 
+      const folderEntries = Object.fromEntries(
+        Object.entries(folders).map(([folder, entries]) => [
+          folder,
+          new Map(entries.map(([name, url]) => [name.toLowerCase(), url])),
+        ]),
+      );
+      const entryRoutes = new Map(
+        Object.values(folders).flat().map(([name, url]) => [name.toLowerCase(), url]),
+      );
+
+      const completions = [...new Set([
+        'help',
+        'clear',
+        'ls',
+        ...Object.keys(folders).map((folder) => `ls ${folder}`),
+        ...Object.keys(routes),
+        ...Object.keys(responses),
+        ...Object.entries(folders).flatMap(([folder, entries]) => (
+          entries.flatMap(([name]) => [name, `${folder}/${name}`])
+        )),
+      ])];
+
       const history = [];
       let cursor = 0;
 
-      // Append a terminal line. textContent keeps typed input safe by construction.
-      const write = (text, cls) => {
-        const p = document.createElement('p');
-        p.className = cls ? `ln ${cls}` : 'ln';
-        p.textContent = text;
-        log.append(p);
+      const append = (node) => {
+        log.append(node);
         scrollLog();
       };
 
-      // Echo the entered command beside the prompt.
+      const element = (tag, className, text) => {
+        const node = document.createElement(tag);
+        node.className = className;
+        node.textContent = text;
+        return node;
+      };
+
+      const write = (text, className = '') => {
+        append(element('p', `ln ${className}`.trim(), text));
+      };
+
       const echo = (command) => {
-        const prompt = document.createElement('span');
-        prompt.className = 'pr';
-        prompt.textContent = 'david:~$';
-        const p = document.createElement('p');
-        p.className = 'ln';
-        p.append(prompt, ` ${command}`);
-        log.append(p);
-        scrollLog();
+        const line = element('p', 'ln', '');
+        line.append(element('span', 'pr', 'david:~$'), ` ${command}`);
+        append(line);
       };
 
-      const writeHelp = () => {
-        const help = document.createElement('div');
-        help.className = 'ln help';
+      const showHelp = () => {
         const rows = [
           ['ls', 'list pages'],
           ['ls projects', 'list projects'],
@@ -281,47 +291,50 @@
           ['zoom', 'open meeting page'],
           ['clear', 'clear the terminal'],
           ['↑ / ↓', 'command history'],
+          ['Tab', 'autocomplete'],
         ];
+
+        const help = element('div', 'ln help', '');
         rows.forEach(([command, description]) => {
-          const lhs = document.createElement('span');
-          lhs.className = 'help-command';
-          lhs.textContent = command;
-          const rhs = document.createElement('span');
-          rhs.className = 'help-description';
-          rhs.textContent = description;
-          help.append(lhs, rhs);
+          help.append(
+            element('span', 'help-command', command),
+            element('span', 'help-description', description),
+          );
         });
-        const note = document.createElement('span');
-        note.className = 'help-note';
-        note.textContent = 'Type any listed page, project, or publication to open it.';
-        help.append(note);
-        log.append(help);
-        scrollLog();
+        help.append(element(
+          'span',
+          'help-note',
+          'Type any listed page, project, or publication to open it.',
+        ));
+        append(help);
       };
 
-      // Resolve a typed name / path to a destination URL. Supports the
-      // Folder entries can also be opened as projects/<name> or publications/<name>.
+      const normalize = (value) => value.trim().toLowerCase();
+
       const resolve = (command) => {
-        const clean = command.toLowerCase().replace(/^\/+|\/+$/g, '').trim();
-        const [head, tail] = clean.split('/');
-        if (head === 'projects' && tail) return PROJECTS[tail];
-        if (head === 'publications' && tail) return PUBLICATIONS[tail]?.url;
-        return ROUTES[head] ?? PROJECTS[head] ?? PUBLICATIONS[head]?.url;
+        const path = normalize(command).replace(/^\/+|\/+$/g, '');
+        const [folder, entry, extra] = path.split('/');
+        if (entry && !extra) return folderEntries[folder]?.get(entry);
+        return entry ? undefined : routes[folder] ?? entryRoutes.get(folder);
       };
 
-      // `ls` (top level), `ls projects`, and `ls publications`.
-      const list = (dir) => {
-        if (!dir) {
-          write(Object.keys(ROUTES).map((k) => (
-            k === 'projects' || k === 'publications' ? `${k}/` : k
-          )).join('   '), 'pth');
-        } else if (dir === 'projects') {
-          write(Object.keys(PROJECTS).join('   '), 'pth');
-        } else if (dir === 'publications') {
-          write(Object.values(PUBLICATIONS).map(({ label }) => label).join('   '), 'pth');
-        } else {
-          write(`ls: ${dir}: not a directory`, 'err');
+      const list = (directory) => {
+        if (!directory) {
+          const names = Object.keys(routes).map((name) => (
+            folders[name] ? `${name}/` : name
+          ));
+          write(names.join('   '), 'pth');
+          return;
         }
+
+        const entries = folders[directory];
+        if (entries) write(entries.map(([name]) => name).join('   '), 'pth');
+        else write(`ls: ${directory}: not a directory`, 'err');
+      };
+
+      const navigate = (url) => {
+        write(url.endsWith('.vcf') ? '→ downloading contact.vcf' : `→ ${url}`, 'go');
+        setTimeout(() => { location.href = url; }, 120);
       };
 
       const run = (raw) => {
@@ -331,27 +344,49 @@
         history.push(command);
         cursor = history.length;
 
-        const lower = command.toLowerCase();
-        if (lower === 'clear') { log.replaceChildren(); return; }
-        if (lower === 'help') {
-          writeHelp();
-          return;
-        }
-        if (lower === 'ls' || lower.startsWith('ls ')) { list(lower.slice(2).trim()); return; }
-        if (RESPONSES[lower]) { write(RESPONSES[lower], 'pth'); return; }
+        const [name, ...args] = normalize(command).split(/\s+/);
+        if (!args.length && name === 'clear') { log.replaceChildren(); return; }
+        if (!args.length && name === 'help') { showHelp(); return; }
+        if (name === 'ls') { list(args.join(' ')); return; }
+        if (responses[name] && !args.length) { write(responses[name], 'pth'); return; }
 
-        const dest = resolve(command);
-        if (!dest) {
-          write(`zsh: no such file or directory: ${command}`, 'err');
+        const url = resolve(command);
+        if (!url) {
+          write(`zsh: no such command, file, or directory: ${command}`, 'err');
           return;
         }
-        write(dest.endsWith('.vcf') ? '→ downloading contact.vcf' : `→ ${dest}`, 'go');
-        setTimeout(() => { location.href = dest; }, 120);
+        navigate(url);
       };
 
       const recall = (delta) => {
         cursor = Math.max(0, Math.min(history.length, cursor + delta));
         input.value = history[cursor] ?? '';
+      };
+
+      const complete = () => {
+        const typed = input.value.trim();
+        if (!typed) return;
+        const matches = completions.filter((command) => (
+          normalize(command).startsWith(normalize(typed))
+        ));
+        if (!matches.length) return;
+        if (matches.length === 1) {
+          input.value = matches[0];
+          return;
+        }
+
+        let common = normalize(matches[0]);
+        for (const match of matches.slice(1)) {
+          const candidate = normalize(match);
+          let end = 0;
+          while (end < common.length && common[end] === candidate[end]) end += 1;
+          common = common.slice(0, end);
+        }
+        if (common.length > typed.length) {
+          input.value = matches[0].slice(0, common.length);
+        } else {
+          write(matches.join('   '), 'pth');
+        }
       };
 
       document.getElementById('cmd').addEventListener('submit', (e) => {
@@ -362,6 +397,7 @@
       input.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowUp')        { recall(-1); e.preventDefault(); }
         else if (e.key === 'ArrowDown') { recall(1);  e.preventDefault(); }
+        else if (e.key === 'Tab')       { complete();  e.preventDefault(); }
       });
       terminal.addEventListener('click', () => input.focus());
       input.focus();
