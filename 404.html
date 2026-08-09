@@ -73,8 +73,11 @@
 
     /* ---- Terminal panel (black card + accent stripe, like the homepage) -- */
     .term {
-      width: min(640px, 100%);
+      width: min(720px, 100%);
+      height: min(600px, calc(100dvh - 120px));
       padding: 36px 30px 30px;
+      display: flex;
+      flex-direction: column;
       background: var(--terminal-bg);
       color: var(--terminal-text);
       border: 1px solid var(--card-border);
@@ -116,8 +119,22 @@
     .pth { color: var(--terminal-text); }
     .go  { color: var(--terminal-accent); }
     .err { color: var(--terminal-text); opacity: .65; }
+    #log {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+    }
+    .help {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      column-gap: 18px;
+    }
+    .help-command { color: var(--terminal-accent); }
+    .help-description { opacity: .65; }
+    .help-note { grid-column: 1 / -1; margin-top: 8px; }
 
-    #cmd { display: flex; align-items: center; }
+    #cmd { display: flex; flex: none; align-items: center; }
     #in {
       flex: 1;
       min-width: 0;
@@ -135,7 +152,15 @@
     .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
 
     /* ---- Responsive / motion -------------------------------------------- */
-    @media (max-width: 560px) { .term { padding: 28px 20px 24px; } }
+    @media (max-width: 560px) {
+      .term {
+        height: calc(100dvh - 96px);
+        padding: 28px 20px 24px;
+      }
+      .help { grid-template-columns: 1fr; }
+      .help-description { margin-bottom: 5px; }
+      .help-note { grid-column: 1; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .term, .glitch::before, .glitch::after { animation: none; }
     }
@@ -170,6 +195,7 @@
       const terminal = document.querySelector('.term');
       const log = document.getElementById('log');
       const input = document.getElementById('in');
+      const scrollLog = () => { log.scrollTop = log.scrollHeight; };
 
       // What you can type -> where it goes.
       const ROUTES = {
@@ -192,6 +218,32 @@
         compression: '/pages/show.html?page=compression',
         polish:      '/pages/show.html?page=polish',
       };
+      // Publication handles shown by `ls publications`.
+      const PUBLICATIONS = {
+        village25: {
+          label: 'VILLAGE25',
+          url: 'https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf',
+        },
+        cluster23: {
+          label: 'CLUSTER23',
+          url: 'https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ',
+        },
+        ijhpca23: {
+          label: 'IJHPCA23',
+          url: 'https://journals.sagepub.com/doi/abs/10.1177/10943420231179417',
+        },
+        drbsd21: {
+          label: 'DRBSD21',
+          url: 'https://ieeexplore.ieee.org/abstract/document/9652575',
+        },
+      };
+      const RESPONSES = {
+        name:     'David Krasowska',
+        zoom:     'https://northwestern.zoom.us/my/krasow',
+        email:    'david@krasow.dev',
+        phone:    '+1 (224) 355-2715',
+        location: 'Chicago, IL',
+      };
 
       const history = [];
       let cursor = 0;
@@ -202,6 +254,7 @@
         p.className = cls ? `ln ${cls}` : 'ln';
         p.textContent = text;
         log.append(p);
+        scrollLog();
       };
 
       // Echo the entered command beside the prompt.
@@ -213,23 +266,58 @@
         p.className = 'ln';
         p.append(prompt, ` ${command}`);
         log.append(p);
+        scrollLog();
+      };
+
+      const writeHelp = () => {
+        const help = document.createElement('div');
+        help.className = 'ln help';
+        const rows = [
+          ['ls', 'list pages'],
+          ['ls projects', 'list projects'],
+          ['ls publications', 'list publications'],
+          ['name · email · phone', 'contact details'],
+          ['location · zoom', 'location and meeting link'],
+          ['clear', 'clear the terminal'],
+          ['↑ / ↓', 'command history'],
+        ];
+        rows.forEach(([command, description]) => {
+          const lhs = document.createElement('span');
+          lhs.className = 'help-command';
+          lhs.textContent = command;
+          const rhs = document.createElement('span');
+          rhs.className = 'help-description';
+          rhs.textContent = description;
+          help.append(lhs, rhs);
+        });
+        const note = document.createElement('span');
+        note.className = 'help-note';
+        note.textContent = 'Type any listed page, project, or publication to open it.';
+        help.append(note);
+        log.append(help);
+        scrollLog();
       };
 
       // Resolve a typed name / path to a destination URL. Supports the
-      // "projects" folder: projects/<name>, or just a bare project name.
+      // Folder entries can also be opened as projects/<name> or publications/<name>.
       const resolve = (command) => {
         const clean = command.toLowerCase().replace(/^\/+|\/+$/g, '').trim();
         const [head, tail] = clean.split('/');
         if (head === 'projects' && tail) return PROJECTS[tail];
-        return ROUTES[head] ?? PROJECTS[head];
+        if (head === 'publications' && tail) return PUBLICATIONS[tail]?.url;
+        return ROUTES[head] ?? PROJECTS[head] ?? PUBLICATIONS[head]?.url;
       };
 
-      // `ls` (top level) and `ls projects`.
+      // `ls` (top level), `ls projects`, and `ls publications`.
       const list = (dir) => {
         if (!dir) {
-          write(Object.keys(ROUTES).map((k) => (k === 'projects' ? 'projects/' : k)).join('   '), 'pth');
+          write(Object.keys(ROUTES).map((k) => (
+            k === 'projects' || k === 'publications' ? `${k}/` : k
+          )).join('   '), 'pth');
         } else if (dir === 'projects') {
           write(Object.keys(PROJECTS).join('   '), 'pth');
+        } else if (dir === 'publications') {
+          write(Object.values(PUBLICATIONS).map(({ label }) => label).join('   '), 'pth');
         } else {
           write(`ls: ${dir}: not a directory`, 'err');
         }
@@ -244,8 +332,12 @@
 
         const lower = command.toLowerCase();
         if (lower === 'clear') { log.replaceChildren(); return; }
-        if (lower === 'help')  { write('type a name to open it · ls [projects] to list · clear · ↑/↓ history'); return; }
+        if (lower === 'help') {
+          writeHelp();
+          return;
+        }
         if (lower === 'ls' || lower.startsWith('ls ')) { list(lower.slice(2).trim()); return; }
+        if (RESPONSES[lower]) { write(RESPONSES[lower], 'pth'); return; }
 
         const dest = resolve(command);
         if (!dest) {
