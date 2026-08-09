@@ -1,0 +1,419 @@
+(() => {
+  'use strict';
+
+  const ROUTES = {
+    home: '/index.html',
+    projects: '/index.html#projects',
+    publications: '/index.html#publications',
+    posters: '/pages/presentations.html',
+    experience: '/index.html#experience',
+    cv: '/pages/cv.html',
+    about: '/pages/about.html',
+    news: '/pages/news.html',
+    presentations: '/pages/presentations.html',
+    resume: 'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
+    github: 'https://github.com/krasow',
+    zoom: 'https://northwestern.zoom.us/my/krasow',
+    contact: '/assets/documents/Krasowska_David_contact.vcf',
+  };
+
+  const FILES = {
+    'contact.vcf': ROUTES.contact,
+    'resume.pdf': ROUTES.resume,
+  };
+
+  const FOLDERS = {
+    projects: [
+      ['cunumeric', '/pages/show.html?page=cunumeric'],
+      ['legionpim', '/pages/show.html?page=legionpim'],
+      ['compression', '/pages/show.html?page=compression'],
+    ],
+    publications: [
+      ['VILLAGE25', 'https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf'],
+      ['CLUSTER23', 'https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ'],
+      ['IJHPCA23', 'https://journals.sagepub.com/doi/abs/10.1177/10943420231179417'],
+      ['DRBSD21', 'https://ieeexplore.ieee.org/abstract/document/9652575'],
+    ],
+    posters: [
+      ['CSGF26', '/assets/documents/posters/2026_csgf_krasowska.pdf'],
+      ['GCASR26', '/assets/documents/posters/2026_gcasr_krasowska.pdf'],
+      ['CSGF25', '/assets/documents/posters/2025_csgf_krasoska.pdf'],
+      ['SC22', '/assets/documents/posters/poster_krasowska.pdf'],
+    ],
+    presentations: [
+      ['JULIACON25', '/assets/documents/slides/2025/juliacon.pdf'],
+      ['LEGION24', '/assets/documents/slides/2024/legion24.pdf'],
+      ['CONSTELLATION23', '/assets/documents/slides/2023/Constellation_Krasowska.pdf'],
+      ['GRADSCHOOL22', '/assets/documents/slides/2022/grad_school_talk_dube_krasowska.pdf'],
+      ['SC22', '/assets/documents/slides/2022/best_krasowska.pdf'],
+      ['SASSY22', '/assets/documents/slides/2022/prediction_lossy_compression_krasowska.pdf'],
+      ['DRBSD21', '/assets/documents/slides/2021/DRBSB-7-Krasowska.pdf'],
+    ],
+    scripts: [
+      ['cunumeric-install.sh', '/scripts/cunumeric-install.sh'],
+    ],
+  };
+
+  const ROOT_ENTRIES = [
+    'about', 'contact.vcf', 'cv', 'experience', 'home', 'news',
+    'posters/', 'presentations/', 'projects/', 'publications/',
+    'resume.pdf', 'scripts/',
+  ];
+
+  const RESPONSES = {
+    name: 'David Krasowska',
+    email: 'david@krasow.dev',
+    phone: '+1 (224) 355-2715',
+    location: 'Chicago, IL',
+    whoami: 'David Krasowska',
+  };
+
+  const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
+
+  const HELP = [
+    ['Navigation', [
+      ['ls [folder]', 'list pages or folder contents'],
+      ['cd folder · cd .. · cd -', 'change directory'],
+      ['pwd · tree', 'inspect the current directory'],
+      ['show script', 'print an install command'],
+    ]],
+    ['Information', [
+      ['whoami · name', 'show name'],
+      ['email · phone · location', 'show contact details'],
+    ]],
+    ['Links', [
+      ['github · zoom', 'open an external page'],
+      ['resume · contact', 'open or download a document'],
+    ]],
+    ['Controls', [
+      ['clear', 'clear the terminal'],
+      ['Esc', 'clear current input'],
+      ['↑ / ↓ · Tab', 'history and autocomplete'],
+    ]],
+  ];
+
+  const byId = (id) => document.getElementById(id);
+  const makeElement = (tag, className, text = '') => {
+    const node = document.createElement(tag);
+    node.className = className;
+    node.textContent = text;
+    return node;
+  };
+
+  class Terminal {
+    constructor() {
+      this.ui = {
+        terminal: document.querySelector('.term'),
+        form: byId('cmd'),
+        log: byId('log'),
+        input: byId('in'),
+        prompt: byId('prompt'),
+        autocomplete: byId('autocomplete'),
+        mobileKeys: document.querySelector('.mobile-keys'),
+      };
+
+      this.currentDirectory = '';
+      this.previousDirectory = null;
+      this.history = [];
+      this.historyCursor = 0;
+
+      this.folderMaps = Object.fromEntries(
+        Object.entries(FOLDERS).map(([name, entries]) => [name, new Map(entries)]),
+      );
+      this.entryRoutes = new Map(Object.values(FOLDERS).flat());
+      this.completions = this.buildCompletions();
+      this.commands = this.buildCommands();
+    }
+
+    start() {
+      this.ui.form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        this.hideCompletions();
+        this.execute(this.ui.input.value);
+        this.ui.input.value = '';
+      });
+      this.ui.input.addEventListener('input', () => this.hideCompletions());
+      this.ui.input.addEventListener('keydown', (event) => this.handleKey(event));
+      this.ui.mobileKeys.addEventListener('click', (event) => {
+        const key = event.target.closest('[data-key]')?.dataset.key;
+        if (key) this.handleKey({ key, preventDefault() {} });
+        this.ui.input.focus();
+      });
+      this.ui.terminal.addEventListener('click', () => this.ui.input.focus());
+      this.ui.input.focus();
+    }
+
+    buildCommands() {
+      return new Map([
+        ['clear', (args) => this.withArity(args, 0, () => this.ui.log.replaceChildren())],
+        ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
+        ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
+        ['tree', (args) => this.withArity(args, 0, () => this.showTree())],
+        ['ls', (args) => {
+          this.list(args.join(' '));
+          return true;
+        }],
+        ['cd', (args) => this.withMaximumArity(args, 1, () => this.changeDirectory(args[0] ?? ''))],
+        ['show', (args) => this.withArity(args, 1, () => this.showScript(args[0]))],
+      ]);
+    }
+
+    buildCompletions() {
+      const folderNames = Object.keys(FOLDERS);
+      const entries = Object.entries(FOLDERS).flatMap(([folder, items]) => (
+        items.flatMap(([name]) => [name, `${folder}/${name}`])
+      ));
+      return [...new Set([
+        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'show', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
+        ...FOLDERS.scripts.map(([name]) => `show ${name}`),
+        ...Object.keys(ROUTES),
+        ...Object.keys(FILES),
+        ...Object.keys(RESPONSES),
+        ...entries,
+      ])];
+    }
+
+    withArity(args, count, action) {
+      if (args.length !== count) return false;
+      action();
+      return true;
+    }
+
+    withMaximumArity(args, count, action) {
+      if (args.length > count) return false;
+      action();
+      return true;
+    }
+
+    execute(raw) {
+      const command = raw.trim();
+      this.echo(command);
+      if (!command) return;
+
+      this.history.push(command);
+      this.historyCursor = this.history.length;
+
+      const [name, ...args] = command.split(/\s+/);
+      if (this.commands.get(name)?.(args)) return;
+
+      const response = RESPONSES[name] ?? HIDDEN_RESPONSES[name];
+      if (response && !args.length) {
+        this.write(response, 'pth');
+        return;
+      }
+
+      const url = this.resolve(command);
+      if (url) this.navigate(url);
+      else this.write(`zsh: no such command, file, or directory: ${command}`, 'err');
+    }
+
+    path() {
+      return this.currentDirectory ? `~/${this.currentDirectory}` : '~';
+    }
+
+    promptText() {
+      return `david:${this.path()}$`;
+    }
+
+    directoryFromPath(path) {
+      const clean = path.trim().replace(/\/+$/g, '');
+      if (!clean || clean === '~' || clean === '/') return '';
+      if (clean === '.') return this.currentDirectory;
+      if (clean === '..') return '';
+      return clean.replace(/^~?\//, '');
+    }
+
+    resolve(command) {
+      const path = command.trim().replace(/^~?\/+|\/+$/g, '');
+      const [folder, entry, extra] = path.split('/');
+      if (entry && !extra) return this.folderMaps[folder]?.get(entry);
+      if (entry) return undefined;
+      return ROUTES[folder]
+        ?? FILES[folder]
+        ?? this.folderMaps[this.currentDirectory]?.get(folder)
+        ?? this.entryRoutes.get(folder);
+    }
+
+    list(path) {
+      const directory = path ? this.directoryFromPath(path) : this.currentDirectory;
+      if (!directory) {
+        this.write(ROOT_ENTRIES.join('   '), 'pth');
+        return;
+      }
+      if (!FOLDERS[directory]) {
+        this.write(`ls: ${path}: not a directory`, 'err');
+        return;
+      }
+
+      const names = FOLDERS[directory].map(([name]) => name);
+      if (directory === 'projects') names.sort((a, b) => a.localeCompare(b));
+      this.write(names.join('   '), 'pth');
+    }
+
+    changeDirectory(target) {
+      const requested = this.directoryFromPath(target);
+      let next = requested;
+
+      if (requested === '-') {
+        if (this.previousDirectory === null) {
+          this.write('cd: no previous directory', 'err');
+          return;
+        }
+        next = this.previousDirectory;
+      } else if (requested && !FOLDERS[requested]) {
+        this.write(`cd: no such file or directory: ${target}`, 'err');
+        return;
+      }
+
+      this.previousDirectory = this.currentDirectory;
+      this.currentDirectory = next;
+      this.ui.prompt.textContent = this.promptText();
+    }
+
+    showScript(path) {
+      const name = path.replace(/^scripts\//, '');
+      const url = this.folderMaps.scripts.get(name);
+      if (url) this.write(`curl -fsSL https://krasow.dev${url} | bash`, 'pth');
+      else this.write(`show: no such script: ${path}`, 'err');
+    }
+
+    showTree() {
+      const lines = ['.'];
+      if (this.currentDirectory) {
+        this.appendTreeEntries(lines, FOLDERS[this.currentDirectory]);
+      } else {
+        ROOT_ENTRIES.forEach((entry, index) => {
+          const isLast = index === ROOT_ENTRIES.length - 1;
+          lines.push(`${isLast ? '└──' : '├──'} ${entry}`);
+          const folder = entry.endsWith('/') ? entry.slice(0, -1) : '';
+          if (folder) this.appendTreeEntries(lines, FOLDERS[folder], isLast ? '    ' : '│   ');
+        });
+      }
+      this.write(lines.join('\n'), 'pth');
+    }
+
+    appendTreeEntries(lines, entries, prefix = '') {
+      entries.forEach(([name], index) => {
+        const branch = index === entries.length - 1 ? '└──' : '├──';
+        lines.push(`${prefix}${branch} ${name}`);
+      });
+    }
+
+    showHelp() {
+      const help = makeElement('div', 'ln help');
+      HELP.forEach(([heading, rows]) => {
+        help.append(makeElement('span', 'help-section', heading));
+        rows.forEach(([command, description]) => help.append(
+          makeElement('span', 'help-command', command),
+          makeElement('span', 'help-description', description),
+        ));
+      });
+      help.append(makeElement('span', 'help-note', 'Type any item shown by ls to open it.'));
+      this.append(help);
+    }
+
+    navigate(url) {
+      this.write(url.endsWith('.vcf') ? '→ downloading contact.vcf' : `→ ${url}`, 'go');
+      setTimeout(() => { location.href = url; }, 120);
+    }
+
+    write(text, className = '') {
+      this.append(makeElement('p', `ln ${className}`.trim(), text));
+    }
+
+    echo(command) {
+      const line = makeElement('p', 'ln');
+      line.append(makeElement('span', 'pr', this.promptText()), ` ${command}`);
+      this.append(line);
+    }
+
+    append(node) {
+      this.ui.log.append(node);
+      this.ui.log.scrollTop = this.ui.log.scrollHeight;
+    }
+
+    handleKey(event) {
+      const actions = {
+        ArrowUp: () => this.recall(-1),
+        ArrowDown: () => this.recall(1),
+        Tab: () => this.complete(),
+        Escape: () => this.clearInput(),
+      };
+      if (!actions[event.key]) return;
+      event.preventDefault();
+      actions[event.key]();
+    }
+
+    clearInput() {
+      this.ui.input.value = '';
+      this.hideCompletions();
+    }
+
+    recall(delta) {
+      this.historyCursor = Math.max(
+        0,
+        Math.min(this.history.length, this.historyCursor + delta),
+      );
+      this.ui.input.value = this.history[this.historyCursor] ?? '';
+      this.hideCompletions();
+    }
+
+    complete() {
+      const typed = this.ui.input.value.trim();
+      const matches = typed
+        ? this.completions.filter((command) => command.startsWith(typed))
+        : [];
+
+      if (!matches.length) {
+        this.hideCompletions();
+      } else if (matches.length === 1) {
+        this.ui.input.value = matches[0];
+        this.hideCompletions();
+      } else {
+        this.completeMultiple(typed, matches);
+      }
+    }
+
+    completeMultiple(typed, matches) {
+      const prefix = matches.reduce((common, match) => {
+        let end = 0;
+        while (end < common.length && common[end] === match[end]) end += 1;
+        return common.slice(0, end);
+      });
+
+      if (prefix.length > typed.length) {
+        this.ui.input.value = prefix;
+        this.hideCompletions();
+        return;
+      }
+
+      const directoryCommand = /^(ls|cd)( |$)/.test(typed);
+      const choices = directoryCommand
+        ? matches.filter((match) => match.includes(' ')).map((match) => match.split(' ')[1])
+        : [...matches];
+      choices.sort((a, b) => a.localeCompare(b));
+      this.showCompletions(choices);
+    }
+
+    showCompletions(choices) {
+      this.ui.autocomplete.textContent = choices.join('   ');
+      this.ui.autocomplete.hidden = !choices.length;
+    }
+
+    hideCompletions() {
+      this.ui.autocomplete.hidden = true;
+      this.ui.autocomplete.textContent = '';
+    }
+  }
+
+  const path = location.pathname || '/';
+  document.querySelectorAll('.req').forEach((element) => { element.textContent = path; });
+
+  fetch('/common/footer.html')
+    .then((response) => response.text())
+    .then((html) => { byId('site-footer').innerHTML = html; })
+    .catch(() => {});
+
+  new Terminal().start();
+})();
