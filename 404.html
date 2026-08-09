@@ -150,8 +150,8 @@
       </div>
 
       <div id="log">
-        <p class="ln"><span class="pr">david:~$</span> cat <span class="pth req">/</span></p>
-        <p class="ln err">cat: <span class="req">/</span>: No such file or directory</p>
+        <p class="ln"><span class="pr">david:~$</span> <span class="req">/</span></p>
+        <p class="ln err">zsh: no such file or directory: <span class="req">/</span></p>
         <p class="hint"># that page didn't exist. use <span class="pth">ls</span> to explore.</p>
       </div>
 
@@ -186,8 +186,6 @@
         github:        'https://github.com/krasow',
         contact:       '/assets/documents/Krasowska_David_contact.vcf',
       };
-      const ALIASES = { '~': 'home', pubs: 'publications', exp: 'experience', talks: 'presentations' };
-
       // "projects" acts like a folder: `ls projects`, then a name (or projects/<name>).
       const PROJECTS = {
         cunumeric:   '/pages/show.html?page=cunumeric',
@@ -218,22 +216,20 @@
         log.append(p);
       };
 
-      // Resolve a typed page name / path to a destination URL. Supports the
+      // Resolve a typed name / path to a destination URL. Supports the
       // "projects" folder: projects/<name>, or just a bare project name.
       const resolve = (command) => {
-        const clean = command.toLowerCase().replace(/^cd\s+/, '').replace(/^\/+|\/+$/g, '').trim() || 'home';
+        const clean = command.toLowerCase().replace(/^\/+|\/+$/g, '').trim();
         const [head, tail] = clean.split('/');
-        const key = ALIASES[head] ?? head;
-        if (key === 'projects' && tail) return PROJECTS[tail];
-        return ROUTES[key] ?? PROJECTS[key];
+        if (head === 'projects' && tail) return PROJECTS[tail];
+        return ROUTES[head] ?? PROJECTS[head];
       };
 
       // `ls` (top level) and `ls projects`.
       const list = (dir) => {
         if (!dir) {
-          const entries = Object.keys(ROUTES).map((k) => (k === 'projects' ? 'projects/' : k));
-          write(entries.join('   '), 'pth');
-        } else if ((ALIASES[dir] ?? dir) === 'projects') {
+          write(Object.keys(ROUTES).map((k) => (k === 'projects' ? 'projects/' : k)).join('   '), 'pth');
+        } else if (dir === 'projects') {
           write(Object.keys(PROJECTS).join('   '), 'pth');
         } else {
           write(`ls: ${dir}: not a directory`, 'err');
@@ -249,7 +245,7 @@
 
         const lower = command.toLowerCase();
         if (lower === 'clear') { log.replaceChildren(); return; }
-        if (lower === 'help')  { write('type a page name to go there. also: ls [dir], clear · ↑/↓ for history.'); return; }
+        if (lower === 'help')  { write('type a name to open it · ls [projects] to list · clear · ↑/↓ history'); return; }
         if (lower === 'ls' || lower.startsWith('ls ')) { list(lower.slice(2).trim()); return; }
 
         const dest = resolve(command);
