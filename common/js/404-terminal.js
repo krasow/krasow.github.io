@@ -22,6 +22,7 @@
     'contact.vcf': ROUTES.contact,
     'resume.pdf': ROUTES.resume,
   };
+  const READABLE_FILES = new Set(['ai-notice.md', 'contact.vcf']);
 
   const FOLDERS = {
     projects: [
@@ -176,6 +177,7 @@
       return [...new Set([
         ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'show', 'ls', 'cd', 'cd ..', 'cd -'],
         'cat ai-notice.md',
+        'cat contact.vcf',
         ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
         ...Object.keys(ROUTES),
@@ -293,7 +295,7 @@
     }
 
     async readFile(path) {
-      if (path !== 'ai-notice.md') {
+      if (!READABLE_FILES.has(path)) {
         this.write(`cat: ${path}: no such text file`, 'err');
         return;
       }
