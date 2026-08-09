@@ -18,17 +18,26 @@
   };
 
   const FILES = {
+    'about.pg': ROUTES.about,
     'ai-notice.md': '/assets/documents/notice/ai-notice.md',
     'contact.vcf': ROUTES.contact,
-    education: '/assets/documents/terminal/education.md',
+    'cv.pg': ROUTES.cv,
+    'education.md': '/assets/documents/terminal/education.md',
+    'experience.pg': ROUTES.experience,
+    'home.pg': ROUTES.home,
+    'news.pg': ROUTES.news,
     'resume.pdf': ROUTES.resume,
-    summary: '/assets/documents/terminal/summary.md',
+    'summary.md': '/assets/documents/terminal/summary.md',
+  };
+  const SHORTCUTS = {
+    github: ROUTES.github,
+    zoom: ROUTES.zoom,
   };
   const READABLE_FILES = {
     'ai-notice.md': FILES['ai-notice.md'],
     'contact.vcf': FILES['contact.vcf'],
-    summary: FILES.summary,
-    education: FILES.education,
+    'summary.md': FILES['summary.md'],
+    'education.md': FILES['education.md'],
   };
 
   const FOLDERS = {
@@ -64,16 +73,13 @@
   };
 
   const ROOT_ENTRIES = [
-    'about', 'ai-notice.md', 'contact.vcf', 'cv', 'education', 'experience', 'home', 'news',
+    'about.pg', 'ai-notice.md', 'contact.vcf', 'cv.pg', 'education.md',
+    'experience.pg', 'home.pg', 'news.pg',
     'posters/', 'presentations/', 'projects/', 'publications/',
-    'resume.pdf', 'scripts/', 'summary',
+    'resume.pdf', 'scripts/', 'summary.md',
   ];
 
   const RESPONSES = {
-    name: 'David Krasowska',
-    email: 'david@krasow.dev',
-    phone: '+1 (224) 355-2715',
-    location: 'Chicago, IL',
     whoami: 'David Krasowska',
   };
 
@@ -92,12 +98,12 @@
       ['show script', 'print an install command'],
     ]],
     ['Information', [
-      ['whoami · name', 'show name'],
-      ['email · phone · location', 'show contact details'],
+      ['whoami', 'show name'],
+      ['cat contact.vcf', 'show contact details'],
     ]],
     ['Links', [
       ['github · zoom', 'open an external page'],
-      ['resume · contact', 'open or download a document'],
+      ['resume.pdf · contact.vcf', 'open or download a document'],
     ]],
     ['Controls', [
       ['clear', 'clear the terminal'],
@@ -191,7 +197,7 @@
         ...Object.keys(READABLE_FILES).map((name) => `cat ${name}`),
         ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
-        ...Object.keys(ROUTES),
+        ...Object.keys(SHORTCUTS),
         ...Object.keys(FILES),
         ...Object.keys(RESPONSES),
         ...entries,
@@ -255,7 +261,7 @@
       const [folder, entry, extra] = path.split('/');
       if (entry && !extra) return this.folderMaps[folder]?.get(entry);
       if (entry) return undefined;
-      return ROUTES[folder]
+      return SHORTCUTS[folder]
         ?? FILES[folder]
         ?? this.folderMaps[this.currentDirectory]?.get(folder)
         ?? this.entryRoutes.get(folder);
