@@ -442,11 +442,7 @@
         const document = new DOMParser().parseFromString(content, 'text/html');
         const sections = [...document.querySelectorAll(source.selector)];
         const text = sections
-          .map((section) => (section.innerText || section.textContent)
-            .split('\n')
-            .map((line) => line.trim())
-            .join('\n')
-            .trim())
+          .map((section) => this.pageText(section))
           .filter(Boolean)
           .join('\n\n')
           .replace(/\n{3,}/g, '\n\n');
@@ -455,6 +451,22 @@
       } catch (error) {
         this.write(`cat: ${path}: unable to read page`, 'err');
       }
+    }
+
+    pageText(section) {
+      const copy = section.cloneNode(true);
+      copy.querySelectorAll('.cv-date span + span').forEach((span) => span.before(' – '));
+      copy.querySelectorAll('.pub-date br').forEach((breakElement) => breakElement.replaceWith(' – '));
+      copy.querySelectorAll([
+        'br', 'div', 'p', 'li', 'hr', 'h1', 'h2', 'h3',
+        '.cv-title', '.cv-org', '.cv-desc',
+      ].join(',')).forEach((element) => element.after('\n'));
+
+      return copy.textContent
+        .replace(/[ \t]+/g, ' ')
+        .replace(/ *\n */g, '\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
     }
 
     showTree() {
