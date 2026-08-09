@@ -217,7 +217,6 @@
           ['cunumeric', '/pages/show.html?page=cunumeric'],
           ['legionpim', '/pages/show.html?page=legionpim'],
           ['compression', '/pages/show.html?page=compression'],
-          ['polish', '/pages/show.html?page=polish'],
         ],
         publications: [
           ['VILLAGE25', 'https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf'],
@@ -232,6 +231,10 @@
         email:    'david@krasow.dev',
         phone:    '+1 (224) 355-2715',
         location: 'Chicago, IL',
+      };
+      const hiddenResponses = {
+        hi:    'Hello!',
+        hello: 'Hello!',
       };
 
       const folderEntries = Object.fromEntries(
@@ -348,7 +351,8 @@
         if (!args.length && name === 'clear') { log.replaceChildren(); return; }
         if (!args.length && name === 'help') { showHelp(); return; }
         if (name === 'ls') { list(args.join(' ')); return; }
-        if (responses[name] && !args.length) { write(responses[name], 'pth'); return; }
+        const response = responses[name] ?? hiddenResponses[name];
+        if (response && !args.length) { write(response, 'pth'); return; }
 
         const url = resolve(command);
         if (!url) {
