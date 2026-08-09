@@ -102,7 +102,20 @@
       letter-spacing: 4px;
     }
     .glitch::before,
-    .glitch::after { content: attr(data-t); position: absolute; inset: 0; overflow: hidden; color: var(--terminal-accent); }
+    .glitch::after {
+      content: attr(data-t);
+      position: absolute;
+      inset: -.12em -.35em;
+      overflow: hidden;
+      color: var(--terminal-accent);
+      font-size: 1.4em;
+      line-height: 1;
+      letter-spacing: .14em;
+      text-align: center;
+      text-shadow: 0 0 12px var(--terminal-accent);
+    }
+    .glitch.plain::before,
+    .glitch.plain::after { display: none; }
     .glitch::before { animation: g1 2.6s infinite steps(2); }
     .glitch::after  { opacity: .5; animation: g2 3.3s infinite steps(2); }
     @keyframes g1 { 0%,100% { clip-path: inset(0 0 82% 0); transform: translateX(-2px); } 50% { clip-path: inset(68% 0 0 0); transform: translateX(2px); } }
@@ -214,7 +227,7 @@
   <div class="wrap">
     <main class="term">
       <div class="banner">
-        <span class="glitch" data-t="404">krasow.dev</span>
+        <span class="glitch" data-t="404" aria-label="krasow.dev 404">krasow.dev</span>
       </div>
 
       <div id="log">

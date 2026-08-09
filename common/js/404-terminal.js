@@ -440,7 +440,19 @@
   }
 
   const path = location.pathname || '/';
-  document.querySelectorAll('.req').forEach((element) => { element.textContent = path; });
+  if (path.replace(/\/+$/, '') === '/terminal') {
+    document.title = 'Terminal | David Krasowska';
+    const banner = document.querySelector('.glitch');
+    banner.textContent = 'krasow.dev';
+    banner.dataset.t = 'krasow.dev';
+    banner.setAttribute('aria-label', 'krasow.dev');
+    banner.classList.add('plain');
+    byId('log').replaceChildren(
+      makeElement('p', 'hint', '# use help for more details.'),
+    );
+  } else {
+    document.querySelectorAll('.req').forEach((element) => { element.textContent = path; });
+  }
 
   fetch('/common/footer.html')
     .then((response) => response.text())
