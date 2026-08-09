@@ -212,6 +212,23 @@
         zoom:          'https://northwestern.zoom.us/my/krasow',
         contact:       '/assets/documents/Krasowska_David_contact.vcf',
       };
+      const files = {
+        'contact.vcf': routes.contact,
+        'resume.pdf': routes.resume,
+      };
+      const rootEntries = [
+        'about',
+        'contact.vcf',
+        'cv',
+        'experience',
+        'home',
+        'news',
+        'posters/',
+        'presentations/',
+        'projects/',
+        'publications/',
+        'resume.pdf',
+      ];
 
       const folders = {
         projects: [
@@ -269,6 +286,7 @@
         'ls',
         ...Object.keys(folders).map((folder) => `ls ${folder}`),
         ...Object.keys(routes),
+        ...Object.keys(files),
         ...Object.keys(responses),
         ...Object.entries(folders).flatMap(([folder, entries]) => (
           entries.flatMap(([name]) => [name, `${folder}/${name}`])
@@ -307,9 +325,9 @@
           ['ls presentations', 'list presentations'],
           ['ls projects', 'list projects'],
           ['ls publications', 'list publications'],
-          ['name · email · phone', 'contact details'],
-          ['location', 'location'],
-          ['zoom', 'open meeting page'],
+          ['name · email · phone · location', 'personal information'],
+          ['github · zoom', 'open external page'],
+          ['resume · contact', 'open or download a document'],
           ['clear', 'clear the terminal'],
           ['↑ / ↓', 'command history'],
           ['Tab', 'autocomplete'],
@@ -325,7 +343,7 @@
         help.append(element(
           'span',
           'help-note',
-          'Type any listed page, project, or publication to open it.',
+          'Type any item shown by ls to open it.',
         ));
         append(help);
       };
@@ -336,15 +354,12 @@
         const path = normalize(command).replace(/^\/+|\/+$/g, '');
         const [folder, entry, extra] = path.split('/');
         if (entry && !extra) return folderEntries[folder]?.get(entry);
-        return entry ? undefined : routes[folder] ?? entryRoutes.get(folder);
+        return entry ? undefined : routes[folder] ?? files[folder] ?? entryRoutes.get(folder);
       };
 
       const list = (directory) => {
         if (!directory) {
-          const names = Object.keys(routes)
-            .sort((a, b) => a.localeCompare(b))
-            .map((name) => (folders[name] ? `${name}/` : name));
-          write(names.join('   '), 'pth');
+          write(rootEntries.join('   '), 'pth');
           return;
         }
 
