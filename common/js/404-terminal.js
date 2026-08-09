@@ -22,7 +22,12 @@
     'contact.vcf': ROUTES.contact,
     'resume.pdf': ROUTES.resume,
   };
-  const READABLE_FILES = new Set(['ai-notice.md', 'contact.vcf']);
+  const READABLE_FILES = {
+    'ai-notice.md': FILES['ai-notice.md'],
+    'contact.vcf': FILES['contact.vcf'],
+    summary: '/assets/documents/terminal/summary.md',
+    education: '/assets/documents/terminal/education.md',
+  };
 
   const FOLDERS = {
     projects: [
@@ -176,8 +181,7 @@
       ));
       return [...new Set([
         ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'show', 'ls', 'cd', 'cd ..', 'cd -'],
-        'cat ai-notice.md',
-        'cat contact.vcf',
+        ...Object.keys(READABLE_FILES).map((name) => `cat ${name}`),
         ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
         ...Object.keys(ROUTES),
@@ -295,12 +299,13 @@
     }
 
     async readFile(path) {
-      if (!READABLE_FILES.has(path)) {
+      const url = READABLE_FILES[path];
+      if (!url) {
         this.write(`cat: ${path}: no such text file`, 'err');
         return;
       }
       try {
-        const response = await fetch(FILES[path]);
+        const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         this.write((await response.text()).trim(), 'pth');
       } catch (error) {

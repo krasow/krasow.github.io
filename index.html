@@ -56,8 +56,10 @@
             fetch("/homepage/terminal.html").then(res => res.text()),
             fetch("/homepage/experience.html").then(res => res.text()),
             fetch("/homepage/publications.html").then(res => res.text()),
-            fetch("/homepage/projects.html").then(res => res.text())
-        ]).then(([navbar, header, footer, terminal, experience, publications, projects]) => {
+            fetch("/homepage/projects.html").then(res => res.text()),
+            fetch("/assets/documents/terminal/summary.md").then(res => res.text()),
+            fetch("/assets/documents/terminal/education.md").then(res => res.text())
+        ]).then(([navbar, header, footer, terminal, experience, publications, projects, summary, education]) => {
             document.getElementById("navbar").innerHTML = navbar;
             document.getElementById("header").innerHTML = header;
             document.getElementById("footer").innerHTML = footer;
@@ -65,6 +67,8 @@
             document.getElementById("experience").innerHTML = experience;
             document.getElementById("publications").innerHTML = publications;
             document.getElementById("projects").innerHTML = projects;
+            document.getElementById("terminal-summary").textContent = summary.trim();
+            document.getElementById("terminal-education").textContent = education.trim();
             document.getElementById("content").style.display = "flex";
 
             // terminal hover + arrow keys

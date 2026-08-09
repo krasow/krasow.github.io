@@ -99,6 +99,7 @@
 .response a { color: var(--terminal-accent); }
 
 .response-block { text-align: left; }
+.md-response { white-space: pre-wrap; }
 .response-sub { font-size: 0.8em; opacity: 0.75; }
 
 .contact-flex {
