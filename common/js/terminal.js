@@ -811,7 +811,7 @@
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
           if (!['cat', 'copy', 'grep', 'wc'].includes(command)) return true;
           return TEXT_PATHS.has(candidate)
-            || (path.includes('/')
+            || ((path.includes('/') || path.startsWith('.'))
               && [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)));
         })
         .map(({ name }) => name);
