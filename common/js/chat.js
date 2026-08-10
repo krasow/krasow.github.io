@@ -9,6 +9,7 @@
   ]);
 
   const wordsIn = (text) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+  const normalizePhrase = (text) => wordsIn(text).join('');
 
   const editDistance = (a, b) => {
     let row = [...Array(b.length + 1).keys()];
@@ -35,9 +36,10 @@
       if (schoolAnswer) return { answer: schoolAnswer };
 
       const query = new Set(wordsIn(question).map((word) => this.correct(word, vocabulary)));
-      const normalized = question.toLowerCase();
+      const normalized = normalizePhrase(question);
       const score = (entry) => entry.words.filter((word) => query.has(word)).length
-        + (entry.phrases.some((phrase) => normalized.includes(phrase)) ? 10 : 0);
+        + (entry.phrases.some((phrase) => normalized.includes(phrase.compact)
+          || phrase.words.every((word) => query.has(word))) ? 10 : 0);
       const best = entries.reduce((a, b) => score(b) > score(a) ? b : a);
       return score(best) ? best : { answer: fallback };
     }
@@ -52,7 +54,10 @@
           const indexed = entries.map((entry) => ({
             ...entry,
             words: entry.keywords.flatMap(wordsIn),
-            phrases: entry.phrases ?? [],
+            phrases: (entry.phrases ?? []).map((phrase) => ({
+              compact: normalizePhrase(phrase),
+              words: wordsIn(phrase),
+            })),
           }));
           return {
             entries: indexed,

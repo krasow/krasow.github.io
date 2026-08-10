@@ -18,6 +18,12 @@
       "answer": "David earned a B.S. in Computer Engineering from Clemson University (2019–2022) and is pursuing a Ph.D. in Computer Science at Northwestern University (2023–present)."
     },
     {
+      "topic": "experience and background",
+      "keywords": ["experience", "background", "career", "employment", "employer", "workplace", "history", "resume", "cv"],
+      "phrases": ["where has he worked", "where did he work", "places he worked"],
+      "answer": "David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University and collaborates with Los Alamos National Laboratory on distributed heterogeneous computing."
+    },
+    {
       "topic": "research interests",
       "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
       "phrases": ["what does he do", "what does he study"],
@@ -26,17 +32,19 @@
     {
       "topic": "lossy compression research",
       "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
+      "phrases": ["lossy compression", "compression work"],
       "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data."
     },
     {
       "topic": "Legion Julia and GPUs",
       "keywords": ["legion", "julia", "gpu", "gpus", "cunumeric", "runtime", "arrays", "constellation"],
+      "phrases": ["julia work", "julia project"],
       "answer": "David works with the Legion runtime and Julia to run array-oriented scientific applications across distributed systems and NVIDIA GPUs as part of the Constellation project."
     },
     {
       "topic": "processing in memory",
       "keywords": ["pim", "processing in memory", "upmem", "memory accelerator", "legionpim"],
-      "phrases": ["work on pim"],
+      "phrases": ["pim work", "legion pim"],
       "answer": "David researches Processing-in-Memory accelerators and uses Legion to reduce the programming and portability burden of adopting PIM systems."
     },
     {
