@@ -21,15 +21,15 @@
     },
     {
       "topic": "Northwestern experience",
-      "keywords": ["northwestern research", "northwestern work", "peter dinda"],
-      "phrases": ["at northwestern"],
+      "keywords": ["peter dinda"],
+      "phrases": ["at northwestern", "northwestern research", "northwestern work"],
       "answer": "At Northwestern University, David is a Computer Science Ph.D. candidate advised by Peter Dinda. His work there includes distributed Julia applications for GPU systems and using Legion to make Processing-in-Memory systems easier to program.",
       "hint": "Try asking about his Julia or PIM work."
     },
     {
       "topic": "Clemson experience",
-      "keywords": ["clemson experience", "clemson research", "undergraduate research", "fthpc", "jon calhoun"],
-      "phrases": ["at clemson", "clemson work"],
+      "keywords": ["fthpc", "jon calhoun"],
+      "phrases": ["at clemson", "clemson experience", "clemson research", "clemson work", "undergraduate research"],
       "answer": "At Clemson University, David earned a B.S. in Computer Engineering and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data.",
       "readMore": {
         "prompt": "Would you like to read more about the compression project? (y/n)",
