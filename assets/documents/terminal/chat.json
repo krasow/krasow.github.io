@@ -7,8 +7,8 @@
     },
     {
       "topic": "current role and university",
-      "keywords": ["who", "identity", "phd candidate", "northwestern", "student", "position", "current", "school", "university", "advisor", "peter dinda"],
-      "phrases": ["about david", "tell me about david"],
+      "keywords": ["who", "identity", "bio", "biography", "introduce", "phd candidate", "northwestern", "student", "position", "current", "school", "university", "advisor", "peter dinda"],
+      "phrases": ["about david", "tell me about david", "quick bio"],
       "answer": "David is a Computer Science Ph.D. candidate at Northwestern University, advised by Peter Dinda.",
       "hint": "Try asking about his work in Julia, lossy compression, or PIM.",
       "readMore": { "command": "cat /home/about.pg" }
@@ -16,14 +16,14 @@
     {
       "topic": "Northwestern experience",
       "keywords": ["peter dinda"],
-      "phrases": ["at northwestern", "northwestern research", "northwestern work"],
+      "phrases": ["at northwestern", "northwestern research", "northwestern work", "doing for phd"],
       "answer": "At Northwestern University, David is a Computer Science Ph.D. candidate advised by Peter Dinda. His work there includes distributed Julia applications for GPU systems and using Legion to make Processing-in-Memory systems easier to program.",
       "hint": "Try asking about his Julia or PIM work."
     },
     {
       "topic": "Clemson experience",
       "keywords": ["fthpc", "jon calhoun"],
-      "phrases": ["at clemson", "clemson experience", "clemson research", "clemson work", "undergraduate research"],
+      "phrases": ["at clemson", "at argonne", "clemson experience", "clemson research", "clemson work", "undergraduate research"],
       "answer": "At Clemson University, David earned a B.S. in Computer Engineering and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data.",
       "readMore": {
         "prompt": "Would you like to read more about the compression project? (y/n)",
@@ -32,7 +32,7 @@
     },
     {
       "topic": "education",
-      "keywords": ["education", "school", "go", "attend", "attended", "graduate", "graduated", "study", "studied", "degree", "degrees", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
+      "keywords": ["education", "school", "go", "attend", "attended", "graduate", "graduated", "study", "studied", "degree", "degrees", "major", "undergrad", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
       "answer": "David graduated from Clemson University with a B.S. in Computer Engineering and is currently pursuing a Ph.D. in Computer Science at Northwestern University."
     },
     {
@@ -55,21 +55,40 @@
     },
     {
       "topic": "experience and background",
-      "keywords": ["experience", "background", "career", "employment", "employer", "workplace", "history"],
-      "phrases": ["where has he worked", "where did he work", "places he worked"],
+      "keywords": ["experience", "background", "career", "professionally", "employment", "employer", "workplace", "history"],
+      "phrases": ["where has he worked", "where did he work", "places he worked", "where was he a researcher"],
       "answer": "David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University and collaborates with Los Alamos National Laboratory on distributed heterogeneous computing.",
       "readMore": { "command": "cat /home/experience.pg" }
     },
     {
+      "topic": "programming background",
+      "keywords": ["programming", "language", "languages", "technical skills", "technology", "technologies"],
+      "answer": "David's site highlights work with Julia, distributed runtimes, and GPU programming, but it does not provide an exhaustive list of programming languages.",
+      "readMore": {
+        "prompt": "Would you like to open his CV? (y/n)",
+        "command": "open /home/cv.pg"
+      }
+    },
+    {
+      "topic": "hiring availability",
+      "keywords": ["hire", "hiring", "available", "availability", "recruit", "recruiting", "job"],
+      "phrases": ["open to work"],
+      "answer": "David's site does not state whether he is available for hire. You can contact him directly to ask.",
+      "readMore": {
+        "prompt": "Would you like to open his contact card? (y/n)",
+        "command": "open /home/contact.vcf"
+      }
+    },
+    {
       "topic": "research interests",
       "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
-      "phrases": ["what does he do", "what does he study"],
+      "phrases": ["what does he do", "what does he study", "area of cs"],
       "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads. His current work explores scheduling across distributed heterogeneous systems."
     },
     {
       "topic": "lossy compression research",
       "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
-      "phrases": ["lossy compression", "compression work"],
+      "phrases": ["lossy compression", "compression work", "compression papers"],
       "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:",
       "links": [
         {
@@ -90,8 +109,8 @@
     {
       "topic": "Legion Julia and GPUs",
       "keywords": ["legion", "julia", "gpu", "gpus", "cunumeric", "runtime", "arrays", "constellation"],
-      "phrases": ["julia work", "julia project"],
-      "answer": "David works with the Legion runtime and Julia to run array-oriented scientific applications across distributed systems and NVIDIA GPUs as part of the Constellation project.",
+      "phrases": ["julia work", "julia project", "gpu work"],
+      "answer": "David works on cuNumeric.jl, which uses the Legion runtime to run array-oriented Julia applications across distributed systems and NVIDIA GPUs.",
       "links": [
         { "label": "GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" },
         { "label": "Documentation", "url": "https://julialegate.github.io/cuNumeric.jl/dev/" }
@@ -101,7 +120,7 @@
     {
       "topic": "processing in memory",
       "keywords": ["pim", "processing in memory", "upmem", "memory accelerator", "legionpim"],
-      "phrases": ["pim work", "legion pim"],
+      "phrases": ["pim work", "pim accelerators", "legion pim", "upmem legion"],
       "answer": "David researches Processing-in-Memory accelerators and uses Legion to reduce the programming and portability burden of adopting PIM systems.",
       "links": [
         { "label": "GitHub", "url": "https://github.com/presciencelab/upmem-legion" }
@@ -111,6 +130,7 @@
     {
       "topic": "Los Alamos National Laboratory",
       "keywords": ["lanl", "los alamos", "pat mccormick", "laboratory", "lab"],
+      "phrases": ["at lanl"],
       "answer": "David collaborates with Pat McCormick at Los Alamos National Laboratory on scheduling for distributed heterogeneous systems."
     },
     {
@@ -144,7 +164,7 @@
     {
       "topic": "contact",
       "keywords": ["contact", "card", "vcard", "vcf", "download", "save", "reach", "location", "live", "lives", "based", "chicago"],
-      "phrases": ["contact card", "download contact", "save contact"],
+      "phrases": ["contact card", "download contact", "save contact", "recruiter reach", "recruiter contact"],
       "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card.",
       "readMore": {
         "prompt": "Would you like to run `open contact.vcf`? (y/n)",
@@ -153,7 +173,8 @@
     },
     {
       "topic": "publications and papers",
-      "keywords": ["publication", "publications", "paper", "papers", "published", "writing"],
+      "keywords": ["publication", "publications", "paper", "papers", "published", "writing", "list"],
+      "phrases": ["research papers"],
       "answer": "Here are David's listed publications:",
       "command": "ls /home/publications"
     },

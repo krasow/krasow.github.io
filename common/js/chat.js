@@ -3,13 +3,15 @@
 
   const KNOWLEDGE_URL = '/assets/documents/terminal/chat.json';
   const COMMON_WORDS = new Set([
-    'about', 'can', 'david', 'did', 'do', 'does', 'from', 'has', 'have', 'he',
-    'help', 'his', 'how', 'into', 'is', 'krasowska', 'me', 'tell', 'the', 'their', 'them',
+    'about', 'area', 'came', 'can', 'david', 'did', 'do', 'does', 'find', 'from',
+    'give', 'given', 'has', 'have', 'he', 'help', 'his', 'how', 'into', 'is', 'kind',
+    'krasowska', 'me', 'tell', 'the', 'their', 'them',
     'they', 'this', 'was', 'what', 'when', 'where', 'which', 'with', 'you', 'your',
   ]);
 
   const wordsIn = (text) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
   const normalizePhrase = (text) => wordsIn(text).join('');
+  const normalizeReference = (word) => ['he', 'him'].includes(word) ? 'david' : word;
 
   const editDistance = (a, b) => {
     let row = [...Array(b.length + 1).keys()];
@@ -32,7 +34,9 @@
 
     async ask(question) {
       const { entries, fallback, vocabulary } = await this.load();
-      const query = new Set(wordsIn(question).map((word) => this.correct(word, vocabulary)));
+      const query = new Set(wordsIn(question)
+        .map(normalizeReference)
+        .map((word) => this.correct(word, vocabulary)));
       const normalized = normalizePhrase(question);
       const score = (entry) => entry.words.filter((word) => query.has(word)).length
         + (entry.phrases.some((phrase) => normalized.includes(phrase.compact)
@@ -53,13 +57,16 @@
             words: [...new Set(entry.keywords.flatMap(wordsIn))],
             phrases: (entry.phrases ?? []).map((phrase) => ({
               compact: normalizePhrase(phrase),
-              words: wordsIn(phrase),
+              words: wordsIn(phrase).map(normalizeReference),
             })),
           }));
           return {
             entries: indexed,
             fallback,
-            vocabulary: new Set(indexed.flatMap((entry) => entry.words)),
+            vocabulary: new Set(indexed.flatMap((entry) => [
+              ...entry.words,
+              ...entry.phrases.flatMap((phrase) => phrase.words),
+            ])),
           };
         })
         .catch((error) => {
