@@ -2,11 +2,13 @@
   'use strict';
 
   class SnakeGame {
-    constructor(output, onEnd, width = 24, height = 12, horizontalDelay = 45, verticalDelay = 120) {
+    constructor(output, onEnd, width = 24, height = 12, cellWidth = 1,
+      horizontalDelay = 45, verticalDelay = 120) {
       this.output = output;
       this.onEnd = onEnd;
       this.width = width;
       this.height = height;
+      this.cellWidth = cellWidth;
       this.horizontalDelay = horizontalDelay;
       this.verticalDelay = verticalDelay;
       this.reset();
@@ -104,11 +106,14 @@
       cells[this.food.y][this.food.x] = '*';
       this.snake.slice(1).forEach(({ x, y }) => { cells[y][x] = 'o'; });
       cells[this.snake[0].y][this.snake[0].x] = '@';
-      const border = `+${'-'.repeat(this.width)}+`;
+      const drawCell = (cell) => cell === ' '
+        ? ' '.repeat(this.cellWidth)
+        : cell.padStart(Math.ceil(this.cellWidth / 2), ' ').padEnd(this.cellWidth, ' ');
+      const border = `+${'-'.repeat(this.width * this.cellWidth)}+`;
       this.output.textContent = [
         `snake · score ${this.score}`,
         border,
-        ...cells.map((row) => `|${row.join('')}|`),
+        ...cells.map((row) => `|${row.map(drawCell).join('')}|`),
         border,
         this.ended
           ? 'game over · Enter/Space to replay · Esc/Q to quit'

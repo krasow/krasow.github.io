@@ -389,15 +389,17 @@
       const fontSize = parseFloat(style.fontSize) || 14;
       const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.75;
       const charWidth = fontSize * 0.62;
-      const width = Math.max(24, Math.min(100,
-        Math.floor(this.ui.log.clientWidth / charWidth) - 4));
+      const cellWidth = Math.max(1, Math.round(lineHeight / charWidth));
+      const width = Math.max(10, Math.min(60,
+        Math.floor(this.ui.log.clientWidth / (charWidth * cellWidth)) - 2));
       const height = Math.max(12, Math.min(30,
         Math.floor(this.ui.log.clientHeight / lineHeight) - 5));
       this.snakeGame = new window.KrasowSnake.SnakeGame(output, (score) => {
         this.snakeGame = null;
         this.write(`snake: quit · score ${score}`, 'hint');
         this.ui.input.focus();
-      }, width, height, Math.round(120 * charWidth / lineHeight), 120);
+      }, width, height, cellWidth,
+      Math.round(120 * charWidth * cellWidth / lineHeight), 120);
       this.snakeGame.start();
     }
 
