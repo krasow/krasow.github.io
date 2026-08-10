@@ -34,7 +34,21 @@
       "topic": "lossy compression research",
       "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
       "phrases": ["lossy compression", "compression work"],
-      "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:\n  CLUSTER23 — A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression\n  IJHPCA23 — Black-Box Statistical Prediction of Lossy Compression Ratios for Scientific Data\n  DRBSD21 — Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets"
+      "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:",
+      "links": [
+        {
+          "label": "CLUSTER23 — A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression",
+          "url": "/assets/documents/papers/2023/A_Lightweight_Effective_Compressibility_Estimation_Method_for_Error-bounded_Lossy_Compression.pdf"
+        },
+        {
+          "label": "IJHPCA23 — Black-Box Statistical Prediction of Lossy Compression Ratios for Scientific Data",
+          "url": "/assets/documents/papers/2023/Black-Box_Statistical_Prediction_of_Lossy_Compression_Ratios_for_Scientific_Data.pdf"
+        },
+        {
+          "label": "DRBSD21 — Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets",
+          "url": "/assets/documents/papers/2021/Exploring_Lossy_Compressibility_through_Statistical_Correlations_of_Scientific_Datasets.pdf"
+        }
+      ]
     },
     {
       "topic": "Legion Julia and GPUs",
