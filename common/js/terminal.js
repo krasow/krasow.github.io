@@ -344,35 +344,8 @@
         '  what is his work on PIM?',
         '  how can I contact him?',
         '',
-        'Commands: help · ] toggle shell mode · ] command · exit · quit · Ctrl+C',
+        'Commands: help · ] toggle shell mode · exit · quit · Ctrl+C',
       ].join('\n'), 'pth');
-    }
-
-    runChatShell(command) {
-      if (!command) {
-        this.write('usage: ] <shell command>', 'hint');
-        return;
-      }
-
-      const [name, ...args] = command.split(/\s+/);
-      const handler = this.commands.get(name);
-      if (handler) {
-        if (!handler(args)) this.write(`${name}: usage: ${COMMAND_USAGE[name]}`, 'err');
-        return;
-      }
-
-      const response = RESPONSES[name] ?? HIDDEN_RESPONSES[name];
-      if (response && !args.length) {
-        this.write(response, 'pth');
-        return;
-      }
-      if (this.entriesIn(this.resolvePath(command))) {
-        this.write(`zsh: is a directory: ${command}`, 'err');
-        return;
-      }
-      const url = this.resolve(command);
-      if (url) this.navigate(url);
-      else this.write(`zsh: command not found: ${name}`, 'err');
     }
 
     runChatCommand(command) {
@@ -416,7 +389,6 @@
           this.write('Hello! Ask me anything about David, or type `help` for examples.', 'pth');
         }
         else if (command === ']') this.toggleChatShell();
-        else if (command.startsWith(']')) this.runChatShell(command.slice(1).trim());
         else this.askChat(command);
         return;
       }
@@ -887,6 +859,12 @@
     }
 
     handleKey(event) {
+      if (event.key === ']' && !this.ui.input.value && this.chatSession) {
+        event.preventDefault();
+        this.toggleChatShell();
+        return;
+      }
+
       if (event.ctrlKey && event.key.toLowerCase() === 'c') {
         event.preventDefault();
         this.echo(`${this.ui.input.value}^C`);
