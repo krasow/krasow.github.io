@@ -112,6 +112,12 @@
       entries.filter(([, url]) => url).map(([name, url]) => [`/home/${folder}/${name}`, url])
     )),
   ]);
+  const TEXT_PATHS = new Set([
+    ...Object.keys(READABLE_FILES).map((name) => `/home/${name}`),
+    ...Object.keys(PAGE_SOURCES).map((name) => `/home/${name}`),
+    ...Object.keys(HIDDEN_FILES),
+    ...FOLDERS.scripts.map(([name]) => `/home/scripts/${name}`),
+  ]);
 
   const RESPONSES = {
     whoami: 'David Krasowska',
@@ -425,7 +431,9 @@
       try {
         this.write(await this.fileText(path), 'pth');
       } catch (error) {
-        const reason = error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
+        const reason = error.message === 'EISDIR'
+          ? 'is a directory'
+          : error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
         this.write(`cat: ${path}: ${reason}`, 'err');
       }
     }
@@ -442,6 +450,7 @@
     }
 
     async fileText(path) {
+      if (DIRECTORIES[this.resolvePath(path)]) throw new Error('EISDIR');
       const source = this.textSource(path);
       if (!source) throw new Error('ENOENT');
       return this.loadText(source);
@@ -496,7 +505,9 @@
             .filter((line) => expression.test(line));
           if (matches.length) this.write(matches.map((line) => `${path}:${line}`).join('\n'), 'pth');
         } catch (error) {
-          const reason = error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
+          const reason = error.message === 'EISDIR'
+            ? 'is a directory'
+            : error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
           this.write(`grep: ${path}: ${reason}`, 'err');
         }
       }
@@ -710,7 +721,7 @@
       const path = typed.slice(tokenStart);
       const completesPath = /^(cat|cd|grep|ls|show)\b/.test(typed);
       const paths = completesPath
-        ? this.pathCompletions(path, typed.startsWith('cd '))
+        ? this.pathCompletions(path, typed.split(/\s/)[0])
           .map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
         : [];
       const matches = [...new Set([...this.completions, ...paths])]
@@ -727,20 +738,28 @@
       }
     }
 
-    pathCompletions(path, directoriesOnly) {
+    pathCompletions(path, command) {
       const separator = path.lastIndexOf('/');
+      let candidates;
       if (separator < 0) {
-        return (this.entriesIn(this.currentDirectory) ?? [])
-          .filter((candidate) => candidate.startsWith(path))
-          .filter((candidate) => !directoriesOnly || candidate.endsWith('/'));
+        candidates = (this.entriesIn(this.currentDirectory) ?? [])
+          .map((name) => ({ name, path: this.resolvePath(name) }));
+      } else {
+        const directory = this.resolvePath(path.slice(0, separator) || '/');
+        const prefix = path.slice(0, separator + 1);
+        candidates = (this.entriesIn(directory) ?? [])
+          .map((name) => ({ name: `${prefix}${name}`, path: this.resolvePath(`${prefix}${name}`) }));
       }
-      const directory = this.resolvePath(path.slice(0, separator) || '/');
-      const fragment = path.slice(separator + 1);
-      const prefix = path.slice(0, separator + 1);
-      return (this.entriesIn(directory) ?? [])
-        .filter((candidate) => candidate.startsWith(fragment))
-        .filter((candidate) => !directoriesOnly || candidate.endsWith('/'))
-        .map((candidate) => `${prefix}${candidate}`);
+
+      return candidates
+        .filter(({ name }) => name.startsWith(path))
+        .filter(({ path: candidate }) => {
+          if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
+          if (!['cat', 'grep'].includes(command)) return true;
+          return TEXT_PATHS.has(candidate)
+            || [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`));
+        })
+        .map(({ name }) => name);
     }
 
     completeMultiple(typed, matches) {
