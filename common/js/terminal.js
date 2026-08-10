@@ -187,7 +187,7 @@
     if (name.endsWith('.vcf')) return '👤';
     return '📄';
   };
-  const displayFile = (name) => `${fileIcon(name)} ${name}`;
+  const displayFile = (name) => `${fileIcon(name)}\u00a0${name}`;
 
   class Terminal {
     constructor() {
