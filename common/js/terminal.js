@@ -136,6 +136,7 @@
     show: 'show <script>',
     echo: 'echo [text]',
     grep: 'grep <pattern> <file|pattern> [...]',
+    copy: 'copy <file>',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
   const HISTORY_LIMIT = 10;
@@ -149,6 +150,7 @@
       ['pwd · tree', 'inspect the current directory'],
       ['cat file|pattern', 'read one or more text files'],
       ['grep pattern file', 'search one or more text files'],
+      ['copy file', 'copy a text file'],
       ['echo text', 'print text'],
       ['show script', 'print an install command'],
     ]],
@@ -235,6 +237,7 @@
           this.grep(args[0], args.slice(1));
           return true;
         }],
+        ['copy', (args) => this.withArity(args, 1, () => this.copyFile(args[0]))],
         ['ls', (args) => {
           this.list(args.join(' '));
           return true;
@@ -250,7 +253,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -513,6 +516,30 @@
       }
     }
 
+    async copyFile(path) {
+      try {
+        const text = await this.fileText(path);
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (error) {
+          const textarea = makeElement('textarea', '', text);
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.append(textarea);
+          textarea.select();
+          const copied = document.execCommand('copy');
+          textarea.remove();
+          if (!copied) throw error;
+        }
+        this.write(`copied: ${path}`, 'pth');
+      } catch (error) {
+        const reason = error.message === 'EISDIR'
+          ? 'is a directory'
+          : error.message === 'ENOENT' ? 'no such text file' : 'unable to copy file';
+        this.write(`copy: ${path}: ${reason}`, 'err');
+      }
+    }
+
     pageText(section) {
       const copy = section.cloneNode(true);
       copy.querySelectorAll('.cv-date span + span').forEach((span) => span.before(' – '));
@@ -719,7 +746,7 @@
 
       const tokenStart = typed.lastIndexOf(' ') + 1;
       const path = typed.slice(tokenStart);
-      const completesPath = /^(cat|cd|grep|ls|show)\b/.test(typed);
+      const completesPath = /^(cat|cd|copy|grep|ls|show)\b/.test(typed);
       const paths = completesPath
         ? this.pathCompletions(path, typed.split(/\s/)[0])
           .map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
@@ -755,7 +782,7 @@
         .filter(({ name }) => name.startsWith(path))
         .filter(({ path: candidate }) => {
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
-          if (!['cat', 'grep'].includes(command)) return true;
+          if (!['cat', 'copy', 'grep'].includes(command)) return true;
           return TEXT_PATHS.has(candidate)
             || (path.includes('/')
               && [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)));
