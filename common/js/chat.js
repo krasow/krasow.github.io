@@ -31,10 +31,7 @@
     }
 
     async ask(question) {
-      const { entries, fallback, schools, vocabulary } = await this.load();
-      const schoolAnswer = this.answerSchoolQuestion(question, schools);
-      if (schoolAnswer) return { answer: schoolAnswer };
-
+      const { entries, fallback, vocabulary } = await this.load();
       const query = new Set(wordsIn(question).map((word) => this.correct(word, vocabulary)));
       const normalized = normalizePhrase(question);
       const score = (entry) => entry.words.filter((word) => query.has(word)).length
@@ -50,7 +47,7 @@
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
         })
-        .then(({ entries, fallback, schools }) => {
+        .then(({ entries, fallback }) => {
           const indexed = entries.map((entry) => ({
             ...entry,
             words: [...new Set(entry.keywords.flatMap(wordsIn))],
@@ -62,7 +59,6 @@
           return {
             entries: indexed,
             fallback,
-            schools,
             vocabulary: new Set(indexed.flatMap((entry) => entry.words)),
           };
         })
@@ -71,19 +67,6 @@
           throw error;
         });
       return this.data;
-    }
-
-    answerSchoolQuestion(question, schools) {
-      const match = question.toLowerCase().match(/\b(?:go(?:es)? to|attend(?:s)?|study at)\s+([a-z]+)/);
-      if (!match) return null;
-      const school = [...schools.current, ...schools.former].reduce((best, candidate) => {
-        const distance = editDistance(match[1], candidate);
-        return distance < best.distance ? { name: candidate, distance } : best;
-      }, { name: match[1], distance: 3 });
-      const name = school.distance <= 2 ? school.name : match[1];
-      if (schools.current.includes(name)) return schools.currentAnswer;
-      if (schools.former.includes(name)) return schools.formerAnswer;
-      return schools.otherAnswer;
     }
 
     correct(word, vocabulary) {

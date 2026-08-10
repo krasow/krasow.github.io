@@ -1,11 +1,4 @@
 {
-  "schools": {
-    "current": ["northwestern"],
-    "former": ["clemson"],
-    "currentAnswer": "Yes. David is a Computer Science Ph.D. candidate at Northwestern University.",
-    "formerAnswer": "David attended Clemson University, where he earned a B.S. in Computer Engineering and began his research in scientific data compression.",
-    "otherAnswer": "No. David currently attends Northwestern University and previously attended Clemson University."
-  },
   "entries": [
     {
       "topic": "name",
@@ -39,8 +32,8 @@
     },
     {
       "topic": "education",
-      "keywords": ["education", "study", "studied", "degree", "degrees", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
-      "answer": "David earned a B.S. in Computer Engineering from Clemson University (2019–2022) and is pursuing a Ph.D. in Computer Science at Northwestern University (2023–present)."
+      "keywords": ["education", "school", "go", "attend", "attended", "graduate", "graduated", "study", "studied", "degree", "degrees", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
+      "answer": "David graduated from Clemson University with a B.S. in Computer Engineering and is currently pursuing a Ph.D. in Computer Science at Northwestern University."
     },
     {
       "topic": "resume",
