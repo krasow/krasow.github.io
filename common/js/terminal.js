@@ -80,13 +80,14 @@
     '/etc/hostname': '/assets/terminal/etc/hostname',
     '/etc/motd': '/assets/terminal/etc/motd',
     '/etc/os-release': '/assets/terminal/etc/os-release',
+    '/home/.ssh/id_ed25519_krasow.pub': '/assets/terminal/home/.ssh/id_ed25519_krasow.pub',
     '/proc/version': '/assets/terminal/proc/version',
   };
-  const HIDDEN_FOLDERS = Object.keys(HIDDEN_FILES).reduce((folders, path) => {
-    const [folder, name] = path.slice(1).split('/');
-    (folders[folder] ??= []).push([name, null]);
-    return folders;
-  }, {});
+  const HIDDEN_DIRECTORIES = {
+    '/etc': ['hostname', 'motd', 'os-release'],
+    '/home/.ssh': ['id_ed25519_krasow.pub'],
+    '/proc': ['version'],
+  };
   const ROOT_ENTRIES = [
     'about.pg', 'ai-notice.md', 'contact.md', 'contact.vcf', 'cv.pg', 'education.md',
     'experience.pg', 'news.pg',
@@ -101,10 +102,7 @@
       `/home/${name}`,
       entries.map(([entry]) => entry),
     ])),
-    ...Object.fromEntries(Object.entries(HIDDEN_FOLDERS).map(([name, entries]) => [
-      `/${name}`,
-      entries.map(([entry]) => entry),
-    ])),
+    ...HIDDEN_DIRECTORIES,
   };
   const FILE_ROUTES = new Map([
     ...Object.entries(FILES).map(([name, url]) => [`/home/${name}`, url]),
