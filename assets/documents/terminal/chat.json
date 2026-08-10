@@ -13,7 +13,7 @@
     {
       "topic": "research interests",
       "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
-      "phrases": ["what does he study"],
+      "phrases": ["what does he do", "what does he study"],
       "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads. His current work explores scheduling across distributed heterogeneous systems."
     },
     {
@@ -44,7 +44,7 @@
     },
     {
       "topic": "contact",
-      "keywords": ["email", "contact", "reach", "location", "chicago"],
+      "keywords": ["email", "contact", "reach", "location", "live", "lives", "based", "phone", "number", "telephone", "chicago"],
       "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card."
     },
     {
