@@ -120,8 +120,6 @@
       text-align: center;
       text-shadow: 0 0 12px var(--terminal-accent);
     }
-    .glitch.plain::before,
-    .glitch.plain::after { display: none; }
     .glitch::before { animation: g1 2.6s infinite steps(2); }
     .glitch::after  { opacity: .5; animation: g2 3.3s infinite steps(2); }
     @keyframes g1 { 0%,100% { clip-path: inset(0 0 82% 0); transform: translateX(-2px); } 50% { clip-path: inset(68% 0 0 0); transform: translateX(2px); } }
@@ -260,7 +258,7 @@
 
   <div id="site-footer"></div>
 
-  <!-- Shared controller: normal terminal mode at /terminal, error mode elsewhere. -->
+  <!-- Shared controller: /terminal omits the missing-page message. -->
   <script src="/common/js/terminal.js"></script>
 </body>
 </html>

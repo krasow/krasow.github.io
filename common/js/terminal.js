@@ -961,10 +961,8 @@
   if (IS_TERMINAL_PAGE) {
     document.title = 'Terminal | David Krasowska';
     const banner = document.querySelector('.glitch');
-    banner.textContent = 'krasow.dev';
-    banner.dataset.t = 'krasow.dev';
-    banner.setAttribute('aria-label', 'krasow.dev');
-    banner.classList.add('plain');
+    banner.dataset.t = 'terminal';
+    banner.setAttribute('aria-label', 'krasow.dev terminal');
     byId('log').replaceChildren(
       makeElement('p', 'hint', '# use help for more details.'),
     );
