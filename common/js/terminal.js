@@ -112,6 +112,7 @@
     cd: 'cd [folder|..|-]',
     show: 'show <script>',
     echo: 'echo [text]',
+    grep: 'grep <pattern> <file|pattern> [...]',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
   const HISTORY_LIMIT = 10;
@@ -124,6 +125,7 @@
       ['cd folder · cd .. · cd -', 'change directory'],
       ['pwd · tree', 'inspect the current directory'],
       ['cat file|pattern', 'read one or more text files'],
+      ['grep pattern file', 'search one or more text files'],
       ['echo text', 'print text'],
       ['show script', 'print an install command'],
     ]],
@@ -209,6 +211,11 @@
           this.readFiles(args);
           return true;
         }],
+        ['grep', (args) => {
+          if (args.length < 2) return false;
+          this.grep(args[0], args.slice(1));
+          return true;
+        }],
         ['ls', (args) => {
           this.list(args.join(' '));
           return true;
@@ -228,7 +235,7 @@
         items.flatMap(([name]) => [name, `${folder}/${name}`])
       ));
       return [...new Set([
-        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -346,6 +353,7 @@
     }
 
     matchingEntries(path) {
+      const rootQualified = /^(~\/|\/)/.test(path);
       const parts = path.trim().split('/');
       const pattern = parts.pop();
       const directoryPath = parts.join('/');
@@ -353,13 +361,20 @@
         ? this.directoryFromPath(directoryPath || '/')
         : this.currentDirectory;
       const entries = this.entriesIn(directory);
+      const prefix = directory ? `${rootQualified ? '/' : ''}${directory}/` : '';
 
-      if (!entries) return { directory, directoryPath, matches: null };
+      if (!entries) return { directoryPath, prefix, matches: null };
 
       const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
       const expression = new RegExp(`^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`);
       const matches = entries.filter((entry) => expression.test(entry));
-      return { directory, directoryPath, matches };
+      return { directoryPath, prefix, matches };
+    }
+
+    expandPath(path) {
+      if (!/[*?]/.test(path)) return [path];
+      const { prefix, matches } = this.matchingEntries(path);
+      return (matches ?? []).map((name) => `${prefix}${name}`);
     }
 
     entriesIn(directory) {
@@ -410,76 +425,84 @@
     }
 
     async readFile(path) {
-      const absolutePath = path.startsWith('/')
-        ? path
-        : `/${this.currentDirectory ? `${this.currentDirectory}/` : ''}${path}`;
-      const hiddenUrl = HIDDEN_FILES[absolutePath];
-      if (hiddenUrl) {
-        await this.fetchTextFile(hiddenUrl, path);
-        return;
-      }
-      if (PAGE_SOURCES[path]) {
-        await this.readPage(PAGE_SOURCES[path], path);
-        return;
-      }
-      const scriptName = path.replace(/^scripts\//, '');
-      const url = READABLE_FILES[path] ?? this.folderMaps.scripts.get(scriptName);
-      if (!url) {
-        this.write(`cat: ${path}: no such text file`, 'err');
-        return;
-      }
-      await this.fetchTextFile(url, path);
-    }
-
-    async fetchTextFile(url, path) {
       try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        this.write((await response.text()).trim(), 'pth');
+        this.write(await this.fileText(path), 'pth');
       } catch (error) {
-        this.write(`cat: ${path}: unable to read file`, 'err');
+        const reason = error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
+        this.write(`cat: ${path}: ${reason}`, 'err');
       }
     }
 
     async readFiles(paths) {
       for (const path of paths) {
-        if (!/[*?]/.test(path)) {
-          await this.readFile(path);
-          continue;
-        }
-
-        const { directory, matches } = this.matchingEntries(path);
-        if (!matches?.length) {
+        const files = this.expandPath(path);
+        if (!files.length) {
           this.write(`cat: no matches found: ${path}`, 'err');
           continue;
         }
-        for (const name of matches) {
-          await this.readFile(directory ? `${directory}/${name}` : name);
-        }
+        for (const file of files) await this.readFile(file);
       }
     }
 
-    async readPage(source, path) {
-      try {
-        const response = await fetch(source.url);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const content = await response.text();
-        if (source.markdown) {
-          this.write(content.trim(), 'pth');
-          return;
-        }
+    async fileText(path) {
+      const source = this.textSource(path);
+      if (!source) throw new Error('ENOENT');
+      return this.loadText(source);
+    }
 
-        const document = new DOMParser().parseFromString(content, 'text/html');
-        const sections = [...document.querySelectorAll(source.selector)];
-        const text = sections
-          .map((section) => this.pageText(section))
-          .filter(Boolean)
-          .join('\n\n')
-          .replace(/\n{3,}/g, '\n\n');
-        if (!text) throw new Error('No readable content');
-        this.write(text, 'pth');
+    textSource(path) {
+      const absolutePath = path.startsWith('/')
+        ? path
+        : `/${this.currentDirectory ? `${this.currentDirectory}/` : ''}${path}`;
+      if (HIDDEN_FILES[absolutePath]) return { url: HIDDEN_FILES[absolutePath] };
+      if (PAGE_SOURCES[path]) return PAGE_SOURCES[path];
+
+      const scriptName = path.replace(/^scripts\//, '');
+      const url = READABLE_FILES[path] ?? this.folderMaps.scripts.get(scriptName);
+      return url ? { url } : null;
+    }
+
+    async loadText(source) {
+      const response = await fetch(source.url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const content = (await response.text()).trim();
+      if (!source.selector) return content;
+
+      const document = new DOMParser().parseFromString(content, 'text/html');
+      const text = [...document.querySelectorAll(source.selector)]
+        .map((section) => this.pageText(section))
+        .filter(Boolean)
+        .join('\n\n')
+        .replace(/\n{3,}/g, '\n\n');
+      if (!text) throw new Error('No readable content');
+      return text;
+    }
+
+    async grep(pattern, paths) {
+      let expression;
+      try {
+        expression = new RegExp(pattern);
       } catch (error) {
-        this.write(`cat: ${path}: unable to read page`, 'err');
+        this.write(`grep: invalid pattern: ${pattern}`, 'err');
+        return;
+      }
+
+      const files = paths.flatMap((path) => this.expandPath(path));
+      if (!files.length) {
+        this.write(`grep: no files matched`, 'err');
+        return;
+      }
+
+      for (const path of files) {
+        try {
+          const matches = (await this.fileText(path))
+            .split('\n')
+            .filter((line) => expression.test(line));
+          if (matches.length) this.write(matches.map((line) => `${path}:${line}`).join('\n'), 'pth');
+        } catch (error) {
+          const reason = error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
+          this.write(`grep: ${path}: ${reason}`, 'err');
+        }
       }
     }
 
