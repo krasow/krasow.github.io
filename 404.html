@@ -121,9 +121,17 @@
       text-shadow: 0 0 12px var(--terminal-accent);
     }
     .glitch::before { animation: g1 2.6s infinite steps(2); }
-    .glitch::after  { opacity: .5; animation: g2 3.3s infinite steps(2); }
-    @keyframes g1 { 0%,100% { clip-path: inset(0 0 82% 0); transform: translateX(-2px); } 50% { clip-path: inset(68% 0 0 0); transform: translateX(2px); } }
-    @keyframes g2 { 0%,100% { clip-path: inset(78% 0 0 0); transform: translateX(2px); } 50% { clip-path: inset(0 0 72% 0); transform: translateX(-2px); } }
+    .glitch::after  { opacity: .65; animation: g2 3.3s infinite steps(2); }
+    @keyframes g1 {
+      0%, 100% { clip-path: inset(0 0 68% 0); transform: translateX(-2px); }
+      45%, 55% { clip-path: inset(12% 0); transform: translateX(1px); }
+      75% { clip-path: inset(58% 0 0); transform: translateX(2px); }
+    }
+    @keyframes g2 {
+      0%, 100% { clip-path: inset(62% 0 0); transform: translateX(2px); }
+      40%, 50% { clip-path: inset(18% 0); transform: translateX(-1px); }
+      70% { clip-path: inset(0 0 62%); transform: translateX(-2px); }
+    }
 
     /* ---- Terminal session (log + prompt + input) ------------------------ */
     .ln {
