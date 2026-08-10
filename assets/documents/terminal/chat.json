@@ -15,6 +15,7 @@
     {
       "topic": "current role and university",
       "keywords": ["who", "identity", "phd candidate", "northwestern", "student", "position", "current", "school", "university", "advisor", "peter dinda"],
+      "phrases": ["about david", "tell me about david"],
       "answer": "David is a Computer Science Ph.D. candidate at Northwestern University, advised by Peter Dinda.",
       "hint": "Try asking about his work in Julia, lossy compression, or PIM.",
       "readMore": { "command": "cat /home/about.pg" }

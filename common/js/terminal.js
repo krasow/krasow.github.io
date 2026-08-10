@@ -312,7 +312,7 @@
         if (result.hint) this.write(result.hint, 'hint');
         result.links?.forEach(({ label, url }) => this.writeLink(url, `→ ${label}: ${url}`));
         if (result.command) this.runChatCommand(result.command);
-        if (result.readMore) {
+        if (this.chatMode && result.readMore) {
           this.chatConfirmation = result.readMore;
           this.write(result.readMore.prompt ?? 'Would you like to read more? (y/n)', 'hint');
         }
