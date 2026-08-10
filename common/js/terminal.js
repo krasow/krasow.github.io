@@ -385,11 +385,18 @@
     startSnake() {
       const output = makeElement('pre', 'ln snake-game');
       this.append(output);
-      this.snakeGame = new window.KrasowSnake.SnakeGame(output, (reason, score) => {
+      const style = getComputedStyle(output);
+      const fontSize = parseFloat(style.fontSize) || 14;
+      const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.75;
+      const width = Math.max(24, Math.min(100,
+        Math.floor(this.ui.log.clientWidth / (fontSize * 0.62)) - 4));
+      const height = Math.max(12, Math.min(30,
+        Math.floor(this.ui.log.clientHeight / lineHeight) - 5));
+      this.snakeGame = new window.KrasowSnake.SnakeGame(output, (score) => {
         this.snakeGame = null;
-        this.write(`snake: ${reason} · score ${score}`, reason === 'quit' ? 'hint' : 'err');
+        this.write(`snake: quit · score ${score}`, 'hint');
         this.ui.input.focus();
-      });
+      }, width, height);
       this.snakeGame.start();
     }
 
