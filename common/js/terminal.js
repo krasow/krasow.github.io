@@ -320,6 +320,7 @@
         if (result.command) this.runChatCommand(result.command);
         if (this.chatMode && result.readMore) {
           this.chatConfirmation = result.readMore;
+          this.ui.prompt.textContent = this.promptText();
           this.write(result.readMore.prompt ?? 'Would you like to read more? (y/n)', 'hint');
         }
       } catch (error) {
@@ -351,9 +352,10 @@
       }
       const command = this.chatConfirmation.command;
       this.chatConfirmation = null;
+      this.ui.prompt.textContent = this.promptText();
       if (['y', 'yes'].includes(answer)) {
         this.runChatCommand(command);
-      }
+      } else this.write('Okay, staying in chat.', 'hint');
       return true;
     }
 
@@ -417,8 +419,8 @@
 
     execute(raw) {
       const command = raw.trim();
-      this.echo(command);
       if (!command) return;
+      this.echo(command);
 
       this.history.push(command);
       this.history = this.history.slice(-HISTORY_LIMIT);
@@ -472,6 +474,7 @@
     }
 
     promptText() {
+      if (this.chatConfirmation) return 'david:[y/n]>';
       return this.chatMode ? 'david:chat>' : `david:${this.path()}$`;
     }
 
