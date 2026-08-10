@@ -355,7 +355,7 @@
       this.ui.prompt.textContent = this.promptText();
       if (['y', 'yes'].includes(answer)) {
         this.runChatCommand(command);
-      } else this.write('Okay, staying in chat.', 'hint');
+      }
       return true;
     }
 
@@ -931,8 +931,11 @@
         event.preventDefault();
         this.echo(`${this.ui.input.value}^C`);
         this.clearInput();
-        if (this.chatConfirmation) this.write('Please answer y or n.', 'hint');
-        else if (this.chatMode) this.leaveChat();
+        if (this.chatConfirmation) {
+          this.chatConfirmation = null;
+          this.ui.prompt.textContent = this.promptText();
+          this.write('Cancelled.', 'hint');
+        } else if (this.chatMode) this.leaveChat();
         return;
       }
 
