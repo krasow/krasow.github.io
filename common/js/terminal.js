@@ -145,6 +145,11 @@
   const PAGE_PATH = location.pathname || '/';
   const IS_TERMINAL_PAGE = PAGE_PATH.replace(/\/+$/, '') === '/terminal';
   const CHAT_KNOWLEDGE_URL = '/assets/documents/terminal/chat.json';
+  const CHAT_COMMON_WORDS = new Set([
+    'about', 'can', 'david', 'did', 'do', 'does', 'from', 'has', 'have', 'he',
+    'help', 'his', 'how', 'into', 'is', 'krasowska', 'me', 'the', 'their', 'them',
+    'they', 'this', 'was', 'what', 'when', 'where', 'which', 'with', 'you', 'your',
+  ]);
 
   const HELP = [
     ['Navigation', [
@@ -184,6 +189,73 @@
     node.textContent = text;
     return node;
   };
+  const wordsIn = (text) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
+  const editDistance = (a, b) => {
+    let row = [...Array(b.length + 1).keys()];
+    for (let i = 1; i <= a.length; i += 1) {
+      const next = [i];
+      for (let j = 1; j <= b.length; j += 1) {
+        next[j] = Math.min(next[j - 1] + 1, row[j] + 1,
+          row[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      }
+      row = next;
+    }
+    return row[b.length];
+  };
+
+  class LocalChat {
+    constructor(url) {
+      this.url = url;
+      this.data = null;
+    }
+
+    async ask(question) {
+      const { entries, fallback, vocabulary } = await this.load();
+      const corrections = [];
+      const query = new Set(wordsIn(question).map((word) => {
+        const corrected = this.correct(word, vocabulary);
+        if (corrected !== word) corrections.push(`${word} → ${corrected}`);
+        return corrected;
+      }));
+      const score = (entry) => entry.words.filter((word) => query.has(word)).length;
+      const best = entries.reduce((a, b) => score(b) > score(a) ? b : a);
+      return score(best) ? { ...best, corrections } : { answer: fallback };
+    }
+
+    async load() {
+      if (!this.data) this.data = fetch(this.url)
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then(({ entries, fallback }) => {
+          const indexed = entries.map((entry) => ({
+            ...entry,
+            words: entry.keywords.flatMap(wordsIn),
+          }));
+          return {
+            entries: indexed,
+            fallback,
+            vocabulary: new Set(indexed.flatMap((entry) => entry.words)),
+          };
+        })
+        .catch((error) => {
+          this.data = null;
+          throw error;
+        });
+      return this.data;
+    }
+
+    correct(word, vocabulary) {
+      if (word.length < 4 || vocabulary.has(word) || CHAT_COMMON_WORDS.has(word)) return word;
+      const closest = [...vocabulary].reduce((best, candidate) => {
+        const distance = editDistance(word, candidate);
+        return distance < best.distance ? { word: candidate, distance } : best;
+      }, { word, distance: 3 });
+      return closest.distance <= 2 ? closest.word : word;
+    }
+  }
+
   const fileIcon = (name) => {
     if (name.endsWith('/')) return '📁';
     if (name.endsWith('.pg')) return '🌐';
@@ -218,7 +290,7 @@
       this.historyCursor = 0;
       this.completionCycle = null;
       this.transcript = [];
-      this.chatKnowledge = null;
+      this.chatModel = new LocalChat(CHAT_KNOWLEDGE_URL);
       this.chatMode = false;
 
       this.completions = this.buildCompletions();
@@ -247,7 +319,7 @@
     buildCommands() {
       return new Map([
         ['chat', (args) => {
-          if (args.length) this.chat(args.join(' '));
+          if (args.length) this.askChat(args.join(' '));
           else this.enterChat();
           return true;
         }],
@@ -300,20 +372,19 @@
       ])];
     }
 
-    async chat(question) {
+    async askChat(question) {
       const thinking = makeElement('p', 'ln hint', 'local model: thinking…');
       this.append(thinking);
 
       try {
-        this.chatKnowledge ??= fetch(CHAT_KNOWLEDGE_URL).then((response) => {
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return response.json();
-        });
-        const knowledge = await this.chatKnowledge;
+        const result = await this.chatModel.ask(question);
         thinking.remove();
-        this.write(this.answerQuestion(question, knowledge), 'pth');
+        if (result.corrections?.length) {
+          this.write(`autocorrect: ${result.corrections.join(', ')}`, 'hint');
+        }
+        this.write(result.answer, 'pth');
+        if (result.command) this.runChatCommand(result.command);
       } catch (error) {
-        this.chatKnowledge = null;
         thinking.remove();
         this.write('chat: the local knowledge model could not be loaded', 'err');
       }
@@ -331,13 +402,51 @@
       this.write('leaving chat', 'hint');
     }
 
-    answerQuestion(question, knowledge) {
-      const words = new Set(question.toLowerCase().match(/[a-z0-9]+/g) ?? []);
-      const score = (entry) => entry.keywords
-        .flatMap((keyword) => keyword.match(/[a-z0-9]+/g) ?? [])
-        .filter((word) => words.has(word)).length;
-      const best = knowledge.entries.reduce((a, b) => score(b) > score(a) ? b : a);
-      return score(best) ? best.answer : knowledge.fallback;
+    showChatHelp() {
+      this.write([
+        'Ask about David using natural language. For example:',
+        '  what does he work on?',
+        '  where did he study?',
+        '  who is his advisor?',
+        '  what publications does he have?',
+        '  what is his work on PIM?',
+        '  how can I contact him?',
+        '',
+        'Commands: help · ] <shell command> · exit · quit · Ctrl+C',
+      ].join('\n'), 'pth');
+    }
+
+    runChatShell(command) {
+      if (!command) {
+        this.write('usage: ] <shell command>', 'hint');
+        return;
+      }
+
+      const [name, ...args] = command.split(/\s+/);
+      const handler = this.commands.get(name);
+      if (handler) {
+        if (!handler(args)) this.write(`${name}: usage: ${COMMAND_USAGE[name]}`, 'err');
+        return;
+      }
+
+      const response = RESPONSES[name] ?? HIDDEN_RESPONSES[name];
+      if (response && !args.length) {
+        this.write(response, 'pth');
+        return;
+      }
+      if (this.entriesIn(this.resolvePath(command))) {
+        this.write(`zsh: is a directory: ${command}`, 'err');
+        return;
+      }
+      const url = this.resolve(command);
+      if (url) this.navigate(url);
+      else this.write(`zsh: command not found: ${name}`, 'err');
+    }
+
+    runChatCommand(command) {
+      this.echo(command, 'david:~$');
+      const [name, ...args] = command.split(/\s+/);
+      this.commands.get(name)?.(args);
     }
 
     withArity(args, count, action) {
@@ -363,8 +472,11 @@
       this.persist();
 
       if (this.chatMode) {
-        if (['exit', 'quit'].includes(command.toLowerCase())) this.leaveChat();
-        else this.chat(command);
+        const chatCommand = command.toLowerCase();
+        if (['exit', 'quit'].includes(chatCommand)) this.leaveChat();
+        else if (['help', '?'].includes(chatCommand)) this.showChatHelp();
+        else if (command.startsWith(']')) this.runChatShell(command.slice(1).trim());
+        else this.askChat(command);
         return;
       }
 
@@ -744,9 +856,8 @@
       this.append(line, { type: 'link', url, text });
     }
 
-    echo(command) {
+    echo(command, prompt = this.promptText()) {
       const line = makeElement('p', 'ln');
-      const prompt = this.promptText();
       line.append(makeElement('span', 'pr', prompt), ` ${command}`);
       this.append(line, { type: 'echo', prompt, command });
     }

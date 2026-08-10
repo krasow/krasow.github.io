@@ -48,7 +48,8 @@
     {
       "topic": "publications and papers",
       "keywords": ["publication", "publications", "paper", "papers", "published", "writing"],
-      "answer": "David has published work on lossy-compression prediction and heterogeneous computing. Run `cd publications` followed by `ls` to browse the papers listed here."
+      "answer": "Here are David's listed publications:",
+      "command": "ls /home/publications"
     }
   ],
   "fallback": "I don't know that from David's site. Try asking about his education, research, projects, fellowship, publications, or contact information."
