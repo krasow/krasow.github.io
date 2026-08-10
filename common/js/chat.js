@@ -71,8 +71,13 @@
     answerSchoolQuestion(question, schools) {
       const match = question.toLowerCase().match(/\b(?:go(?:es)? to|attend(?:s)?|study at)\s+([a-z]+)/);
       if (!match) return null;
-      if (schools.current.includes(match[1])) return schools.currentAnswer;
-      if (schools.former.includes(match[1])) return schools.formerAnswer;
+      const school = [...schools.current, ...schools.former].reduce((best, candidate) => {
+        const distance = editDistance(match[1], candidate);
+        return distance < best.distance ? { name: candidate, distance } : best;
+      }, { name: match[1], distance: 3 });
+      const name = school.distance <= 2 ? school.name : match[1];
+      if (schools.current.includes(name)) return schools.currentAnswer;
+      if (schools.former.includes(name)) return schools.formerAnswer;
       return schools.otherAnswer;
     }
 
