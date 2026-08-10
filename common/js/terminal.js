@@ -862,6 +862,12 @@
         .filter(({ name }) => name.startsWith(path))
         .filter(({ path: candidate }) => {
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
+          if (command === 'open') {
+            const openable = [...FILE_ROUTES.keys(), ...Object.keys(HIDDEN_FILES)];
+            return openable.includes(candidate)
+              || ((path.includes('/') || path.startsWith('.'))
+                && openable.some((target) => target.startsWith(`${candidate}/`)));
+          }
           if (!['cat', 'copy', 'grep', 'wc'].includes(command)) return true;
           return TEXT_PATHS.has(candidate)
             || ((path.includes('/') || path.startsWith('.'))
