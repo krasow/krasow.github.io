@@ -388,15 +388,16 @@
       const style = getComputedStyle(output);
       const fontSize = parseFloat(style.fontSize) || 14;
       const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.75;
+      const charWidth = fontSize * 0.62;
       const width = Math.max(24, Math.min(100,
-        Math.floor(this.ui.log.clientWidth / (fontSize * 0.62)) - 4));
+        Math.floor(this.ui.log.clientWidth / charWidth) - 4));
       const height = Math.max(12, Math.min(30,
         Math.floor(this.ui.log.clientHeight / lineHeight) - 5));
       this.snakeGame = new window.KrasowSnake.SnakeGame(output, (score) => {
         this.snakeGame = null;
         this.write(`snake: quit · score ${score}`, 'hint');
         this.ui.input.focus();
-      }, width, height);
+      }, width, height, Math.round(120 * charWidth / lineHeight), 120);
       this.snakeGame.start();
     }
 

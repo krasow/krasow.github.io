@@ -2,11 +2,13 @@
   'use strict';
 
   class SnakeGame {
-    constructor(output, onEnd, width = 24, height = 12) {
+    constructor(output, onEnd, width = 24, height = 12, horizontalDelay = 45, verticalDelay = 120) {
       this.output = output;
       this.onEnd = onEnd;
       this.width = width;
       this.height = height;
+      this.horizontalDelay = horizontalDelay;
+      this.verticalDelay = verticalDelay;
       this.reset();
     }
 
@@ -24,7 +26,12 @@
 
     start() {
       this.render();
-      this.timer = setInterval(() => this.step(), 120);
+      this.schedule();
+    }
+
+    schedule() {
+      const delay = this.direction.x ? this.horizontalDelay : this.verticalDelay;
+      this.timer = setTimeout(() => this.step(), delay);
     }
 
     handleKey(event) {
@@ -64,7 +71,7 @@
       const body = eating ? this.snake : this.snake.slice(0, -1);
       const hitSelf = body.some(({ x, y }) => x === head.x && y === head.y);
       if (hitSelf) {
-        clearInterval(this.timer);
+        clearTimeout(this.timer);
         this.timer = null;
         this.ended = true;
         this.render();
@@ -79,6 +86,7 @@
         this.snake.pop();
       }
       this.render();
+      this.schedule();
     }
 
     placeFood() {
@@ -109,7 +117,7 @@
     }
 
     stop() {
-      clearInterval(this.timer);
+      clearTimeout(this.timer);
       this.timer = null;
       this.onEnd(this.score);
     }
