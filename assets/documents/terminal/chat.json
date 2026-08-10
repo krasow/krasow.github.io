@@ -8,6 +8,11 @@
   },
   "entries": [
     {
+      "topic": "name",
+      "keywords": ["name", "named", "called", "full name"],
+      "answer": "His name is David Krasowska."
+    },
+    {
       "topic": "current role and university",
       "keywords": ["who", "identity", "phd candidate", "northwestern", "student", "position", "current", "school", "university", "advisor", "peter dinda"],
       "answer": "David is a Computer Science Ph.D. candidate at Northwestern University, advised by Peter Dinda.",
@@ -129,6 +134,11 @@
       }
     },
     {
+      "topic": "physical address",
+      "keywords": ["address", "mailing address", "physical address", "street address"],
+      "answer": "David is based in Chicago, Illinois. A street address is not publicly listed."
+    },
+    {
       "topic": "email address",
       "keywords": ["email", "email address", "mail"],
       "answer": "David's email address is david@krasow.dev.",
@@ -139,7 +149,8 @@
     },
     {
       "topic": "contact",
-      "keywords": ["contact", "reach", "location", "live", "lives", "based", "chicago"],
+      "keywords": ["contact", "card", "vcard", "vcf", "download", "save", "reach", "location", "live", "lives", "based", "chicago"],
+      "phrases": ["contact card", "download contact", "save contact"],
       "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card.",
       "readMore": {
         "prompt": "Would you like to run `open contact.vcf`? (y/n)",

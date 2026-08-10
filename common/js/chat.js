@@ -53,7 +53,7 @@
         .then(({ entries, fallback, schools }) => {
           const indexed = entries.map((entry) => ({
             ...entry,
-            words: entry.keywords.flatMap(wordsIn),
+            words: [...new Set(entry.keywords.flatMap(wordsIn))],
             phrases: (entry.phrases ?? []).map((phrase) => ({
               compact: normalizePhrase(phrase),
               words: wordsIn(phrase),

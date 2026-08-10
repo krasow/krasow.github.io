@@ -405,8 +405,8 @@
 
       if (this.chatMode) {
         const chatCommand = command.toLowerCase();
+        if (this.confirmChat(chatCommand)) return;
         if (['exit', 'quit'].includes(chatCommand)) this.leaveChat();
-        else if (this.confirmChat(chatCommand)) return;
         else if (['help', '?'].includes(chatCommand)) this.showChatHelp();
         else if (['hello', 'hi', 'hey'].includes(chatCommand)) {
           this.write('Hello! Ask me anything about David, or type `help` for examples.', 'pth');
@@ -884,6 +884,10 @@
     handleKey(event) {
       if (event.key === ']' && !this.ui.input.value && this.chatSession) {
         event.preventDefault();
+        if (this.chatConfirmation) {
+          this.write('Please answer y or n.', 'hint');
+          return;
+        }
         this.toggleChatShell();
         return;
       }
@@ -892,7 +896,8 @@
         event.preventDefault();
         this.echo(`${this.ui.input.value}^C`);
         this.clearInput();
-        if (this.chatMode) this.leaveChat();
+        if (this.chatConfirmation) this.write('Please answer y or n.', 'hint');
+        else if (this.chatMode) this.leaveChat();
         return;
       }
 
