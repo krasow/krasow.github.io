@@ -177,6 +177,17 @@
     node.textContent = text;
     return node;
   };
+  const fileIcon = (name) => {
+    if (name.endsWith('/')) return '📁';
+    if (name.endsWith('.pg')) return '🌐';
+    if (name.endsWith('.md')) return '📝';
+    if (name.endsWith('.pdf')) return '📕';
+    if (name.endsWith('.sh')) return '⚙';
+    if (name.endsWith('.pub')) return '🔑';
+    if (name.endsWith('.vcf')) return '👤';
+    return '📄';
+  };
+  const displayFile = (name) => `${fileIcon(name)} ${name}`;
 
   class Terminal {
     constructor() {
@@ -353,7 +364,7 @@
         this.write(`ls: ${path}: not a directory`, 'err');
         return;
       }
-      this.write(entries.join('   '), 'pth');
+      this.write(entries.map(displayFile).join('   '), 'pth');
     }
 
     listMatches(path) {
@@ -361,7 +372,7 @@
       if (matches === null) {
         this.write(`ls: ${directoryPath}: not a directory`, 'err');
       } else if (matches.length) {
-        this.write(matches.join('   '), 'pth');
+        this.write(matches.map(displayFile).join('   '), 'pth');
       } else {
         this.write(`ls: no matches found: ${path}`, 'err');
       }
@@ -594,7 +605,7 @@
       entries.forEach((name, index) => {
         const last = index === entries.length - 1;
         const branch = last ? '└──' : '├──';
-        lines.push(`${prefix}${branch} ${name}`);
+        lines.push(`${prefix}${branch} ${displayFile(name)}`);
         if (!name.endsWith('/')) return;
         const child = `${directory === '/' ? '' : directory}/${name.slice(0, -1)}`;
         this.appendTreeEntries(lines, child, `${prefix}${last ? '    ' : '│   '}`);
