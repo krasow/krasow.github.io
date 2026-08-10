@@ -786,6 +786,15 @@
         return;
       }
 
+      const [command, target] = this.ui.input.value.trim().split(/\s+/);
+      if (event.key === 'Enter' && command === 'open'
+        && !this.ui.autocomplete.hidden && this.entriesIn(this.resolvePath(target))) {
+        event.preventDefault();
+        this.completionCycle = null;
+        this.complete();
+        return;
+      }
+
       const actions = {
         ArrowUp: () => this.recall(-1),
         ArrowDown: () => this.recall(1),
