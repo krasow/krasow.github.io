@@ -172,6 +172,12 @@
       }
     },
     {
+      "topic": "news and updates",
+      "keywords": ["news", "update", "updates", "announcement", "announcements", "latest", "recent"],
+      "answer": "Here are David's latest updates:",
+      "command": "cat /home/news.pg"
+    },
+    {
       "topic": "publications and papers",
       "keywords": ["publication", "publications", "paper", "papers", "published", "writing", "list"],
       "phrases": ["research papers"],
