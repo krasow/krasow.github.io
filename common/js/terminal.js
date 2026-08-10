@@ -211,15 +211,10 @@
 
     async ask(question) {
       const { entries, fallback, vocabulary } = await this.load();
-      const corrections = [];
-      const query = new Set(wordsIn(question).map((word) => {
-        const corrected = this.correct(word, vocabulary);
-        if (corrected !== word) corrections.push(`${word} → ${corrected}`);
-        return corrected;
-      }));
+      const query = new Set(wordsIn(question).map((word) => this.correct(word, vocabulary)));
       const score = (entry) => entry.words.filter((word) => query.has(word)).length;
       const best = entries.reduce((a, b) => score(b) > score(a) ? b : a);
-      return score(best) ? { ...best, corrections } : { answer: fallback };
+      return score(best) ? best : { answer: fallback };
     }
 
     async load() {
@@ -379,9 +374,6 @@
       try {
         const result = await this.chatModel.ask(question);
         thinking.remove();
-        if (result.corrections?.length) {
-          this.write(`autocorrect: ${result.corrections.join(', ')}`, 'hint');
-        }
         this.write(result.answer, 'pth');
         if (result.command) this.runChatCommand(result.command);
       } catch (error) {
