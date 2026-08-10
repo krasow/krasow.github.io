@@ -784,9 +784,11 @@
 
       const tokenStart = typed.lastIndexOf(' ') + 1;
       const path = typed.slice(tokenStart);
-      const completesPath = /^(cat|cd|copy|grep|ls|show|wc)\b/.test(typed);
-      const paths = completesPath
-        ? this.pathCompletions(path, typed.split(/\s/)[0])
+      const pathCommand = /^(cat|cd|copy|grep|ls|show|wc)\b/.test(typed)
+        ? typed.split(/\s/)[0]
+        : !typed.includes(' ') ? '' : null;
+      const paths = pathCommand !== null
+        ? this.pathCompletions(path, pathCommand)
           .map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
         : [];
       const matches = [...new Set([...this.completions, ...paths])]
