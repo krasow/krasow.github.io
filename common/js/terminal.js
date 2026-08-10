@@ -757,7 +757,8 @@
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
           if (!['cat', 'grep'].includes(command)) return true;
           return TEXT_PATHS.has(candidate)
-            || [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`));
+            || (path.includes('/')
+              && [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)));
         })
         .map(({ name }) => name);
     }
