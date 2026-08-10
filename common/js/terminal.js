@@ -212,13 +212,15 @@
     async ask(question) {
       const { entries, fallback, vocabulary } = await this.load();
       const query = new Set(wordsIn(question).map((word) => this.correct(word, vocabulary)));
-      const score = (entry) => entry.words.filter((word) => query.has(word)).length;
+      const normalized = question.toLowerCase();
+      const score = (entry) => entry.words.filter((word) => query.has(word)).length
+        + (entry.phrases.some((phrase) => normalized.includes(phrase)) ? 10 : 0);
       const best = entries.reduce((a, b) => score(b) > score(a) ? b : a);
       return score(best) ? best : { answer: fallback };
     }
 
     async load() {
-      if (!this.data) this.data = fetch(this.url)
+      if (!this.data) this.data = fetch(this.url, { cache: 'no-store' })
         .then((response) => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
@@ -227,6 +229,7 @@
           const indexed = entries.map((entry) => ({
             ...entry,
             words: entry.keywords.flatMap(wordsIn),
+            phrases: entry.phrases ?? [],
           }));
           return {
             entries: indexed,

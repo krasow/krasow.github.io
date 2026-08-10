@@ -13,6 +13,7 @@
     {
       "topic": "research interests",
       "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
+      "phrases": ["what does he study"],
       "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads. His current work explores scheduling across distributed heterogeneous systems."
     },
     {
@@ -28,6 +29,7 @@
     {
       "topic": "processing in memory",
       "keywords": ["pim", "processing in memory", "upmem", "memory accelerator", "legionpim"],
+      "phrases": ["work on pim"],
       "answer": "David researches Processing-in-Memory accelerators and uses Legion to reduce the programming and portability burden of adopting PIM systems."
     },
     {
