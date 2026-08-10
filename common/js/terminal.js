@@ -220,6 +220,7 @@
       this.chatModel = new window.KrasowChat.LocalChat();
       this.chatSession = false;
       this.chatMode = false;
+      this.chatConfirmation = null;
 
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
@@ -311,6 +312,10 @@
         if (result.hint) this.write(result.hint, 'hint');
         result.links?.forEach(({ label, url }) => this.writeLink(url, `→ ${label}: ${url}`));
         if (result.command) this.runChatCommand(result.command);
+        if (result.readMore) {
+          this.chatConfirmation = result.readMore;
+          this.write(result.readMore.prompt ?? 'Would you like to read more? (y/n)', 'hint');
+        }
       } catch (error) {
         thinking.remove();
         this.write('chat: the local knowledge model could not be loaded', 'err');
@@ -327,8 +332,23 @@
     leaveChat() {
       this.chatSession = false;
       this.chatMode = false;
+      this.chatConfirmation = null;
       this.ui.prompt.textContent = this.promptText();
       this.write('leaving chat', 'hint');
+    }
+
+    confirmChat(answer) {
+      if (!this.chatConfirmation) return false;
+      if (!['y', 'yes', 'n', 'no'].includes(answer)) {
+        this.write('Please answer y or n.', 'hint');
+        return true;
+      }
+      const command = this.chatConfirmation.command;
+      this.chatConfirmation = null;
+      if (['y', 'yes'].includes(answer)) {
+        this.runChatCommand(command);
+      }
+      return true;
     }
 
     toggleChatShell() {
@@ -386,6 +406,7 @@
       if (this.chatMode) {
         const chatCommand = command.toLowerCase();
         if (['exit', 'quit'].includes(chatCommand)) this.leaveChat();
+        else if (this.confirmChat(chatCommand)) return;
         else if (['help', '?'].includes(chatCommand)) this.showChatHelp();
         else if (['hello', 'hi', 'hey'].includes(chatCommand)) {
           this.write('Hello! Ask me anything about David, or type `help` for examples.', 'pth');

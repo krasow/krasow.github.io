@@ -22,7 +22,8 @@
       "topic": "experience and background",
       "keywords": ["experience", "background", "career", "employment", "employer", "workplace", "history", "resume", "cv"],
       "phrases": ["where has he worked", "where did he work", "places he worked"],
-      "answer": "David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University and collaborates with Los Alamos National Laboratory on distributed heterogeneous computing."
+      "answer": "David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University and collaborates with Los Alamos National Laboratory on distributed heterogeneous computing.",
+      "readMore": { "command": "cat /home/experience.pg" }
     },
     {
       "topic": "research interests",
@@ -48,7 +49,8 @@
           "label": "DRBSD21 — Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets",
           "url": "/assets/documents/papers/2021/Exploring_Lossy_Compressibility_through_Statistical_Correlations_of_Scientific_Datasets.pdf"
         }
-      ]
+      ],
+      "readMore": { "command": "open /home/projects/compression" }
     },
     {
       "topic": "Legion Julia and GPUs",
@@ -58,13 +60,18 @@
       "links": [
         { "label": "GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" },
         { "label": "Documentation", "url": "https://julialegate.github.io/cuNumeric.jl/dev/" }
-      ]
+      ],
+      "readMore": { "command": "open /home/projects/cunumeric" }
     },
     {
       "topic": "processing in memory",
       "keywords": ["pim", "processing in memory", "upmem", "memory accelerator", "legionpim"],
       "phrases": ["pim work", "legion pim"],
-      "answer": "David researches Processing-in-Memory accelerators and uses Legion to reduce the programming and portability burden of adopting PIM systems."
+      "answer": "David researches Processing-in-Memory accelerators and uses Legion to reduce the programming and portability burden of adopting PIM systems.",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/presciencelab/upmem-legion" }
+      ],
+      "readMore": { "command": "open /home/projects/legionpim" }
     },
     {
       "topic": "Los Alamos National Laboratory",
@@ -79,17 +86,29 @@
     {
       "topic": "phone number",
       "keywords": ["phone", "number", "telephone", "mobile", "call"],
-      "answer": "David's phone number is +1 (224) 355-2715."
+      "answer": "David's phone number is +1 (224) 355-2715.",
+      "readMore": {
+        "prompt": "Would you like to see more contact info? (y/n)",
+        "command": "cat /home/contact.md"
+      }
     },
     {
       "topic": "email address",
       "keywords": ["email", "email address", "mail"],
-      "answer": "David's email address is david@krasow.dev."
+      "answer": "David's email address is david@krasow.dev.",
+      "readMore": {
+        "prompt": "Would you like to see more contact info? (y/n)",
+        "command": "cat /home/contact.md"
+      }
     },
     {
       "topic": "contact",
       "keywords": ["contact", "reach", "location", "live", "lives", "based", "chicago"],
-      "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card."
+      "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card.",
+      "readMore": {
+        "prompt": "Would you like to see more contact info? (y/n)",
+        "command": "cat /home/contact.md"
+      }
     },
     {
       "topic": "publications and papers",
