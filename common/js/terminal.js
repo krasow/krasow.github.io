@@ -696,8 +696,8 @@
     }
 
     complete() {
-      const typed = this.ui.input.value.trim();
-      if (!typed) {
+      const typed = this.ui.input.value.trimStart();
+      if (!typed.trim()) {
         this.hideCompletions();
         return;
       }
