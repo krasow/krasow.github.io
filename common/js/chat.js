@@ -4,7 +4,7 @@
   const KNOWLEDGE_URL = '/assets/documents/terminal/chat.json';
   const COMMON_WORDS = new Set([
     'about', 'can', 'david', 'did', 'do', 'does', 'from', 'has', 'have', 'he',
-    'help', 'his', 'how', 'into', 'is', 'krasowska', 'me', 'the', 'their', 'them',
+    'help', 'his', 'how', 'into', 'is', 'krasowska', 'me', 'tell', 'the', 'their', 'them',
     'they', 'this', 'was', 'what', 'when', 'where', 'which', 'with', 'you', 'your',
   ]);
 
