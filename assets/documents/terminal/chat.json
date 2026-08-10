@@ -80,8 +80,18 @@
       }
     },
     {
+      "topic": "scheduling research",
+      "keywords": ["scheduling", "scheduler", "schedulers", "resource scheduling", "task scheduling"],
+      "phrases": ["scheduling work", "scheduling research"],
+      "answer": "David studies scheduling across distributed heterogeneous systems. His broader systems work includes cuNumeric.jl for distributed Julia and GPU applications and Legion-based support for PIM accelerators.",
+      "readMore": {
+        "prompt": "Would you like to see his related projects? (y/n)",
+        "command": "ls /home/projects"
+      }
+    },
+    {
       "topic": "research interests",
-      "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
+      "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists"],
       "phrases": ["what does he do", "what does he study", "area of cs"],
       "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads. His current work explores scheduling across distributed heterogeneous systems."
     },
