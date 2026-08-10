@@ -779,14 +779,10 @@
         this.completionCycle = { matches, index: 0, value: matches[0] };
       }
 
-      const directoryCommand = /^(ls|cd)( |$)/.test(typed);
-      const choices = directoryCommand
-        ? matches.filter((match) => match.includes(' ')).map((match) => match.split(' ')[1])
-        : [...matches];
       const active = this.completionCycle.index < 0
         ? ''
         : this.completionCycle.matches[this.completionCycle.index];
-      this.showCompletions(choices, directoryCommand ? active.split(' ')[1] : active);
+      this.showCompletionMenu(matches, active);
     }
 
     cycleCompletion() {
@@ -795,12 +791,15 @@
       cycle.value = cycle.matches[cycle.index];
       this.ui.input.value = cycle.value;
 
-      const directoryCommand = /^(ls|cd)( |$)/.test(cycle.matches[0]);
-      const choices = directoryCommand
-        ? cycle.matches.filter((match) => match.includes(' ')).map((match) => match.split(' ')[1])
-        : cycle.matches;
-      const active = directoryCommand ? cycle.value.split(' ')[1] : cycle.value;
-      this.showCompletions(choices, active);
+      this.showCompletionMenu(cycle.matches, cycle.value);
+    }
+
+    showCompletionMenu(matches, active) {
+      const command = matches[0].split(' ')[0];
+      const prefix = `${command} `;
+      const compact = matches.every((match) => match.startsWith(prefix));
+      const label = (match) => compact ? match.slice(prefix.length) : match;
+      this.showCompletions(matches.map(label), label(active));
     }
 
     showCompletions(choices, active = '') {
