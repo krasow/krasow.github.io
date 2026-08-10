@@ -137,6 +137,7 @@
     echo: 'echo [text]',
     grep: 'grep <pattern> <file|pattern> [...]',
     copy: 'copy <file>',
+    wc: 'wc <file|pattern> [...]',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
   const HISTORY_LIMIT = 10;
@@ -151,6 +152,7 @@
       ['cat file|pattern', 'read one or more text files'],
       ['grep pattern file', 'search one or more text files'],
       ['copy file', 'copy a text file'],
+      ['wc file|pattern', 'count lines, words, and characters'],
       ['echo text', 'print text'],
       ['show script', 'print an install command'],
     ]],
@@ -238,6 +240,11 @@
           return true;
         }],
         ['copy', (args) => this.withArity(args, 1, () => this.copyFile(args[0]))],
+        ['wc', (args) => {
+          if (!args.length) return false;
+          this.countFiles(args);
+          return true;
+        }],
         ['ls', (args) => {
           this.list(args.join(' '));
           return true;
@@ -253,7 +260,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -531,12 +538,34 @@
           textarea.remove();
           if (!copied) throw error;
         }
-        this.write(`copied: ${path}`, 'pth');
+        this.write(`copied: ${path} to clipboard`, 'pth');
       } catch (error) {
         const reason = error.message === 'EISDIR'
           ? 'is a directory'
           : error.message === 'ENOENT' ? 'no such text file' : 'unable to copy file';
         this.write(`copy: ${path}: ${reason}`, 'err');
+      }
+    }
+
+    async countFiles(paths) {
+      const files = paths.flatMap((path) => this.expandPath(path));
+      if (!files.length) {
+        this.write('wc: no files matched', 'err');
+        return;
+      }
+      for (const path of files) {
+        try {
+          const text = await this.fileText(path);
+          const lines = text ? text.split('\n').length : 0;
+          const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+          const characters = [...text].length;
+          this.write(`${lines} ${words} ${characters} ${path}`, 'pth');
+        } catch (error) {
+          const reason = error.message === 'EISDIR'
+            ? 'is a directory'
+            : error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
+          this.write(`wc: ${path}: ${reason}`, 'err');
+        }
       }
     }
 
@@ -746,7 +775,7 @@
 
       const tokenStart = typed.lastIndexOf(' ') + 1;
       const path = typed.slice(tokenStart);
-      const completesPath = /^(cat|cd|copy|grep|ls|show)\b/.test(typed);
+      const completesPath = /^(cat|cd|copy|grep|ls|show|wc)\b/.test(typed);
       const paths = completesPath
         ? this.pathCompletions(path, typed.split(/\s/)[0])
           .map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
@@ -782,7 +811,7 @@
         .filter(({ name }) => name.startsWith(path))
         .filter(({ path: candidate }) => {
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
-          if (!['cat', 'copy', 'grep'].includes(command)) return true;
+          if (!['cat', 'copy', 'grep', 'wc'].includes(command)) return true;
           return TEXT_PATHS.has(candidate)
             || (path.includes('/')
               && [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)));
