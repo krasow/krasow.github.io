@@ -796,12 +796,12 @@
       const separator = path.lastIndexOf('/');
       let candidates;
       if (separator < 0) {
-        candidates = (this.entriesIn(this.currentDirectory) ?? [])
+        candidates = this.completionEntries(this.currentDirectory, path)
           .map((name) => ({ name, path: this.resolvePath(name) }));
       } else {
         const directory = this.resolvePath(path.slice(0, separator) || '/');
         const prefix = path.slice(0, separator + 1);
-        candidates = (this.entriesIn(directory) ?? [])
+        candidates = this.completionEntries(directory, path.slice(separator + 1))
           .map((name) => ({ name: `${prefix}${name}`, path: this.resolvePath(`${prefix}${name}`) }));
       }
 
@@ -815,6 +815,19 @@
               && [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)));
         })
         .map(({ name }) => name);
+    }
+
+    completionEntries(directory, partial) {
+      const visible = this.entriesIn(directory) ?? [];
+      if (!partial.startsWith('.')) return visible;
+
+      const prefix = directory === '/' ? '/' : `${directory}/`;
+      const hidden = Object.keys(DIRECTORIES)
+        .filter((path) => path.startsWith(`${prefix}.`))
+        .map((path) => path.slice(prefix.length).split('/')[0])
+        .filter(Boolean)
+        .map((name) => `${name}/`);
+      return [...new Set([...visible, ...hidden])];
     }
 
     completeMultiple(typed, matches) {
