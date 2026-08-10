@@ -47,9 +47,9 @@
 
   const FOLDERS = {
     projects: [
+      ['compression', '/pages/show.html?page=compression'],
       ['cunumeric', '/pages/show.html?page=cunumeric'],
       ['legionpim', '/pages/show.html?page=legionpim'],
-      ['compression', '/pages/show.html?page=compression'],
     ],
     publications: [
       ['VILLAGE25', 'https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf'],
@@ -87,18 +87,31 @@
     (folders[folder] ??= []).push([name, null]);
     return folders;
   }, {});
-  const HIDDEN_PATHS = Object.entries(HIDDEN_FOLDERS).flatMap(([folder, entries]) => [
-    `/${folder}/`,
-    ...entries.map(([name]) => `/${folder}/${name}`),
-  ]);
-  const ALL_FOLDERS = { ...FOLDERS, ...HIDDEN_FOLDERS };
-
   const ROOT_ENTRIES = [
     'about.pg', 'ai-notice.md', 'contact.md', 'contact.vcf', 'cv.pg', 'education.md',
     'experience.pg', 'news.pg',
     'posters/', 'presentations/', 'projects/', 'publications/',
     'resume.pdf', 'scripts/', 'summary.md',
   ];
+  const ROOT_DIRECTORIES = ['etc/', 'home/', 'proc/'];
+  const DIRECTORIES = {
+    '/': ROOT_DIRECTORIES,
+    '/home': ROOT_ENTRIES,
+    ...Object.fromEntries(Object.entries(FOLDERS).map(([name, entries]) => [
+      `/home/${name}`,
+      entries.map(([entry]) => entry),
+    ])),
+    ...Object.fromEntries(Object.entries(HIDDEN_FOLDERS).map(([name, entries]) => [
+      `/${name}`,
+      entries.map(([entry]) => entry),
+    ])),
+  };
+  const FILE_ROUTES = new Map([
+    ...Object.entries(FILES).map(([name, url]) => [`/home/${name}`, url]),
+    ...Object.entries(FOLDERS).flatMap(([folder, entries]) => (
+      entries.filter(([, url]) => url).map(([name, url]) => [`/home/${folder}/${name}`, url])
+    )),
+  ]);
 
   const RESPONSES = {
     whoami: 'David Krasowska',
@@ -169,17 +182,13 @@
         mobileKeys: document.querySelector('.mobile-keys'),
       };
 
-      this.currentDirectory = '';
+      this.currentDirectory = '/home';
       this.previousDirectory = null;
       this.history = [];
       this.historyCursor = 0;
       this.completionCycle = null;
       this.transcript = [];
 
-      this.folderMaps = Object.fromEntries(
-        Object.entries(ALL_FOLDERS).map(([name, entries]) => [name, new Map(entries)]),
-      );
-      this.entryRoutes = new Map(Object.values(ALL_FOLDERS).flat());
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
       this.restore();
@@ -234,27 +243,15 @@
     }
 
     buildCompletions() {
-      const folderNames = Object.keys(FOLDERS);
-      const entries = Object.entries(FOLDERS).flatMap(([folder, items]) => (
-        items.flatMap(([name]) => [name, `${folder}/${name}`])
-      ));
       return [...new Set([
         ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
-        ...Object.keys(READABLE_FILES).map((name) => `cat ${name}`),
-        ...Object.keys(PAGE_SOURCES).map((name) => `cat ${name}`),
-        ...FOLDERS.scripts.flatMap(([name]) => [
-          `cat ${name}`,
-          `cat scripts/${name}`,
-        ]),
-        ...folderNames.flatMap((folder) => [`ls ${folder}`, `cd ${folder}`]),
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
         ...Object.keys(SHORTCUTS),
-        ...Object.keys(FILES),
         ...Object.keys(RESPONSES),
-        ...entries,
+        ...ROOT_ENTRIES,
       ])];
     }
 
@@ -294,7 +291,7 @@
         return;
       }
 
-      if (ALL_FOLDERS[this.directoryFromPath(command)]) {
+      if (this.entriesIn(this.resolvePath(command))) {
         this.write(`zsh: is a directory: ${command}`, 'err');
         return;
       }
@@ -305,30 +302,30 @@
     }
 
     path() {
-      return this.currentDirectory ? `~/${this.currentDirectory}` : '~';
+      return this.currentDirectory.replace(/^\/home(?=\/|$)/, '~');
     }
 
     promptText() {
       return `david:${this.path()}$`;
     }
 
-    directoryFromPath(path) {
-      const clean = path.trim().replace(/\/+$/g, '');
-      if (!clean || clean === '~' || clean === '/') return '';
-      if (clean === '.') return this.currentDirectory;
-      if (clean === '..') return '';
-      return clean.replace(/^~?\//, '');
+    resolvePath(input) {
+      let path = input.trim();
+      if (!path || path === '~') return '/home';
+      if (path.startsWith('~/')) path = `/home/${path.slice(2)}`;
+      else if (!path.startsWith('/')) path = `${this.currentDirectory}/${path}`;
+
+      const parts = [];
+      path.split('/').forEach((part) => {
+        if (!part || part === '.') return;
+        if (part === '..') parts.pop();
+        else parts.push(part);
+      });
+      return `/${parts.join('/')}`;
     }
 
     resolve(command) {
-      const path = command.trim().replace(/^~?\/+|\/+$/g, '');
-      const [folder, entry, extra] = path.split('/');
-      if (entry && !extra) return this.folderMaps[folder]?.get(entry);
-      if (entry) return undefined;
-      return SHORTCUTS[folder]
-        ?? FILES[folder]
-        ?? this.folderMaps[this.currentDirectory]?.get(folder)
-        ?? this.entryRoutes.get(folder);
+      return SHORTCUTS[command] ?? FILE_ROUTES.get(this.resolvePath(command));
     }
 
     list(path) {
@@ -336,7 +333,7 @@
         this.listMatches(path);
         return;
       }
-      const directory = path ? this.directoryFromPath(path) : this.currentDirectory;
+      const directory = path ? this.resolvePath(path) : this.currentDirectory;
       const entries = this.entriesIn(directory);
       if (!entries) {
         this.write(`ls: ${path}: not a directory`, 'err');
@@ -357,15 +354,12 @@
     }
 
     matchingEntries(path) {
-      const rootQualified = /^(~\/|\/)/.test(path);
-      const parts = path.trim().split('/');
-      const pattern = parts.pop();
-      const directoryPath = parts.join('/');
-      const directory = parts.length
-        ? this.directoryFromPath(directoryPath || '/')
-        : this.currentDirectory;
+      const separator = path.lastIndexOf('/');
+      const pattern = path.slice(separator + 1);
+      const directoryPath = separator < 0 ? '.' : path.slice(0, separator) || '/';
+      const directory = this.resolvePath(directoryPath);
       const entries = this.entriesIn(directory);
-      const prefix = directory ? `${rootQualified ? '/' : ''}${directory}/` : '';
+      const prefix = separator < 0 ? '' : `${directory === '/' ? '' : directory}/`;
 
       if (!entries) return { directoryPath, prefix, matches: null };
 
@@ -382,14 +376,11 @@
     }
 
     entriesIn(directory) {
-      if (!directory) return [...ROOT_ENTRIES];
-      const entries = ALL_FOLDERS[directory]?.map(([name]) => name);
-      if (directory === 'projects') entries?.sort((a, b) => a.localeCompare(b));
-      return entries;
+      return DIRECTORIES[directory] ? [...DIRECTORIES[directory]] : null;
     }
 
     changeDirectory(target) {
-      const requested = this.directoryFromPath(target);
+      const requested = target === '-' ? '-' : this.resolvePath(target);
       let next = requested;
 
       if (requested === '-') {
@@ -398,7 +389,7 @@
           return;
         }
         next = this.previousDirectory;
-      } else if (requested && !ALL_FOLDERS[requested]) {
+      } else if (!this.entriesIn(requested)) {
         this.write(`cd: no such file or directory: ${target}`, 'err');
         return;
       }
@@ -410,8 +401,10 @@
     }
 
     showScript(path) {
-      const name = path.replace(/^scripts\//, '');
-      const url = this.folderMaps.scripts.get(name);
+      const target = path.includes('/') || this.currentDirectory === '/home/scripts'
+        ? path
+        : `/home/scripts/${path}`;
+      const url = FILE_ROUTES.get(this.resolvePath(target));
       if (url) this.write(`curl -fsSL https://krasow.dev${url} | bash`, 'pth');
       else this.write(`show: no such script: ${path}`, 'err');
     }
@@ -455,14 +448,13 @@
     }
 
     textSource(path) {
-      const absolutePath = path.startsWith('/')
-        ? path
-        : `/${this.currentDirectory ? `${this.currentDirectory}/` : ''}${path}`;
+      const absolutePath = this.resolvePath(path);
       if (HIDDEN_FILES[absolutePath]) return { url: HIDDEN_FILES[absolutePath] };
-      if (PAGE_SOURCES[path]) return PAGE_SOURCES[path];
+      const homePath = absolutePath.replace(/^\/home\//, '');
+      if (PAGE_SOURCES[homePath]) return PAGE_SOURCES[homePath];
 
-      const scriptName = path.replace(/^scripts\//, '');
-      const url = READABLE_FILES[path] ?? this.folderMaps.scripts.get(scriptName);
+      const url = READABLE_FILES[homePath]
+        ?? (absolutePath.startsWith('/home/scripts/') ? FILE_ROUTES.get(absolutePath) : null);
       return url ? { url } : null;
     }
 
@@ -528,23 +520,19 @@
 
     showTree() {
       const lines = ['.'];
-      if (this.currentDirectory) {
-        this.appendTreeEntries(lines, ALL_FOLDERS[this.currentDirectory]);
-      } else {
-        ROOT_ENTRIES.forEach((entry, index) => {
-          const isLast = index === ROOT_ENTRIES.length - 1;
-          lines.push(`${isLast ? '└──' : '├──'} ${entry}`);
-          const folder = entry.endsWith('/') ? entry.slice(0, -1) : '';
-          if (folder) this.appendTreeEntries(lines, FOLDERS[folder], isLast ? '    ' : '│   ');
-        });
-      }
+      this.appendTreeEntries(lines, this.currentDirectory);
       this.write(lines.join('\n'), 'pth');
     }
 
-    appendTreeEntries(lines, entries, prefix = '') {
-      entries.forEach(([name], index) => {
-        const branch = index === entries.length - 1 ? '└──' : '├──';
+    appendTreeEntries(lines, directory, prefix = '') {
+      const entries = this.entriesIn(directory);
+      entries.forEach((name, index) => {
+        const last = index === entries.length - 1;
+        const branch = last ? '└──' : '├──';
         lines.push(`${prefix}${branch} ${name}`);
+        if (!name.endsWith('/')) return;
+        const child = `${directory === '/' ? '' : directory}/${name.slice(0, -1)}`;
+        this.appendTreeEntries(lines, child, `${prefix}${last ? '    ' : '│   '}`);
       });
     }
 
@@ -624,12 +612,15 @@
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
         if (!saved) return;
 
-        this.currentDirectory = ALL_FOLDERS[saved.currentDirectory]
-          ? saved.currentDirectory
-          : '';
-        this.previousDirectory = saved.previousDirectory === ''
-          || ALL_FOLDERS[saved.previousDirectory]
-          ? saved.previousDirectory
+        const savedDirectory = saved.currentDirectory === ''
+          ? '/home'
+          : saved.currentDirectory;
+        this.currentDirectory = this.entriesIn(savedDirectory)
+          ? savedDirectory
+          : '/home';
+        const previous = saved.previousDirectory === '' ? '/home' : saved.previousDirectory;
+        this.previousDirectory = typeof previous === 'string' && this.entriesIn(previous)
+          ? previous
           : null;
         this.history = Array.isArray(saved.history)
           ? saved.history.filter((item) => typeof item === 'string').slice(-HISTORY_LIMIT)
@@ -717,10 +708,12 @@
 
       const tokenStart = typed.lastIndexOf(' ') + 1;
       const path = typed.slice(tokenStart);
-      const hidden = path.length > 1 && path.startsWith('/')
-        ? HIDDEN_PATHS.map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
+      const completesPath = /^(cat|cd|grep|ls|show)\b/.test(typed);
+      const paths = completesPath
+        ? this.pathCompletions(path, typed.startsWith('cd '))
+          .map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
         : [];
-      const matches = [...new Set([...this.completions, ...hidden])]
+      const matches = [...new Set([...this.completions, ...paths])]
         .filter((command) => command.startsWith(typed))
         .sort((a, b) => a.localeCompare(b));
 
@@ -732,6 +725,22 @@
       } else {
         this.completeMultiple(typed, matches);
       }
+    }
+
+    pathCompletions(path, directoriesOnly) {
+      const separator = path.lastIndexOf('/');
+      if (separator < 0) {
+        return (this.entriesIn(this.currentDirectory) ?? [])
+          .filter((candidate) => candidate.startsWith(path))
+          .filter((candidate) => !directoriesOnly || candidate.endsWith('/'));
+      }
+      const directory = this.resolvePath(path.slice(0, separator) || '/');
+      const fragment = path.slice(separator + 1);
+      const prefix = path.slice(0, separator + 1);
+      return (this.entriesIn(directory) ?? [])
+        .filter((candidate) => candidate.startsWith(fragment))
+        .filter((candidate) => !directoriesOnly || candidate.endsWith('/'))
+        .map((candidate) => `${prefix}${candidate}`);
     }
 
     completeMultiple(typed, matches) {
