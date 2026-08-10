@@ -123,6 +123,7 @@
 
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
   const COMMAND_USAGE = {
+    chat: 'chat <question>',
     clear: 'clear',
     help: 'help',
     pwd: 'pwd',
@@ -143,6 +144,7 @@
   const HISTORY_LIMIT = 10;
   const PAGE_PATH = location.pathname || '/';
   const IS_TERMINAL_PAGE = PAGE_PATH.replace(/\/+$/, '') === '/terminal';
+  const CHAT_KNOWLEDGE_URL = '/assets/documents/terminal/chat.json';
 
   const HELP = [
     ['Navigation', [
@@ -159,6 +161,7 @@
       ['show script', 'print an install command'],
     ]],
     ['Information', [
+      ['chat question', 'ask a local model about David'],
       ['whoami', 'show name'],
       ['cat contact.md', 'show contact details'],
     ]],
@@ -215,6 +218,7 @@
       this.historyCursor = 0;
       this.completionCycle = null;
       this.transcript = [];
+      this.chatKnowledge = null;
 
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
@@ -241,6 +245,11 @@
 
     buildCommands() {
       return new Map([
+        ['chat', (args) => {
+          if (!args.length) return false;
+          this.chat(args.join(' '));
+          return true;
+        }],
         ['clear', (args) => this.withArity(args, 0, () => this.clearLog())],
         ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
         ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
@@ -279,7 +288,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'chat', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -288,6 +297,34 @@
         ...Object.keys(RESPONSES),
         ...ROOT_ENTRIES,
       ])];
+    }
+
+    async chat(question) {
+      const thinking = makeElement('p', 'ln hint', 'local model: thinking…');
+      this.append(thinking);
+
+      try {
+        this.chatKnowledge ??= fetch(CHAT_KNOWLEDGE_URL).then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        });
+        const knowledge = await this.chatKnowledge;
+        thinking.remove();
+        this.write(this.answerQuestion(question, knowledge), 'pth');
+      } catch (error) {
+        this.chatKnowledge = null;
+        thinking.remove();
+        this.write('chat: the local knowledge model could not be loaded', 'err');
+      }
+    }
+
+    answerQuestion(question, knowledge) {
+      const words = new Set(question.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+      const score = (entry) => entry.keywords
+        .flatMap((keyword) => keyword.match(/[a-z0-9]+/g) ?? [])
+        .filter((word) => words.has(word)).length;
+      const best = knowledge.entries.reduce((a, b) => score(b) > score(a) ? b : a);
+      return score(best) ? best.answer : knowledge.fallback;
     }
 
     withArity(args, count, action) {

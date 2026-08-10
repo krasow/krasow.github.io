@@ -1,0 +1,55 @@
+{
+  "entries": [
+    {
+      "topic": "current role and university",
+      "keywords": ["who", "identity", "phd candidate", "northwestern", "student", "position", "current", "school", "university", "advisor", "peter dinda"],
+      "answer": "David is a Computer Science Ph.D. candidate at Northwestern University, advised by Peter Dinda."
+    },
+    {
+      "topic": "education",
+      "keywords": ["degree", "degrees", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
+      "answer": "David earned a B.S. in Computer Engineering from Clemson University (2019–2022) and is pursuing a Ph.D. in Computer Science at Northwestern University (2023–present)."
+    },
+    {
+      "topic": "research interests",
+      "keywords": ["research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
+      "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads. His current work explores scheduling across distributed heterogeneous systems."
+    },
+    {
+      "topic": "lossy compression research",
+      "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
+      "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data."
+    },
+    {
+      "topic": "Legion Julia and GPUs",
+      "keywords": ["legion", "julia", "gpu", "gpus", "cunumeric", "runtime", "arrays", "constellation"],
+      "answer": "David works with the Legion runtime and Julia to run array-oriented scientific applications across distributed systems and NVIDIA GPUs as part of the Constellation project."
+    },
+    {
+      "topic": "processing in memory",
+      "keywords": ["pim", "processing in memory", "upmem", "memory accelerator", "legionpim"],
+      "answer": "David researches Processing-in-Memory accelerators and uses Legion to reduce the programming and portability burden of adopting PIM systems."
+    },
+    {
+      "topic": "Los Alamos National Laboratory",
+      "keywords": ["lanl", "los alamos", "pat mccormick", "laboratory", "lab"],
+      "answer": "David collaborates with Pat McCormick at Los Alamos National Laboratory on scheduling for distributed heterogeneous systems."
+    },
+    {
+      "topic": "Department of Energy fellowship",
+      "keywords": ["doe", "csgf", "fellow", "fellowship", "award", "computational science graduate fellowship"],
+      "answer": "David is a recipient of the U.S. Department of Energy Computational Science Graduate Fellowship (DOE CSGF)."
+    },
+    {
+      "topic": "contact",
+      "keywords": ["email", "contact", "reach", "location", "chicago"],
+      "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card."
+    },
+    {
+      "topic": "publications and papers",
+      "keywords": ["publication", "publications", "paper", "papers", "published", "writing"],
+      "answer": "David has published work on lossy-compression prediction and heterogeneous computing. Run `cd publications` followed by `ls` to browse the papers listed here."
+    }
+  ],
+  "fallback": "I don't know that from David's site. Try asking about his education, research, projects, fellowship, publications, or contact information."
+}
