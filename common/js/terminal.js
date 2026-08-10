@@ -123,7 +123,7 @@
 
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
   const COMMAND_USAGE = {
-    chat: 'chat <question>',
+    chat: 'chat [question]',
     clear: 'clear',
     help: 'help',
     pwd: 'pwd',
@@ -161,7 +161,7 @@
       ['show script', 'print an install command'],
     ]],
     ['Information', [
-      ['chat question', 'ask a local model about David'],
+      ['chat [question]', 'ask about David or enter chat mode'],
       ['whoami', 'show name'],
       ['cat contact.md', 'show contact details'],
     ]],
@@ -219,6 +219,7 @@
       this.completionCycle = null;
       this.transcript = [];
       this.chatKnowledge = null;
+      this.chatMode = false;
 
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
@@ -246,8 +247,8 @@
     buildCommands() {
       return new Map([
         ['chat', (args) => {
-          if (!args.length) return false;
-          this.chat(args.join(' '));
+          if (args.length) this.chat(args.join(' '));
+          else this.enterChat();
           return true;
         }],
         ['clear', (args) => this.withArity(args, 0, () => this.clearLog())],
@@ -318,6 +319,18 @@
       }
     }
 
+    enterChat() {
+      this.chatMode = true;
+      this.ui.prompt.textContent = this.promptText();
+      this.write('Ask me about David. Type `exit` to return to the terminal.', 'hint');
+    }
+
+    leaveChat() {
+      this.chatMode = false;
+      this.ui.prompt.textContent = this.promptText();
+      this.write('leaving chat', 'hint');
+    }
+
     answerQuestion(question, knowledge) {
       const words = new Set(question.toLowerCase().match(/[a-z0-9]+/g) ?? []);
       const score = (entry) => entry.keywords
@@ -349,6 +362,12 @@
       this.historyCursor = this.history.length;
       this.persist();
 
+      if (this.chatMode) {
+        if (['exit', 'quit'].includes(command.toLowerCase())) this.leaveChat();
+        else this.chat(command);
+        return;
+      }
+
       const [name, ...args] = command.split(/\s+/);
       const handler = this.commands.get(name);
       if (handler) {
@@ -378,7 +397,7 @@
     }
 
     promptText() {
-      return `david:${this.path()}$`;
+      return this.chatMode ? 'david:chat>' : `david:${this.path()}$`;
     }
 
     resolvePath(input) {
@@ -820,6 +839,7 @@
         event.preventDefault();
         this.echo(`${this.ui.input.value}^C`);
         this.clearInput();
+        if (this.chatMode) this.leaveChat();
         return;
       }
 

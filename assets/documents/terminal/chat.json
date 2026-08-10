@@ -12,7 +12,7 @@
     },
     {
       "topic": "research interests",
-      "keywords": ["research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
+      "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists", "scheduling"],
       "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads. His current work explores scheduling across distributed heterogeneous systems."
     },
     {
