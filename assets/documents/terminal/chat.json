@@ -142,8 +142,8 @@
       "keywords": ["contact", "reach", "location", "live", "lives", "based", "chicago"],
       "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card.",
       "readMore": {
-        "prompt": "Would you like to see more contact info? (y/n)",
-        "command": "cat /home/contact.md"
+        "prompt": "Would you like to run `open contact.vcf`? (y/n)",
+        "command": "open /home/contact.vcf"
       }
     },
     {
