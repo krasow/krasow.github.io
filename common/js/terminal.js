@@ -136,6 +136,8 @@
     grep: 'grep <pattern> <file|pattern> [...]',
     copy: 'copy <file>',
     wc: 'wc <file|pattern> [...]',
+    open: 'open <file|page>',
+    find: 'find [folder] [pattern]',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
   const HISTORY_LIMIT = 10;
@@ -147,6 +149,8 @@
       ['ls [folder|pattern]', 'list pages or matching files'],
       ['cd folder · cd .. · cd -', 'change directory'],
       ['pwd · tree', 'inspect the current directory'],
+      ['find [folder] [pattern]', 'find files recursively'],
+      ['open file|page', 'open a page or document'],
       ['cat file|pattern', 'read one or more text files'],
       ['grep pattern file', 'search one or more text files'],
       ['copy file', 'copy a text file'],
@@ -188,6 +192,10 @@
     return '📄';
   };
   const displayFile = (name) => `${fileIcon(name)}\u00a0${name}`;
+  const globRegex = (pattern) => {
+    const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`);
+  };
 
   class Terminal {
     constructor() {
@@ -259,6 +267,8 @@
           return true;
         }],
         ['cd', (args) => this.withMaximumArity(args, 1, () => this.changeDirectory(args[0] ?? ''))],
+        ['open', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
+        ['find', (args) => this.withMaximumArity(args, 2, () => this.find(args))],
         ['show', (args) => this.withArity(args, 1, () => this.showScript(args[0]))],
         ['echo', (args) => {
           this.write(args.join(' '), 'pth');
@@ -269,7 +279,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -388,9 +398,7 @@
 
       if (!entries) return { directoryPath, prefix, matches: null };
 
-      const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
-      const expression = new RegExp(`^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`);
-      const matches = entries.filter((entry) => expression.test(entry));
+      const matches = entries.filter((entry) => globRegex(pattern).test(entry));
       return { directoryPath, prefix, matches };
     }
 
@@ -423,6 +431,38 @@
       this.currentDirectory = next;
       this.ui.prompt.textContent = this.promptText();
       this.persist();
+    }
+
+    openPath(target) {
+      const path = this.resolvePath(target);
+      if (this.entriesIn(path)) {
+        this.write(`open: ${target}: is a directory`, 'err');
+        return;
+      }
+      const url = SHORTCUTS[target] ?? FILE_ROUTES.get(path) ?? HIDDEN_FILES[path];
+      if (url) this.navigate(url);
+      else this.write(`open: ${target}: no such file or page`, 'err');
+    }
+
+    find(args) {
+      const hasDirectory = args.length === 2
+        || (args[0] && this.entriesIn(this.resolvePath(args[0])));
+      const directory = hasDirectory ? this.resolvePath(args[0]) : this.currentDirectory;
+      const pattern = args[hasDirectory ? 1 : 0] ?? '*';
+      if (!this.entriesIn(directory)) {
+        this.write(`find: ${args[0]}: not a directory`, 'err');
+        return;
+      }
+
+      const walk = (folder) => this.entriesIn(folder).flatMap((name) => {
+        const path = `${folder === '/' ? '' : folder}/${name.replace(/\/$/, '')}`;
+        return [path, ...(name.endsWith('/') ? walk(path) : [])];
+      });
+      const matches = globRegex(pattern);
+      const results = walk(directory)
+        .filter((path) => matches.test(path.split('/').at(-1)))
+        .map((path) => path.replace(/^\/home(?=\/|$)/, '~'));
+      this.write(results.join('\n') || `find: no matches found: ${pattern}`, results.length ? 'pth' : 'err');
     }
 
     showScript(path) {
@@ -784,7 +824,7 @@
 
       const tokenStart = typed.lastIndexOf(' ') + 1;
       const path = typed.slice(tokenStart);
-      const pathCommand = /^(cat|cd|copy|grep|ls|show|wc)\b/.test(typed)
+      const pathCommand = /^(cat|cd|copy|find|grep|ls|open|show|wc)\b/.test(typed)
         ? typed.split(/\s/)[0]
         : !typed.includes(' ') ? '' : null;
       const paths = pathCommand !== null
