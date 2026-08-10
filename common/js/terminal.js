@@ -87,6 +87,10 @@
     (folders[folder] ??= []).push([name, null]);
     return folders;
   }, {});
+  const HIDDEN_PATHS = Object.entries(HIDDEN_FOLDERS).flatMap(([folder, entries]) => [
+    `/${folder}/`,
+    ...entries.map(([name]) => `/${folder}/${name}`),
+  ]);
   const ALL_FOLDERS = { ...FOLDERS, ...HIDDEN_FOLDERS };
 
   const ROOT_ENTRIES = [
@@ -702,14 +706,23 @@
 
     complete() {
       const typed = this.ui.input.value.trim();
+      if (!typed) {
+        this.hideCompletions();
+        return;
+      }
       if (this.completionCycle?.value === typed) {
         this.cycleCompletion();
         return;
       }
 
-      const matches = (typed
-        ? this.completions.filter((command) => command.startsWith(typed))
-        : []).sort((a, b) => a.localeCompare(b));
+      const tokenStart = typed.lastIndexOf(' ') + 1;
+      const path = typed.slice(tokenStart);
+      const hidden = path.length > 1 && path.startsWith('/')
+        ? HIDDEN_PATHS.map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
+        : [];
+      const matches = [...new Set([...this.completions, ...hidden])]
+        .filter((command) => command.startsWith(typed))
+        .sort((a, b) => a.localeCompare(b));
 
       if (!matches.length) {
         this.hideCompletions();
