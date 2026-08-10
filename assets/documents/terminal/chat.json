@@ -33,13 +33,17 @@
       "topic": "lossy compression research",
       "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
       "phrases": ["lossy compression", "compression work"],
-      "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data."
+      "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:\n  CLUSTER23 — A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression\n  IJHPCA23 — Black-Box Statistical Prediction of Lossy Compression Ratios for Scientific Data\n  DRBSD21 — Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets"
     },
     {
       "topic": "Legion Julia and GPUs",
       "keywords": ["legion", "julia", "gpu", "gpus", "cunumeric", "runtime", "arrays", "constellation"],
       "phrases": ["julia work", "julia project"],
-      "answer": "David works with the Legion runtime and Julia to run array-oriented scientific applications across distributed systems and NVIDIA GPUs as part of the Constellation project."
+      "answer": "David works with the Legion runtime and Julia to run array-oriented scientific applications across distributed systems and NVIDIA GPUs as part of the Constellation project.",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" },
+        { "label": "Documentation", "url": "https://julialegate.github.io/cuNumeric.jl/dev/" }
+      ]
     },
     {
       "topic": "processing in memory",
