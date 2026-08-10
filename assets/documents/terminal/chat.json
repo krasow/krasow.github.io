@@ -43,8 +43,18 @@
       "answer": "David is a recipient of the U.S. Department of Energy Computational Science Graduate Fellowship (DOE CSGF)."
     },
     {
+      "topic": "phone number",
+      "keywords": ["phone", "number", "telephone", "mobile", "call"],
+      "answer": "David's phone number is +1 (224) 355-2715."
+    },
+    {
+      "topic": "email address",
+      "keywords": ["email", "email address", "mail"],
+      "answer": "David's email address is david@krasow.dev."
+    },
+    {
       "topic": "contact",
-      "keywords": ["email", "contact", "reach", "location", "live", "lives", "based", "phone", "number", "telephone", "chicago"],
+      "keywords": ["contact", "reach", "location", "live", "lives", "based", "chicago"],
       "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card."
     },
     {

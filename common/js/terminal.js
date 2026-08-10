@@ -218,6 +218,7 @@
       this.completionCycle = null;
       this.transcript = [];
       this.chatModel = new window.KrasowChat.LocalChat();
+      this.chatSession = false;
       this.chatMode = false;
 
       this.completions = this.buildCompletions();
@@ -315,15 +316,22 @@
     }
 
     enterChat() {
+      this.chatSession = true;
       this.chatMode = true;
       this.ui.prompt.textContent = this.promptText();
       this.write('Ask me about David. Type `exit` to return to the terminal.', 'hint');
     }
 
     leaveChat() {
+      this.chatSession = false;
       this.chatMode = false;
       this.ui.prompt.textContent = this.promptText();
       this.write('leaving chat', 'hint');
+    }
+
+    toggleChatShell() {
+      this.chatMode = !this.chatMode;
+      this.ui.prompt.textContent = this.promptText();
     }
 
     showChatHelp() {
@@ -336,7 +344,7 @@
         '  what is his work on PIM?',
         '  how can I contact him?',
         '',
-        'Commands: help · ] <shell command> · exit · quit · Ctrl+C',
+        'Commands: help · ] toggle shell mode · ] command · exit · quit · Ctrl+C',
       ].join('\n'), 'pth');
     }
 
@@ -395,6 +403,11 @@
       this.historyCursor = this.history.length;
       this.persist();
 
+      if (this.chatSession && !this.chatMode && command === ']') {
+        this.toggleChatShell();
+        return;
+      }
+
       if (this.chatMode) {
         const chatCommand = command.toLowerCase();
         if (['exit', 'quit'].includes(chatCommand)) this.leaveChat();
@@ -402,6 +415,7 @@
         else if (['hello', 'hi', 'hey'].includes(chatCommand)) {
           this.write('Hello! Ask me anything about David, or type `help` for examples.', 'pth');
         }
+        else if (command === ']') this.toggleChatShell();
         else if (command.startsWith(']')) this.runChatShell(command.slice(1).trim());
         else this.askChat(command);
         return;
