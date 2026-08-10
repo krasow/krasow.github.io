@@ -247,6 +247,7 @@
     correct(word, vocabulary) {
       if (word.length < 4 || vocabulary.has(word) || CHAT_COMMON_WORDS.has(word)) return word;
       const closest = [...vocabulary].reduce((best, candidate) => {
+        if (candidate.length < 4) return best;
         const distance = editDistance(word, candidate);
         return distance < best.distance ? { word: candidate, distance } : best;
       }, { word, distance: 3 });
