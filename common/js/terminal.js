@@ -475,6 +475,9 @@
         const chatCommand = command.toLowerCase();
         if (['exit', 'quit'].includes(chatCommand)) this.leaveChat();
         else if (['help', '?'].includes(chatCommand)) this.showChatHelp();
+        else if (['hello', 'hi', 'hey'].includes(chatCommand)) {
+          this.write('Hello! Ask me anything about David, or type `help` for examples.', 'pth');
+        }
         else if (command.startsWith(']')) this.runChatShell(command.slice(1).trim());
         else this.askChat(command);
         return;
