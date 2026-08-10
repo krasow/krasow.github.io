@@ -30,7 +30,10 @@
     }
 
     async ask(question) {
-      const { entries, fallback, vocabulary } = await this.load();
+      const { entries, fallback, schools, vocabulary } = await this.load();
+      const schoolAnswer = this.answerSchoolQuestion(question, schools);
+      if (schoolAnswer) return { answer: schoolAnswer };
+
       const query = new Set(wordsIn(question).map((word) => this.correct(word, vocabulary)));
       const normalized = question.toLowerCase();
       const score = (entry) => entry.words.filter((word) => query.has(word)).length
@@ -45,7 +48,7 @@
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
         })
-        .then(({ entries, fallback }) => {
+        .then(({ entries, fallback, schools }) => {
           const indexed = entries.map((entry) => ({
             ...entry,
             words: entry.keywords.flatMap(wordsIn),
@@ -54,6 +57,7 @@
           return {
             entries: indexed,
             fallback,
+            schools,
             vocabulary: new Set(indexed.flatMap((entry) => entry.words)),
           };
         })
@@ -62,6 +66,14 @@
           throw error;
         });
       return this.data;
+    }
+
+    answerSchoolQuestion(question, schools) {
+      const match = question.toLowerCase().match(/\b(?:go(?:es)? to|attend(?:s)?|study at)\s+([a-z]+)/);
+      if (!match) return null;
+      if (schools.current.includes(match[1])) return schools.currentAnswer;
+      if (schools.former.includes(match[1])) return schools.formerAnswer;
+      return schools.otherAnswer;
     }
 
     correct(word, vocabulary) {

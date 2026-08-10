@@ -1,4 +1,11 @@
 {
+  "schools": {
+    "current": ["northwestern"],
+    "former": ["clemson"],
+    "currentAnswer": "Yes. David is a Computer Science Ph.D. candidate at Northwestern University.",
+    "formerAnswer": "David previously attended Clemson University, where he earned a B.S. in Computer Engineering. He currently attends Northwestern University.",
+    "otherAnswer": "No. David currently attends Northwestern University and previously attended Clemson University."
+  },
   "entries": [
     {
       "topic": "current role and university",
