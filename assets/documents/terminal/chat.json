@@ -71,9 +71,9 @@
     },
     {
       "topic": "hiring availability",
-      "keywords": ["hire", "hiring", "available", "availability", "recruit", "recruiting", "job"],
-      "phrases": ["open to work"],
-      "answer": "David's site does not state whether he is available for hire. You can contact him directly to ask.",
+      "keywords": ["hire", "hiring", "available", "availability", "recruit", "recruiting", "job", "internship", "intern", "full time", "full-time"],
+      "phrases": ["open to work", "available to work", "looking for work"],
+      "answer": "David is looking for an internship for 2027. He expects to graduate in December 2027 and plans to begin looking for full-time positions around that time.",
       "readMore": {
         "prompt": "Would you like to open his contact card? (y/n)",
         "command": "open /home/contact.vcf"
