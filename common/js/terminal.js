@@ -308,6 +308,7 @@
         const result = await this.chatModel.ask(question);
         thinking.remove();
         this.write(result.answer, 'pth');
+        if (result.hint) this.write(result.hint, 'hint');
         result.links?.forEach(({ label, url }) => this.writeLink(url, `→ ${label}: ${url}`));
         if (result.command) this.runChatCommand(result.command);
       } catch (error) {
