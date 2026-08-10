@@ -862,10 +862,13 @@
     }
 
     showCompletionMenu(matches, active) {
-      const command = matches[0].split(' ')[0];
-      const prefix = `${command} `;
-      const compact = matches.every((match) => match.startsWith(prefix));
-      const label = (match) => compact ? match.slice(prefix.length) : match;
+      const commandPrefix = `${matches[0].split(' ')[0]} `;
+      const slash = matches[0].lastIndexOf('/');
+      const pathPrefix = slash < 0 ? '' : matches[0].slice(0, slash + 1);
+      const prefix = pathPrefix && matches.every((match) => match.startsWith(pathPrefix))
+        ? pathPrefix
+        : commandPrefix;
+      const label = (match) => match.startsWith(prefix) ? match.slice(prefix.length) : match;
       this.showCompletions(matches.map(label), label(active));
     }
 
