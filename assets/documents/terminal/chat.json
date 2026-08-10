@@ -7,7 +7,7 @@
     },
     {
       "topic": "education",
-      "keywords": ["degree", "degrees", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
+      "keywords": ["education", "study", "studied", "degree", "degrees", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
       "answer": "David earned a B.S. in Computer Engineering from Clemson University (2019–2022) and is pursuing a Ph.D. in Computer Science at Northwestern University (2023–present)."
     },
     {
@@ -50,6 +50,18 @@
       "keywords": ["publication", "publications", "paper", "papers", "published", "writing"],
       "answer": "Here are David's listed publications:",
       "command": "ls /home/publications"
+    },
+    {
+      "topic": "presentations and talks",
+      "keywords": ["presentation", "presentations", "talk", "talks", "slide", "slides", "lecture", "lectures"],
+      "answer": "Here are David's listed presentations:",
+      "command": "ls /home/presentations"
+    },
+    {
+      "topic": "posters",
+      "keywords": ["poster", "posters", "conference poster", "research poster"],
+      "answer": "Here are David's listed posters:",
+      "command": "ls /home/posters"
     }
   ],
   "fallback": "I don't know that from David's site. Try asking about his education, research, projects, fellowship, publications, or contact information."
