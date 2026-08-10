@@ -124,6 +124,7 @@
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
   const COMMAND_USAGE = {
     chat: 'chat [question]',
+    snake: 'snake',
     clear: 'clear',
     help: 'help',
     pwd: 'pwd',
@@ -163,6 +164,9 @@
       ['chat [question]', 'ask about David or enter chat mode'],
       ['whoami', 'show name'],
       ['cat contact.md', 'show contact details'],
+    ]],
+    ['Games', [
+      ['snake', 'play Snake in the terminal'],
     ]],
     ['Links', [
       ['github · zoom', 'open an external page'],
@@ -221,6 +225,7 @@
       this.chatSession = false;
       this.chatMode = false;
       this.chatConfirmation = null;
+      this.snakeGame = null;
 
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
@@ -252,6 +257,7 @@
           else this.enterChat();
           return true;
         }],
+        ['snake', (args) => this.withArity(args, 0, () => this.startSnake())],
         ['clear', (args) => this.withArity(args, 0, () => this.clearLog())],
         ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
         ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
@@ -290,7 +296,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'chat', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -374,6 +380,17 @@
       this.echo(command, 'david:~$');
       const [name, ...args] = command.split(/\s+/);
       this.commands.get(name)?.(args);
+    }
+
+    startSnake() {
+      const output = makeElement('pre', 'ln snake-game');
+      this.append(output);
+      this.snakeGame = new window.KrasowSnake.SnakeGame(output, (reason, score) => {
+        this.snakeGame = null;
+        this.write(`snake: ${reason} · score ${score}`, reason === 'quit' ? 'hint' : 'err');
+        this.ui.input.focus();
+      });
+      this.snakeGame.start();
     }
 
     withArity(args, count, action) {
@@ -882,6 +899,11 @@
     }
 
     handleKey(event) {
+      if (this.snakeGame) {
+        this.snakeGame.handleKey(event);
+        return;
+      }
+
       if (event.key === ']' && !this.ui.input.value && this.chatSession) {
         event.preventDefault();
         if (this.chatConfirmation) {
