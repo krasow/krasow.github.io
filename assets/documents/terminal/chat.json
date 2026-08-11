@@ -98,15 +98,23 @@
       "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads and the domain scientists who run them. His current work explores scheduling across distributed heterogeneous systems."
     },
     {
-      "topic": "lossy compression research",
-      "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
-      "phrases": ["lossy compression", "compression work", "compression papers", "compression github", "compression repo", "compression repository", "compressibility work", "compression ratios"],
-      "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:",
+      "topic": "compression GitHub repository",
+      "keywords": ["compression", "correlation compressibility"],
+      "phrases": ["compression github", "compression repo", "compression repository", "github compression work"],
+      "answer": "David's correlation-compressibility work is available in the FTHPC Correlation_Compressibility repository.",
       "links": [
         {
-          "label": "Correlation Compressibility GitHub",
+          "label": "GitHub",
           "url": "https://github.com/FTHPC/Correlation_Compressibility"
-        },
+        }
+      ]
+    },
+    {
+      "topic": "lossy compression research",
+      "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
+      "phrases": ["lossy compression", "compression work", "compression papers", "compressibility work", "compression ratios"],
+      "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:",
+      "links": [
         {
           "label": "CLUSTER23 — A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression",
           "url": "/assets/documents/papers/2023/A_Lightweight_Effective_Compressibility_Estimation_Method_for_Error-bounded_Lossy_Compression.pdf"
@@ -123,9 +131,18 @@
       "readMore": { "command": "open /home/projects/compression" }
     },
     {
+      "topic": "cuNumeric.jl GitHub repository",
+      "keywords": ["cunumeric", "cunumerics"],
+      "phrases": ["cunumeric github", "cunumeric repo", "cunumeric repository"],
+      "answer": "The cuNumeric.jl repository is hosted by JuliaLegate on GitHub.",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" }
+      ]
+    },
+    {
       "topic": "cuNumeric.jl",
       "keywords": ["cunumeric", "julia", "gpu", "gpus", "arrays", "ndarray", "legate", "constellation"],
-      "phrases": ["what is cunumeric", "cunumeric relate", "cunumeric github", "cunumeric repo", "cunumeric repository", "julia work", "julia project", "julia array project", "gpu work"],
+      "phrases": ["what is cunumeric", "cunumeric relate", "julia work", "julia project", "julia array project", "gpu work"],
       "answer": "cuNumeric.jl is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.",
       "links": [
         { "label": "GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" },
@@ -146,9 +163,18 @@
       ]
     },
     {
+      "topic": "Legion PIM GitHub repository",
+      "keywords": ["legion", "pim", "pims"],
+      "phrases": ["legion pim github", "legion pim repo", "legion pim repository", "legion pims github", "legion pims repo", "legion pims repository"],
+      "answer": "The Legion PIM repository is hosted by PrescienceLab on GitHub.",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/presciencelab/upmem-legion" }
+      ]
+    },
+    {
       "topic": "processing in memory",
       "keywords": ["pim", "pims", "processing in memory", "upmem", "memory accelerator", "legion", "legionpim"],
-      "phrases": ["what is pim", "what is processing in memory", "pim work", "pim accelerators", "legion pim", "legion pim github", "legion pim repo", "legion pim repository", "upmem legion"],
+      "phrases": ["what is pim", "what is processing in memory", "pim work", "pim accelerators", "legion pim", "upmem legion"],
       "answer": "Processing-in-Memory (PIM) places compute capabilities in or near memory so data can be processed without repeatedly moving it to a traditional CPU or GPU. This can reduce the cost and bottleneck of data movement for memory-intensive workloads. David's Legion PIM work integrates UPMEM's PIM processors into the Legion runtime, using Legion to schedule tasks and manage data transfers while making the accelerators easier to program.",
       "links": [
         { "label": "Legion PIM GitHub", "url": "https://github.com/presciencelab/upmem-legion" }
