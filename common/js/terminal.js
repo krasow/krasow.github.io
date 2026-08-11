@@ -122,6 +122,35 @@
   };
 
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
+  const EASTER_EGGS = new Map([
+    ['sudo', 'david is not in the sudoers file. This incident will be reported.'],
+    ['sudo su', 'Authentication failed: you are already the root of your own problems.'],
+    ['sudo make me a sandwich', 'Okay. [sandwich delivered]'],
+    ['make me a sandwich', 'What? Make it yourself.'],
+    ['rm -rf /', 'Nice try. The portfolio has backups.'],
+    ['sudo rm -rf /', 'Permission denied by common sense.'],
+    ['exit', 'There is no escape. This is a website.'],
+    ['42', 'The answer to life, the universe, and distributed computing.'],
+    ['coffee', 'Error: coffee machine is not attached to this runtime.'],
+    ['fortune', 'Parallelism is easy. Scheduling it is the research project.'],
+    ['neofetch', [
+      '       /\\       david@krasow.dev',
+      '      /  \\      ----------------',
+      '     / /\\ \\     OS: krasow.dev',
+      '    / ____ \\    Shell: zsh',
+      '   /_/    \\_\\   Runtime: Legion',
+    ].join('\n')],
+    ['cowsay moo', [
+      ' _____',
+      '< moo >',
+      ' -----',
+      '        \\   ^__^',
+      '         \\  (oo)\\_______',
+      '            (__)\\       )\\/\\',
+      '                ||----w |',
+      '                ||     ||',
+    ].join('\n')],
+  ]);
   const COMMAND_USAGE = {
     chat: 'chat [question]',
     snake: 'snake',
@@ -469,6 +498,12 @@
         }
         else if (command === ']') this.toggleChatShell();
         else this.askChat(command);
+        return;
+      }
+
+      const easterEgg = EASTER_EGGS.get(command.toLowerCase());
+      if (easterEgg) {
+        this.write(easterEgg, 'pth');
         return;
       }
 
