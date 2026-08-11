@@ -143,6 +143,7 @@
     find: 'find [folder] [pattern]',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
+  const TERMINAL_HEIGHT_KEY = 'krasow-terminal-height';
   const HISTORY_LIMIT = 10;
   const PAGE_PATH = location.pathname || '/';
   const IS_TERMINAL_PAGE = PAGE_PATH.replace(/\/+$/, '') === '/terminal';
@@ -215,6 +216,7 @@
         prompt: byId('prompt'),
         autocomplete: byId('autocomplete'),
         mobileKeys: document.querySelector('.mobile-keys'),
+        resizeHandle: document.querySelector('.terminal-resize'),
       };
 
       this.currentDirectory = '/home';
@@ -232,6 +234,7 @@
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
       this.restore();
+      this.restoreTerminalHeight();
     }
 
     start() {
@@ -249,7 +252,65 @@
         this.ui.input.focus();
       });
       this.ui.terminal.addEventListener('click', () => this.ui.input.focus());
+      this.bindTerminalResize();
       this.ui.input.focus();
+    }
+
+    terminalHeightBounds() {
+      return {
+        minimum: 320,
+        maximum: Math.max(320, window.innerHeight - 48),
+      };
+    }
+
+    setTerminalHeight(height) {
+      const { minimum, maximum } = this.terminalHeightBounds();
+      const bounded = Math.min(maximum, Math.max(minimum, height));
+      this.ui.terminal.style.height = `${bounded}px`;
+      return bounded;
+    }
+
+    restoreTerminalHeight() {
+      if (!this.ui.resizeHandle || window.matchMedia('(max-width: 560px)').matches) return;
+      try {
+        const height = Number.parseFloat(localStorage.getItem(TERMINAL_HEIGHT_KEY));
+        if (Number.isFinite(height)) this.setTerminalHeight(height);
+      } catch (error) {
+        // Storage may be unavailable in private or restricted browser contexts.
+      }
+    }
+
+    bindTerminalResize() {
+      const handle = this.ui.resizeHandle;
+      if (!handle) return;
+
+      handle.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        const startY = event.clientY;
+        const startHeight = this.ui.terminal.getBoundingClientRect().height;
+        handle.classList.add('dragging');
+        handle.setPointerCapture(event.pointerId);
+
+        const move = (moveEvent) => {
+          this.setTerminalHeight(startHeight + moveEvent.clientY - startY);
+        };
+        const finish = () => {
+          handle.classList.remove('dragging');
+          handle.removeEventListener('pointermove', move);
+          handle.removeEventListener('pointerup', finish);
+          handle.removeEventListener('pointercancel', finish);
+          try {
+            localStorage.setItem(TERMINAL_HEIGHT_KEY,
+              String(this.ui.terminal.getBoundingClientRect().height));
+          } catch (error) {
+            // Storage may be unavailable in private or restricted browser contexts.
+          }
+        };
+
+        handle.addEventListener('pointermove', move);
+        handle.addEventListener('pointerup', finish);
+        handle.addEventListener('pointercancel', finish);
+      });
     }
 
     buildCommands() {
@@ -534,20 +595,35 @@
     formatListing(entries) {
       const labels = entries.map(displayFile);
       const gap = 3;
-      const columnWidth = Math.max(...labels.map((label) => label.length)) + gap;
       const style = getComputedStyle(this.ui.log);
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
       if (context) context.font = style.font;
       const charWidth = context?.measureText('0').width || parseFloat(style.fontSize) * 0.62 || 8;
       const availableCharacters = Math.max(1, Math.floor(this.ui.log.clientWidth / charWidth));
-      const columns = Math.max(1, Math.floor((availableCharacters + gap) / columnWidth));
+
+      let columns = 1;
+      let columnWidths = [Math.max(...labels.map((label) => label.length))];
+      for (let candidate = labels.length; candidate > 1; candidate -= 1) {
+        const widths = Array(candidate).fill(0);
+        labels.forEach((label, index) => {
+          const column = index % candidate;
+          widths[column] = Math.max(widths[column], label.length);
+        });
+        const requiredWidth = widths.reduce((sum, width) => sum + width, 0)
+          + (gap * (candidate - 1));
+        if (requiredWidth <= availableCharacters) {
+          columns = candidate;
+          columnWidths = widths;
+          break;
+        }
+      }
 
       const rows = [];
       for (let index = 0; index < labels.length; index += columns) {
         const row = labels.slice(index, index + columns);
         rows.push(row.map((label, column) => (
-          column === row.length - 1 ? label : label.padEnd(columnWidth)
+          column === row.length - 1 ? label : label.padEnd(columnWidths[column] + gap)
         )).join(''));
       }
       return rows.join('\n');

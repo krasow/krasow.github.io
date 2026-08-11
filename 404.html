@@ -80,6 +80,7 @@
 
     /* ---- Terminal panel (black card + accent stripe, like the homepage) -- */
     .term {
+      position: relative;
       width: min(82vw, 1400px);
       height: min(82dvh, 900px);
       padding: 36px 30px 30px;
@@ -202,6 +203,25 @@
       opacity: 1;
     }
     .mobile-keys { display: none; }
+    .terminal-resize {
+      position: absolute;
+      right: 20px;
+      bottom: 7px;
+      width: 52px;
+      height: 10px;
+      padding: 0;
+      border: 0;
+      border-top: 2px solid var(--terminal-accent);
+      border-bottom: 2px solid var(--terminal-accent);
+      background: transparent;
+      cursor: ns-resize;
+      opacity: .45;
+      touch-action: none;
+      transition: opacity .15s ease;
+    }
+    .terminal-resize:hover,
+    .terminal-resize:focus-visible,
+    .terminal-resize.dragging { opacity: 1; }
 
     /* ---- Hint ----------------------------------------------------------- */
     .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
@@ -216,7 +236,7 @@
     @media (max-width: 560px) {
       .term {
         width: 100%;
-        height: calc(100dvh - 96px);
+        height: calc(100dvh - 96px) !important;
         padding: 28px 20px 24px;
       }
       .glitch {
@@ -238,6 +258,7 @@
         border: 1px solid var(--card-border);
         font: inherit;
       }
+      .terminal-resize { display: none; }
     }
     @media (prefers-reduced-motion: reduce) {
       .term, .glitch::before, .glitch::after { animation: none; }
@@ -270,6 +291,7 @@
         <button class="mobile-key" type="button" data-key="ArrowRight">→</button>
         <button class="mobile-key" type="button" data-key="Escape">Esc</button>
       </div>
+      <button class="terminal-resize" type="button" aria-label="Resize terminal vertically"></button>
     </main>
   </div>
 
