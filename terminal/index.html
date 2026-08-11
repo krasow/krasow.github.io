@@ -145,6 +145,15 @@
     .autocomplete { flex: none; margin-top: 4px; color: var(--terminal-text); opacity: .65; }
     .autocomplete-choice + .autocomplete-choice { margin-left: 14px; }
     .autocomplete-choice.active { color: var(--terminal-accent); opacity: 1; }
+    .ls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(16ch, 1fr));
+      column-gap: 3ch;
+    }
+    .ls-entry {
+      min-width: 0;
+      white-space: nowrap;
+    }
     .mobile-keys { display: none; }
     .terminal-resize {
       position: absolute;

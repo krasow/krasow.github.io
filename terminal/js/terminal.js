@@ -111,12 +111,9 @@
 
   const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
   const EASTER_EGGS = new Map([
-    ['sudo', 'david is not in the sudoers file. This incident will be reported.'],
-    ['sudo su', 'Authentication failed: you are already the root of your own problems.'],
     ['sudo make me a sandwich', 'Okay. [sandwich delivered]'],
     ['make me a sandwich', 'What? Make it yourself.'],
     ['rm -rf /', 'rm: /: permission denied'],
-    ['sudo rm -rf /', 'david is not in the sudoers file. This incident will be reported.'],
     ['exit', 'There is no escape. This is a website.'],
     ['42', 'The answer to life, the universe, and distributed computing.'],
     ['coffee', 'Error: coffee machine is not attached to this runtime.'],
@@ -151,6 +148,7 @@
     download: 'download <file>',
     find: 'find [folder] [pattern]',
     reset: 'reset',
+    sudo: 'sudo <command>',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
   const REMOVED_PATHS_KEY = 'krasow-terminal-removed-paths';
@@ -328,6 +326,10 @@
         ['download', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
         ['find', (args) => this.withMaximumArity(args, 2, () => this.find(args))],
         ['reset', (args) => this.withArity(args, 0, () => this.resetLocalState())],
+        ['sudo', () => {
+          this.write('david is not in the sudoers file. This incident will be reported.', 'err');
+          return true;
+        }],
         ['show', (args) => this.withArity(args, 1, () => this.showScript(args[0]))],
         ['echo', (args) => {
           this.write(args.join(' '), 'pth');
@@ -342,7 +344,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'rm', 'open', 'download', 'find', 'show', 'echo', 'cowsay', 'reset', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'rm', 'open', 'download', 'find', 'show', 'echo', 'cowsay', 'reset', 'sudo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -574,7 +576,7 @@
         this.write(`ls: ${path}: not a directory`, 'err');
         return;
       }
-      this.write(this.formatListing(entries), 'pth');
+      this.writeListing(entries);
     }
 
     listMatches(path) {
@@ -582,48 +584,16 @@
       if (matches === null) {
         this.write(`ls: ${directoryPath}: not a directory`, 'err');
       } else if (matches.length) {
-        this.write(this.formatListing(matches), 'pth');
+        this.writeListing(matches);
       } else {
         this.write(`ls: no matches found: ${path}`, 'err');
       }
     }
 
-    formatListing(entries) {
-      const labels = entries.map(displayFile);
-      if (!labels.length) return '';
-      const gap = 3;
-      const style = getComputedStyle(this.ui.log);
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      if (context) context.font = style.font;
-      const charWidth = context?.measureText('0').width || parseFloat(style.fontSize) * 0.62 || 8;
-      const availableCharacters = Math.max(1, Math.floor(this.ui.log.clientWidth / charWidth));
-
-      let columns = 1;
-      let columnWidths = [Math.max(...labels.map((label) => label.length))];
-      for (let candidate = labels.length; candidate > 1; candidate -= 1) {
-        const widths = Array(candidate).fill(0);
-        labels.forEach((label, index) => {
-          const column = index % candidate;
-          widths[column] = Math.max(widths[column], label.length);
-        });
-        const requiredWidth = widths.reduce((sum, width) => sum + width, 0)
-          + (gap * (candidate - 1));
-        if (requiredWidth <= availableCharacters) {
-          columns = candidate;
-          columnWidths = widths;
-          break;
-        }
-      }
-
-      const rows = [];
-      for (let index = 0; index < labels.length; index += columns) {
-        const row = labels.slice(index, index + columns);
-        rows.push(row.map((label, column) => (
-          column === row.length - 1 ? label : label.padEnd(columnWidths[column] + gap)
-        )).join(''));
-      }
-      return rows.join('\n');
+    writeListing(entries, track = true) {
+      const listing = makeElement('div', 'ln pth ls-grid');
+      listing.append(...entries.map((name) => makeElement('span', 'ls-entry', displayFile(name))));
+      this.append(listing, track ? { type: 'listing', entries } : null);
     }
 
     matchingEntries(path) {
@@ -649,6 +619,7 @@
     entriesIn(directory) {
       if (this.trash.contains(directory) || !DIRECTORIES[directory]) return null;
       return DIRECTORIES[directory].filter((name) => {
+        if (name.startsWith('.')) return false;
         const child = `${directory === '/' ? '' : directory}/${name.replace(/\/$/, '')}`;
         return !this.trash.contains(child);
       });
@@ -1080,6 +1051,8 @@
         this.showHelp(false);
       } else if (record.type === 'clear-screen') {
         this.clearScreen(false);
+      } else if (record.type === 'listing' && Array.isArray(record.entries)) {
+        this.writeListing(record.entries, false);
       }
     }
 
