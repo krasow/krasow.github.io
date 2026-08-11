@@ -119,9 +119,20 @@
       "readMore": { "command": "open /home/projects/compression" }
     },
     {
+      "topic": "cuNumeric.jl",
+      "keywords": ["cunumeric", "julia", "gpu", "gpus", "arrays", "ndarray", "legate", "constellation"],
+      "phrases": ["what is cunumeric", "cunumeric relate", "julia work", "julia project", "julia array project", "gpu work"],
+      "answer": "cuNumeric.jl is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.",
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" },
+        { "label": "Documentation", "url": "https://julialegate.github.io/cuNumeric.jl/dev/" }
+      ],
+      "readMore": { "command": "open /home/projects/cunumeric" }
+    },
+    {
       "topic": "Legion runtime",
-      "keywords": ["legion", "julia", "gpu", "gpus", "cunumeric", "runtime", "arrays", "constellation"],
-      "phrases": ["what is legion", "legion runtime", "task based scheduler", "data movement", "julia work", "julia project", "gpu work"],
+      "keywords": ["legion", "runtime"],
+      "phrases": ["what is legion", "legion runtime", "task based scheduler", "data movement"],
       "answer": "Legion is a task-based runtime for programming distributed, heterogeneous systems. It manages parallel work and data movement across different processors and accelerators. David's work connects to Legion in two ways: cuNumeric.jl uses the Legion-based Legate ecosystem to run array-oriented Julia applications across distributed systems and NVIDIA GPUs, while Legion PIM extends the runtime to support UPMEM Processing-in-Memory accelerators.",
       "links": [
         { "label": "Legion", "url": "https://legion.stanford.edu/" },
