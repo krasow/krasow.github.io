@@ -1,11 +1,10 @@
 (() => {
   'use strict';
   class OpenApp {
-    constructor(terminal, { shortcuts, fileRoutes, hiddenFiles }) {
+    constructor(terminal, { shortcuts, fileRoutes }) {
       this.terminal = terminal;
       this.shortcuts = shortcuts;
       this.fileRoutes = fileRoutes;
-      this.hiddenFiles = hiddenFiles;
     }
     run(args) {
       return window.TerminalApp.exact(args, 1, () => this.open(args[0]));
@@ -22,9 +21,7 @@
       }
       const url =
         this.shortcuts[target] ??
-        (this.terminal.trash.contains(path)
-          ? null
-          : (this.fileRoutes.get(path) ?? this.hiddenFiles[path]));
+        (this.terminal.trash.contains(path) ? null : this.fileRoutes.get(path));
       if (url) this.terminal.navigate(url);
       else this.terminal.write(`open: ${target}: no such file or page`, 'err');
     }

@@ -2,11 +2,10 @@
   'use strict';
 
   class TerminalAutocomplete {
-    constructor(terminal, { directories, fileRoutes, hiddenFiles, textPaths }) {
+    constructor(terminal, { directories, fileRoutes, textPaths }) {
       this.terminal = terminal;
       this.directories = directories;
       this.fileRoutes = fileRoutes;
-      this.hiddenFiles = hiddenFiles;
       this.textPaths = textPaths;
       this.commands = terminal.commandSet.completions();
       this.cycle = null;
@@ -93,7 +92,7 @@
     accepts(candidate, typedPath, command) {
       if (command === 'cd') return Boolean(this.directories[candidate]);
       if (command === 'open' || command === 'download') {
-        const openable = [...this.fileRoutes.keys(), ...Object.keys(this.hiddenFiles)];
+        const openable = [...this.fileRoutes.keys()];
         const matches =
           openable.includes(candidate) ||
           ((typedPath.includes('/') || typedPath.startsWith('.')) &&

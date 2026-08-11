@@ -6,18 +6,11 @@
     zoom: 'https://northwestern.zoom.us/my/krasow',
   };
   const PAGE_SOURCES = {};
-  const READABLE_FILES = {};
-
-  const HIDDEN_FILES = {};
   const DIRECTORIES = {
     '/': [],
   };
   const FILE_ROUTES = new Map();
-  const TEXT_PATHS = new Set([
-    ...Object.keys(READABLE_FILES).map((name) => `/home/${name}`),
-    ...Object.keys(PAGE_SOURCES).map((name) => `/home/${name}`),
-    ...Object.keys(HIDDEN_FILES),
-  ]);
+  const TEXT_PATHS = new Set();
 
   const STORAGE_KEY = 'krasow-terminal-state';
   const REMOVED_PATHS_KEY = 'krasow-terminal-removed-paths';
@@ -62,7 +55,6 @@
       this.trash = new window.KrasowTerminalFileSystem.VirtualTrash({
         directories: DIRECTORIES,
         fileRoutes: FILE_ROUTES,
-        hiddenFiles: HIDDEN_FILES,
         storageKey: REMOVED_PATHS_KEY,
       });
 
@@ -71,9 +63,7 @@
       this.files = new window.KrasowTerminalFileSystem.TerminalFiles(this, {
         directories: DIRECTORIES,
         fileRoutes: FILE_ROUTES,
-        hiddenFiles: HIDDEN_FILES,
         pageSources: PAGE_SOURCES,
-        readableFiles: READABLE_FILES,
         shortcuts: SHORTCUTS,
         textPaths: TEXT_PATHS,
       });
@@ -83,7 +73,6 @@
       this.commandSet = new window.KrasowTerminalCommands.TerminalCommands(this, {
         shortcuts: SHORTCUTS,
         fileRoutes: FILE_ROUTES,
-        hiddenFiles: HIDDEN_FILES,
         directories: DIRECTORIES,
       });
 
@@ -91,7 +80,6 @@
       this.autocomplete = new window.TerminalAutocomplete(this, {
         directories: DIRECTORIES,
         fileRoutes: FILE_ROUTES,
-        hiddenFiles: HIDDEN_FILES,
         textPaths: TEXT_PATHS,
       });
       this.restore();

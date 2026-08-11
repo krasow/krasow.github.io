@@ -2,10 +2,9 @@
   'use strict';
 
   class VirtualTrash {
-    constructor({ directories, fileRoutes, hiddenFiles, storageKey }) {
+    constructor({ directories, fileRoutes, storageKey }) {
       this.directories = directories;
       this.fileRoutes = fileRoutes;
-      this.hiddenFiles = hiddenFiles;
       this.storageKey = storageKey;
       this.paths = this.load();
     }
@@ -37,8 +36,7 @@
 
     exists(path) {
       if (this.contains(path)) return false;
-      if (this.directories[path] || this.fileRoutes.has(path) || this.hiddenFiles[path])
-        return true;
+      if (this.directories[path] || this.fileRoutes.has(path)) return true;
       const separator = path.lastIndexOf('/');
       const parent = path.slice(0, separator) || '/';
       const name = path.slice(separator + 1);
@@ -142,12 +140,9 @@
     textSource(path) {
       const absolutePath = this.resolvePath(path);
       if (this.terminal.trash.contains(absolutePath)) return null;
-      if (this.hiddenFiles[absolutePath]) return { url: this.hiddenFiles[absolutePath] };
       const homePath = absolutePath.replace(/^\/home\//, '');
       if (this.pageSources[homePath]) return this.pageSources[homePath];
-      const url =
-        this.readableFiles[homePath] ??
-        (this.textPaths.has(absolutePath) ? this.fileRoutes.get(absolutePath) : null);
+      const url = this.textPaths.has(absolutePath) ? this.fileRoutes.get(absolutePath) : null;
       return url ? { url } : null;
     }
 
