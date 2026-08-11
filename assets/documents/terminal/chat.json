@@ -99,7 +99,7 @@
     },
     {
       "topic": "compression GitHub repository",
-      "keywords": ["compression", "correlation compressibility"],
+      "keywords": [],
       "phrases": ["compression github", "compression repo", "compression repository", "github compression work"],
       "answer": "David's correlation-compressibility work is available in the FTHPC Correlation_Compressibility repository.",
       "links": [
@@ -132,7 +132,7 @@
     },
     {
       "topic": "cuNumeric.jl GitHub repository",
-      "keywords": ["cunumeric", "cunumerics"],
+      "keywords": [],
       "phrases": ["cunumeric github", "cunumeric repo", "cunumeric repository"],
       "answer": "The cuNumeric.jl repository is hosted by JuliaLegate on GitHub.",
       "links": [
@@ -164,7 +164,7 @@
     },
     {
       "topic": "Legion PIM GitHub repository",
-      "keywords": ["legion", "pim", "pims"],
+      "keywords": [],
       "phrases": ["legion pim github", "legion pim repo", "legion pim repository", "legion pims github", "legion pims repo", "legion pims repository"],
       "answer": "The Legion PIM repository is hosted by PrescienceLab on GitHub.",
       "links": [

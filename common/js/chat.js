@@ -40,9 +40,13 @@
         .map(normalizeReference)
         .map((word) => this.correct(word, vocabulary)));
       const normalized = normalizePhrase(question);
+      const phraseScore = (entry) => entry.phrases.reduce((best, phrase) => {
+        const matches = normalized.includes(phrase.compact)
+          || phrase.words.every((word) => query.has(word));
+        return matches ? Math.max(best, 10 + (2 * phrase.words.length)) : best;
+      }, 0);
       const score = (entry) => entry.words.filter((word) => query.has(word)).length
-        + (entry.phrases.some((phrase) => normalized.includes(phrase.compact)
-          || phrase.words.every((word) => query.has(word))) ? 10 : 0);
+        + phraseScore(entry);
       const best = entries.reduce((a, b) => score(b) > score(a) ? b : a);
       return score(best) ? best : { answer: fallback };
     }
