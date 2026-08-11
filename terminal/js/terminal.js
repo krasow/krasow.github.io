@@ -644,12 +644,15 @@
         if (!expanded.length && !force) this.write(`rm: ${target}: no matches found`, 'err');
         for (const item of expanded) {
           const path = this.resolvePath(item);
-          const error = this.trash.remove(path, {
-            recursive,
-            currentDirectory: this.currentDirectory,
-          });
+          const error = this.trash.remove(path, { recursive });
           if (error && (!force || error !== 'no such file or directory')) {
             this.write(`rm: ${item}: ${error}`, 'err');
+          } else if (!error && (path === this.currentDirectory
+            || this.currentDirectory.startsWith(`${path}/`))) {
+            this.currentDirectory = path.slice(0, path.lastIndexOf('/')) || '/';
+            this.previousDirectory = null;
+            this.ui.prompt.textContent = this.promptText();
+            this.persist();
           }
         }
       }

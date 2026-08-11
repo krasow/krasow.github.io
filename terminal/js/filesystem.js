@@ -45,12 +45,9 @@
         .some((entry) => entry.replace(/\/$/, '') === name);
     }
 
-    remove(path, { recursive, currentDirectory }) {
+    remove(path, { recursive }) {
       if (path !== '/home' && !path.startsWith('/home/')) return 'permission denied';
       if (!this.exists(path)) return 'no such file or directory';
-      if (path === currentDirectory || currentDirectory.startsWith(`${path}/`)) {
-        return 'resource busy';
-      }
       if (this.directories[path] && !recursive) return 'is a directory';
       this.paths.add(path);
       return null;
