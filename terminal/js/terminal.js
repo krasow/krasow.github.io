@@ -323,7 +323,7 @@
         }],
         ['cd', (args) => this.withMaximumArity(args, 1, () => this.changeDirectory(args[0] ?? ''))],
         ['open', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
-        ['download', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
+        ['download', (args) => this.withArity(args, 1, () => this.downloadPath(args[0]))],
         ['find', (args) => this.withMaximumArity(args, 2, () => this.find(args))],
         ['reset', (args) => this.withArity(args, 0, () => this.resetLocalState())],
         ['sudo', () => {
@@ -687,8 +687,12 @@
       this.persist();
     }
 
-    openPath(target) {
+    openPath(target, allowDownload = false) {
       const path = this.resolvePath(target);
+      if (path.endsWith('.vcf') && !allowDownload) {
+        this.write(`open: ${target}: use \`download ${target}\` for contact cards`, 'err');
+        return;
+      }
       if (this.entriesIn(path)) {
         this.write(`open: ${target}: is a directory`, 'err');
         return;
@@ -697,6 +701,15 @@
         ?? (this.trash.contains(path) ? null : FILE_ROUTES.get(path) ?? HIDDEN_FILES[path]);
       if (url) this.navigate(url);
       else this.write(`open: ${target}: no such file or page`, 'err');
+    }
+
+    downloadPath(target) {
+      const path = this.resolvePath(target);
+      if (!/\.(pdf|sh|vcf)$/i.test(path)) {
+        this.write(`download: ${target}: not a downloadable document`, 'err');
+        return;
+      }
+      this.openPath(target, true);
     }
 
     find(args) {
@@ -1174,9 +1187,15 @@
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
           if (command === 'open' || command === 'download') {
             const openable = [...FILE_ROUTES.keys(), ...Object.keys(HIDDEN_FILES)];
-            return openable.includes(candidate)
+            const matchesPath = openable.includes(candidate)
               || ((path.includes('/') || path.startsWith('.'))
                 && openable.some((target) => target.startsWith(`${candidate}/`)));
+            if (!matchesPath) return false;
+            if (command === 'open' && /\.vcf$/i.test(candidate)) return false;
+            if (command === 'download' && !DIRECTORIES[candidate]) {
+              return /\.(pdf|sh|vcf)$/i.test(candidate);
+            }
+            return true;
           }
           if (!['cat', 'copy', 'grep', 'wc'].includes(command)) return true;
           return TEXT_PATHS.has(candidate)
