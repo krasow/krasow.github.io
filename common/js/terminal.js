@@ -143,7 +143,6 @@
     find: 'find [folder] [pattern]',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
-  const TERMINAL_HEIGHT_KEY = 'krasow-terminal-height';
   const HISTORY_LIMIT = 10;
   const PAGE_PATH = location.pathname || '/';
   const IS_TERMINAL_PAGE = PAGE_PATH.replace(/\/+$/, '') === '/terminal';
@@ -216,8 +215,12 @@
         prompt: byId('prompt'),
         autocomplete: byId('autocomplete'),
         mobileKeys: document.querySelector('.mobile-keys'),
-        resizeHandle: document.querySelector('.terminal-resize'),
       };
+
+      const resizeHandle = document.querySelector('.terminal-resize');
+      this.resizer = window.KrasowTerminalResize
+        ? new window.KrasowTerminalResize.TerminalResizer(this.ui.terminal, resizeHandle)
+        : null;
 
       this.currentDirectory = '/home';
       this.previousDirectory = null;
@@ -234,7 +237,6 @@
       this.completions = this.buildCompletions();
       this.commands = this.buildCommands();
       this.restore();
-      this.restoreTerminalHeight();
     }
 
     start() {
@@ -252,65 +254,8 @@
         this.ui.input.focus();
       });
       this.ui.terminal.addEventListener('click', () => this.ui.input.focus());
-      this.bindTerminalResize();
+      this.resizer?.start();
       this.ui.input.focus();
-    }
-
-    terminalHeightBounds() {
-      return {
-        minimum: 320,
-        maximum: Math.max(320, window.innerHeight - 48),
-      };
-    }
-
-    setTerminalHeight(height) {
-      const { minimum, maximum } = this.terminalHeightBounds();
-      const bounded = Math.min(maximum, Math.max(minimum, height));
-      this.ui.terminal.style.height = `${bounded}px`;
-      return bounded;
-    }
-
-    restoreTerminalHeight() {
-      if (!this.ui.resizeHandle || window.matchMedia('(max-width: 560px)').matches) return;
-      try {
-        const height = Number.parseFloat(localStorage.getItem(TERMINAL_HEIGHT_KEY));
-        if (Number.isFinite(height)) this.setTerminalHeight(height);
-      } catch (error) {
-        // Storage may be unavailable in private or restricted browser contexts.
-      }
-    }
-
-    bindTerminalResize() {
-      const handle = this.ui.resizeHandle;
-      if (!handle) return;
-
-      handle.addEventListener('pointerdown', (event) => {
-        event.preventDefault();
-        const startY = event.clientY;
-        const startHeight = this.ui.terminal.getBoundingClientRect().height;
-        handle.classList.add('dragging');
-        handle.setPointerCapture(event.pointerId);
-
-        const move = (moveEvent) => {
-          this.setTerminalHeight(startHeight + moveEvent.clientY - startY);
-        };
-        const finish = () => {
-          handle.classList.remove('dragging');
-          handle.removeEventListener('pointermove', move);
-          handle.removeEventListener('pointerup', finish);
-          handle.removeEventListener('pointercancel', finish);
-          try {
-            localStorage.setItem(TERMINAL_HEIGHT_KEY,
-              String(this.ui.terminal.getBoundingClientRect().height));
-          } catch (error) {
-            // Storage may be unavailable in private or restricted browser contexts.
-          }
-        };
-
-        handle.addEventListener('pointermove', move);
-        handle.addEventListener('pointerup', finish);
-        handle.addEventListener('pointercancel', finish);
-      });
     }
 
     buildCommands() {

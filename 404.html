@@ -205,16 +205,19 @@
     .mobile-keys { display: none; }
     .terminal-resize {
       position: absolute;
-      right: 20px;
+      right: 7px;
       bottom: 7px;
-      width: 52px;
-      height: 10px;
+      width: 18px;
+      height: 18px;
       padding: 0;
       border: 0;
-      border-top: 2px solid var(--terminal-accent);
-      border-bottom: 2px solid var(--terminal-accent);
-      background: transparent;
-      cursor: ns-resize;
+      background: repeating-linear-gradient(
+        135deg,
+        transparent 0 4px,
+        var(--terminal-accent) 4px 6px
+      );
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+      cursor: nwse-resize;
       opacity: .45;
       touch-action: none;
       transition: opacity .15s ease;
@@ -235,7 +238,7 @@
     }
     @media (max-width: 560px) {
       .term {
-        width: 100%;
+        width: 100% !important;
         height: calc(100dvh - 96px) !important;
         padding: 28px 20px 24px;
       }
@@ -291,7 +294,7 @@
         <button class="mobile-key" type="button" data-key="ArrowRight">→</button>
         <button class="mobile-key" type="button" data-key="Escape">Esc</button>
       </div>
-      <button class="terminal-resize" type="button" aria-label="Resize terminal vertically"></button>
+      <button class="terminal-resize" type="button" aria-label="Resize terminal"></button>
     </main>
   </div>
 
@@ -300,6 +303,7 @@
   <!-- Shared controller: /terminal omits the missing-page message. -->
   <script src="/common/js/chat.js"></script>
   <script src="/common/js/snake.js"></script>
+  <script src="/common/js/terminal-resize.js"></script>
   <script src="/common/js/terminal.js"></script>
 </body>
 </html>
