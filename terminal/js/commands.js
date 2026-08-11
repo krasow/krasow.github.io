@@ -5,7 +5,6 @@
   const easterEggs = new Map([
     ['sudo make me a sandwich', 'Okay. [sandwich delivered]'],
     ['make me a sandwich', 'What? Make it yourself.'],
-    ['rm -rf /', 'rm: /: permission denied'],
     ['exit', 'There is no escape. This is a website.'],
     ['42', 'The answer to life, the universe, and distributed computing.'],
     ['coffee', 'Error: coffee machine is not attached to this runtime.'],
