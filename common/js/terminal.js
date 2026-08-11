@@ -269,8 +269,10 @@
           return true;
         }],
         ['grep', (args) => {
-          if (args.length < 2) return false;
-          this.grep(args[0], args.slice(1));
+          const ignoreCase = args[0] === '-i';
+          const offset = ignoreCase ? 1 : 0;
+          if (args.length < offset + 2) return false;
+          this.grep(args[offset], args.slice(offset + 1), ignoreCase);
           return true;
         }],
         ['copy', (args) => this.withArity(args, 1, () => this.copyFile(args[0]))],
@@ -680,10 +682,10 @@
       return text;
     }
 
-    async grep(pattern, paths) {
+    async grep(pattern, paths, ignoreCase = false) {
       let expression;
       try {
-        expression = new RegExp(pattern);
+        expression = new RegExp(pattern, ignoreCase ? 'i' : '');
       } catch (error) {
         this.write(`grep: invalid pattern: ${pattern}`, 'err');
         return;
