@@ -19,14 +19,14 @@
   const FILES = {
     'about.pg': ROUTES.about,
     'ai-notice.md': '/assets/documents/notice/ai-notice.md',
-    'contact.md': '/assets/documents/terminal/contact.md',
+    'contact.md': '/terminal/fs/home/contact.md',
     'contact.vcf': ROUTES.contact,
     'cv.pg': ROUTES.cv,
-    'education.md': '/assets/documents/terminal/education.md',
+    'education.md': '/terminal/fs/home/education.md',
     'experience.pg': ROUTES.experience,
     'news.pg': ROUTES.news,
     'resume.pdf': ROUTES.resume,
-    'summary.md': '/assets/documents/terminal/summary.md',
+    'summary.md': '/terminal/fs/home/summary.md',
   };
   const SHORTCUTS = {
     github: ROUTES.github,
@@ -76,25 +76,14 @@
       ['cunumeric-install.sh', '/scripts/cunumeric-install.sh'],
     ],
   };
-  const HIDDEN_FILES = {
-    '/etc/hostname': '/assets/terminal/etc/hostname',
-    '/etc/motd': '/assets/terminal/etc/motd',
-    '/etc/os-release': '/assets/terminal/etc/os-release',
-    '/home/.ssh/id_ed25519_krasow.pub': '/assets/terminal/home/.ssh/id_ed25519_krasow.pub',
-    '/proc/version': '/assets/terminal/proc/version',
-  };
-  const HIDDEN_DIRECTORIES = {
-    '/etc': ['hostname', 'motd', 'os-release'],
-    '/home/.ssh': ['id_ed25519_krasow.pub'],
-    '/proc': ['version'],
-  };
+  const HIDDEN_FILES = {};
   const ROOT_ENTRIES = [
-    'about.pg', 'ai-notice.md', 'contact.md', 'contact.vcf', 'cv.pg', 'education.md',
+    'about.pg', 'ai-notice.md', 'contact.vcf', 'cv.pg',
     'experience.pg', 'news.pg',
     'posters/', 'presentations/', 'projects/', 'publications/',
-    'resume.pdf', 'scripts/', 'summary.md',
+    'resume.pdf', 'scripts/',
   ];
-  const ROOT_DIRECTORIES = ['etc/', 'home/', 'proc/'];
+  const ROOT_DIRECTORIES = ['home/'];
   const DIRECTORIES = {
     '/': ROOT_DIRECTORIES,
     '/home': ROOT_ENTRIES,
@@ -102,7 +91,6 @@
       `/home/${name}`,
       entries.map(([entry]) => entry),
     ])),
-    ...HIDDEN_DIRECTORIES,
   };
   const FILE_ROUTES = new Map([
     ...Object.entries(FILES).map(([name, url]) => [`/home/${name}`, url]),
@@ -127,8 +115,8 @@
     ['sudo su', 'Authentication failed: you are already the root of your own problems.'],
     ['sudo make me a sandwich', 'Okay. [sandwich delivered]'],
     ['make me a sandwich', 'What? Make it yourself.'],
-    ['rm -rf /', 'Nice try. The portfolio has backups.'],
-    ['sudo rm -rf /', 'Permission denied by common sense.'],
+    ['rm -rf /', 'rm: /: permission denied'],
+    ['sudo rm -rf /', 'david is not in the sudoers file. This incident will be reported.'],
     ['exit', 'There is no escape. This is a website.'],
     ['42', 'The answer to life, the universe, and distributed computing.'],
     ['coffee', 'Error: coffee machine is not attached to this runtime.'],
@@ -158,14 +146,16 @@
     grep: 'grep <pattern> <file|pattern> [...]',
     copy: 'copy <file>',
     wc: 'wc <file|pattern> [...]',
+    rm: 'rm [-rf] <file|folder> [...]',
     open: 'open <file|page>',
     download: 'download <file>',
     find: 'find [folder] [pattern]',
+    reset: 'reset',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
+  const REMOVED_PATHS_KEY = 'krasow-terminal-removed-paths';
   const HISTORY_LIMIT = 10;
-  const PAGE_PATH = location.pathname || '/';
-  const IS_TERMINAL_PAGE = PAGE_PATH.replace(/\/+$/, '') === '/terminal';
+  const NOT_FOUND_PATH = new URLSearchParams(location.search).get('notFound');
 
   const HELP = [
     ['Navigation', [
@@ -179,6 +169,7 @@
       ['grep pattern file', 'search one or more text files'],
       ['copy file', 'copy a text file'],
       ['wc file|pattern', 'count lines, words, and characters'],
+      ['rm [-rf] file|folder', 'hide entries from the virtual filesystem'],
       ['echo text', 'print text'],
       ['show script', 'print an install command'],
     ]],
@@ -198,6 +189,7 @@
       ['clear', 'clear the terminal and scrollback'],
       ['clear -x', 'clear the screen but preserve scrollback'],
       ['theme [light|dark]', 'change color theme'],
+      ['reset', 'restore all locally saved terminal state'],
       ['Esc · Ctrl+C', 'cancel current input'],
       ['↑ / ↓ · Tab', 'history and autocomplete'],
     ]],
@@ -242,6 +234,12 @@
       this.resizer = window.KrasowTerminalResize
         ? new window.KrasowTerminalResize.TerminalResizer(this.ui.terminal, resizeHandle)
         : null;
+      this.trash = new window.KrasowTerminalFileSystem.VirtualTrash({
+        directories: DIRECTORIES,
+        fileRoutes: FILE_ROUTES,
+        hiddenFiles: HIDDEN_FILES,
+        storageKey: REMOVED_PATHS_KEY,
+      });
 
       this.currentDirectory = '/home';
       this.previousDirectory = null;
@@ -320,6 +318,7 @@
           this.countFiles(args);
           return true;
         }],
+        ['rm', (args) => this.remove(args)],
         ['ls', (args) => {
           this.list(args.join(' '));
           return true;
@@ -328,6 +327,7 @@
         ['open', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
         ['download', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
         ['find', (args) => this.withMaximumArity(args, 2, () => this.find(args))],
+        ['reset', (args) => this.withArity(args, 0, () => this.resetLocalState())],
         ['show', (args) => this.withArity(args, 1, () => this.showScript(args[0]))],
         ['echo', (args) => {
           this.write(args.join(' '), 'pth');
@@ -342,7 +342,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'download', 'find', 'show', 'echo', 'cowsay', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'rm', 'open', 'download', 'find', 'show', 'echo', 'cowsay', 'reset', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -350,7 +350,6 @@
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
         ...Object.keys(SHORTCUTS),
         ...Object.keys(RESPONSES),
-        ...ROOT_ENTRIES,
       ])];
     }
 
@@ -474,32 +473,7 @@
       const characterWidth = fontSize * 0.62;
       const maximumWidth = Math.max(12, Math.min(60,
         Math.floor(this.ui.log.clientWidth / characterWidth) - 6));
-      const lines = [];
-      let remaining = message;
-      while (remaining.length > maximumWidth) {
-        const breakpoint = remaining.lastIndexOf(' ', maximumWidth);
-        const length = breakpoint > 0 ? breakpoint : maximumWidth;
-        lines.push(remaining.slice(0, length));
-        remaining = remaining.slice(length).trimStart();
-      }
-      lines.push(remaining);
-
-      const width = Math.max(...lines.map((line) => line.length));
-      const bubble = lines.map((line, index) => {
-        const left = lines.length === 1 ? '<' : index === 0 ? '/' : index === lines.length - 1 ? '\\' : '|';
-        const right = lines.length === 1 ? '>' : index === 0 ? '\\' : index === lines.length - 1 ? '/' : '|';
-        return `${left} ${line.padEnd(width)} ${right}`;
-      });
-      this.write([
-        ` ${'_'.repeat(width + 2)}`,
-        ...bubble,
-        ` ${'-'.repeat(width + 2)}`,
-        '        \\   ^__^',
-        '         \\  (oo)\\_______',
-        '            (__)\\       )\\/\\',
-        '                ||----w |',
-        '                ||     ||',
-      ].join('\n'), 'pth');
+      this.write(window.KrasowCowsay.render(message, maximumWidth), 'pth');
     }
 
     execute(raw) {
@@ -585,7 +559,8 @@
     }
 
     resolve(command) {
-      return SHORTCUTS[command] ?? FILE_ROUTES.get(this.resolvePath(command));
+      const path = this.resolvePath(command);
+      return SHORTCUTS[command] ?? (this.trash.contains(path) ? null : FILE_ROUTES.get(path));
     }
 
     list(path) {
@@ -615,6 +590,7 @@
 
     formatListing(entries) {
       const labels = entries.map(displayFile);
+      if (!labels.length) return '';
       const gap = 3;
       const style = getComputedStyle(this.ui.log);
       const canvas = document.createElement('canvas');
@@ -671,7 +647,49 @@
     }
 
     entriesIn(directory) {
-      return DIRECTORIES[directory] ? [...DIRECTORIES[directory]] : null;
+      if (this.trash.contains(directory) || !DIRECTORIES[directory]) return null;
+      return DIRECTORIES[directory].filter((name) => {
+        const child = `${directory === '/' ? '' : directory}/${name.replace(/\/$/, '')}`;
+        return !this.trash.contains(child);
+      });
+    }
+
+    remove(args) {
+      let recursive = false;
+      let force = false;
+      const targets = [];
+      for (const arg of args) {
+        if (arg.startsWith('-') && arg.length > 1 && !targets.length) {
+          const flags = arg.slice(1);
+          if (/[^rf]/.test(flags)) return false;
+          recursive ||= flags.includes('r');
+          force ||= flags.includes('f');
+        } else targets.push(arg);
+      }
+      if (!targets.length) return false;
+
+      for (const target of targets) {
+        const expanded = /[*?]/.test(target) ? this.expandPath(target) : [target];
+        if (!expanded.length && !force) this.write(`rm: ${target}: no matches found`, 'err');
+        for (const item of expanded) {
+          const path = this.resolvePath(item);
+          const error = this.trash.remove(path, {
+            recursive,
+            currentDirectory: this.currentDirectory,
+          });
+          if (error && (!force || error !== 'no such file or directory')) {
+            this.write(`rm: ${item}: ${error}`, 'err');
+          }
+        }
+      }
+      this.trash.persist();
+      return true;
+    }
+
+    resetLocalState() {
+      try { localStorage.clear(); } catch (error) {}
+      this.append(makeElement('p', 'ln hint', 'resetting local terminal state…'));
+      setTimeout(() => location.reload(), 250);
     }
 
     changeDirectory(target) {
@@ -701,7 +719,8 @@
         this.write(`open: ${target}: is a directory`, 'err');
         return;
       }
-      const url = SHORTCUTS[target] ?? FILE_ROUTES.get(path) ?? HIDDEN_FILES[path];
+      const url = SHORTCUTS[target]
+        ?? (this.trash.contains(path) ? null : FILE_ROUTES.get(path) ?? HIDDEN_FILES[path]);
       if (url) this.navigate(url);
       else this.write(`open: ${target}: no such file or page`, 'err');
     }
@@ -731,7 +750,8 @@
       const target = path.includes('/') || this.currentDirectory === '/home/scripts'
         ? path
         : `/home/scripts/${path}`;
-      const url = FILE_ROUTES.get(this.resolvePath(target));
+      const resolved = this.resolvePath(target);
+      const url = this.trash.contains(resolved) ? null : FILE_ROUTES.get(resolved);
       if (url) this.write(`curl -fsSL https://krasow.dev${url} | bash`, 'pth');
       else this.write(`show: no such script: ${path}`, 'err');
     }
@@ -771,7 +791,9 @@
     }
 
     async fileText(path) {
-      if (DIRECTORIES[this.resolvePath(path)]) throw new Error('EISDIR');
+      const resolved = this.resolvePath(path);
+      if (this.trash.contains(resolved)) throw new Error('ENOENT');
+      if (DIRECTORIES[resolved]) throw new Error('EISDIR');
       const source = this.textSource(path);
       if (!source) throw new Error('ENOENT');
       return this.loadText(source);
@@ -779,12 +801,13 @@
 
     textSource(path) {
       const absolutePath = this.resolvePath(path);
+      if (this.trash.contains(absolutePath)) return null;
       if (HIDDEN_FILES[absolutePath]) return { url: HIDDEN_FILES[absolutePath] };
       const homePath = absolutePath.replace(/^\/home\//, '');
       if (PAGE_SOURCES[homePath]) return PAGE_SOURCES[homePath];
 
       const url = READABLE_FILES[homePath]
-        ?? (absolutePath.startsWith('/home/scripts/') ? FILE_ROUTES.get(absolutePath) : null);
+        ?? (TEXT_PATHS.has(absolutePath) ? FILE_ROUTES.get(absolutePath) : null);
       return url ? { url } : null;
     }
 
@@ -1008,9 +1031,10 @@
         const savedDirectory = saved.currentDirectory === ''
           ? '/home'
           : saved.currentDirectory;
+        const fallbackDirectory = this.entriesIn('/home') ? '/home' : '/';
         this.currentDirectory = this.entriesIn(savedDirectory)
           ? savedDirectory
-          : '/home';
+          : fallbackDirectory;
         const previous = saved.previousDirectory === '' ? '/home' : saved.previousDirectory;
         this.previousDirectory = typeof previous === 'string' && this.entriesIn(previous)
           ? previous
@@ -1025,7 +1049,7 @@
 
         this.ui.prompt.textContent = this.promptText();
         if (!this.transcript.length) return;
-        const warning = IS_TERMINAL_PAGE ? [] : [...this.ui.log.childNodes];
+        const warning = NOT_FOUND_PATH ? [...this.ui.log.childNodes] : [];
         this.ui.log.replaceChildren();
         this.transcript.forEach((record) => this.renderRecord(record));
         if (warning.length) {
@@ -1134,7 +1158,7 @@
 
       const tokenStart = typed.lastIndexOf(' ') + 1;
       const path = typed.slice(tokenStart);
-      const pathCommand = /^(cat|cd|copy|download|find|grep|ls|open|show|wc)\b/.test(typed)
+      const pathCommand = /^(cat|cd|copy|download|find|grep|ls|open|rm|show|wc)\b/.test(typed)
         ? typed.split(/\s/)[0]
         : !typed.includes(' ') ? '' : null;
       const paths = pathCommand !== null
@@ -1193,6 +1217,7 @@
       const prefix = directory === '/' ? '/' : `${directory}/`;
       const hidden = Object.keys(DIRECTORIES)
         .filter((path) => path.startsWith(`${prefix}.`))
+        .filter((path) => !this.trash.contains(path))
         .map((path) => path.slice(prefix.length).split('/')[0])
         .filter(Boolean)
         .map((name) => `${name}/`);
@@ -1259,16 +1284,18 @@
     }
   }
 
-  if (IS_TERMINAL_PAGE) {
-    document.title = 'Terminal | David Krasowska';
-    const banner = document.querySelector('.glitch');
-    banner.dataset.t = 'terminal';
-    banner.setAttribute('aria-label', 'krasow.dev terminal');
+  if (NOT_FOUND_PATH) {
+    const request = makeElement('p', 'ln');
+    request.append(makeElement('span', 'pr', 'david:~$'), ` ${NOT_FOUND_PATH}`);
+    byId('log').replaceChildren(
+      request,
+      makeElement('p', 'ln err', `zsh: no such file or directory: ${NOT_FOUND_PATH}`),
+      makeElement('p', 'hint', '# that page did not exist. use help for more details.'),
+    );
+  } else {
     byId('log').replaceChildren(
       makeElement('p', 'hint', '# use help for more details.'),
     );
-  } else {
-    document.querySelectorAll('.req').forEach((element) => { element.textContent = PAGE_PATH; });
   }
 
   fetch('/common/footer.html')
@@ -1276,5 +1303,18 @@
     .then((html) => { byId('site-footer').innerHTML = html; })
     .catch(() => {});
 
-  new Terminal().start();
+  const startTerminal = async () => {
+    try {
+      await window.KrasowTerminalFileSystem.loadManifest('/terminal/fs/manifest.json', {
+        directories: DIRECTORIES,
+        fileRoutes: FILE_ROUTES,
+        textPaths: TEXT_PATHS,
+      });
+    } catch (error) {
+      // Keep the built-in links available if the generated manifest cannot be loaded.
+    }
+    new Terminal().start();
+  };
+
+  startTerminal();
 })();

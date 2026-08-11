@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "path": "/etc/hostname",
+      "url": "/terminal/fs/etc/hostname",
+      "text": true
+    },
+    {
+      "path": "/etc/motd",
+      "url": "/terminal/fs/etc/motd",
+      "text": true
+    },
+    {
+      "path": "/etc/os-release",
+      "url": "/terminal/fs/etc/os-release",
+      "text": true
+    },
+    {
+      "path": "/home/.ssh/id_ed25519_krasow.pub",
+      "url": "/terminal/fs/home/.ssh/id_ed25519_krasow.pub",
+      "text": true
+    },
+    {
+      "path": "/home/contact.md",
+      "url": "/terminal/fs/home/contact.md",
+      "text": true
+    },
+    {
+      "path": "/home/education.md",
+      "url": "/terminal/fs/home/education.md",
+      "text": true
+    },
+    {
+      "path": "/home/summary.md",
+      "url": "/terminal/fs/home/summary.md",
+      "text": true
+    },
+    {
+      "path": "/proc/version",
+      "url": "/terminal/fs/proc/version",
+      "text": true
+    }
+  ]
+}

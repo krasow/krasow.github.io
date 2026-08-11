@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const KNOWLEDGE_URL = '/assets/documents/terminal/chat.json';
+  const KNOWLEDGE_URL = '/terminal/data/chat.json';
   const COMMON_WORDS = new Set([
     'a', 'about', 'an', 'and', 'area', 'at', 'came', 'can', 'david', 'did', 'do',
     'does', 'find', 'for', 'from', 'give', 'given', 'has', 'have', 'he', 'help',

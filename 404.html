@@ -4,8 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>404 — Not Found | David Krasowska</title>
-
-  <!-- Shortlink redirects — run before anything renders. -->
   <script>
     (() => {
       const redirects = {
@@ -15,295 +13,25 @@
         '/zoom': 'https://northwestern.zoom.us/my/krasow',
         '/github': 'https://github.com/krasow',
         '/contact': '/assets/documents/Krasowska_David_contact.vcf',
-        '/cunumeric': 'https://krasow.dev/pages/show.html?page=cunumeric',
-        '/legionpim': 'https://krasow.dev/pages/show.html?page=legionpim',
-        '/compression': 'https://krasow.dev/pages/show.html?page=compression',
-        '/polish': 'https://krasow.dev/pages/show.html?page=polish',
+        '/cunumeric': '/pages/show.html?page=cunumeric',
+        '/legionpim': '/pages/show.html?page=legionpim',
+        '/compression': '/pages/show.html?page=compression',
+        '/polish': '/pages/show.html?page=polish',
       };
       const target = redirects[location.pathname];
-      if (target) location.replace(target);
+      if (target) {
+        location.replace(target);
+        return;
+      }
+
+      const requestedPath = `${location.pathname}${location.search}${location.hash}`;
+      location.replace(`/terminal/?notFound=${encodeURIComponent(requestedPath)}`);
     })();
   </script>
-
-  <!-- Match the site theme before paint. -->
-  <script>
-    (() => {
-      try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light'); } catch (e) {}
-    })();
-  </script>
-
-  <script src="/common/gtag.js"></script>
-
-  <!-- theme.css: --bg-page, --terminal-*, --card-border, --shadow, …  -  Font Awesome: footer icons -->
-  <link rel="stylesheet" href="/common/css/theme.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-  <style>
-    @font-face {
-      font-family: 'Symbols Nerd Font Mono';
-      src: url('/assets/fonts/SymbolsNerdFontMono-Regular.ttf') format('truetype');
-      font-display: swap;
-    }
-
-    /* ---- Page layout ---------------------------------------------------- */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { min-height: 100%; }
-    body {
-      font-family: 'JetBrains Mono', 'Symbols Nerd Font Mono', 'IBM Plex Mono', ui-monospace,
-        SFMono-Regular, Menlo, monospace;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .wrap {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    /* ---- Footer (Bootstrap's .btn isn't loaded here, so style it) -------- */
-    .footer { padding-left: 0 !important; gap: 6px; }
-    .footer .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px 8px;
-      color: var(--footer-text);
-      font-size: 18px;
-      line-height: 1;
-      text-decoration: none;
-      transition: opacity .18s ease;
-    }
-    .footer .btn:hover { opacity: .72; }
-
-    /* ---- Terminal panel (black card + accent stripe, like the homepage) -- */
-    .term {
-      position: relative;
-      width: min(82vw, 1400px);
-      height: min(82dvh, 900px);
-      padding: 36px 30px 30px;
-      display: flex;
-      flex-direction: column;
-      background: var(--terminal-bg);
-      color: var(--terminal-text);
-      border: 1px solid var(--card-border);
-      border-left: 4px solid var(--terminal-accent);
-      box-shadow: 0 20px 50px var(--shadow);
-      animation: rise .5s ease both;
-      transition: background-color .3s ease, color .3s ease, border-color .3s ease;
-    }
-    html[data-theme="light"] .term {
-      --terminal-bg: #ffffff;
-      --terminal-text: #222222;
-      --terminal-accent: #3F51B5;
-    }
-    @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
-
-    /* ---- Glitchy banner ------------------------------------------------- */
-    .banner { margin: 0 auto 24px; }
-    .glitch {
-      display: block;
-      position: relative;
-      width: max-content;
-      max-width: 100%;
-      margin: 0 auto;
-      color: var(--terminal-text);
-      font-size: clamp(34px, 11vw, 74px);
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: 4px;
-    }
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-t);
-      position: absolute;
-      inset: -.12em -.35em;
-      overflow: hidden;
-      color: var(--terminal-accent);
-      font-size: 1em;
-      line-height: 1;
-      letter-spacing: .14em;
-      text-align: center;
-      text-shadow: 0 0 12px var(--terminal-accent);
-    }
-    .glitch::before { animation: g1 2.6s infinite steps(2); }
-    .glitch::after  { opacity: .65; animation: g2 3.3s infinite steps(2); }
-    @keyframes g1 {
-      0%, 100% { clip-path: inset(0 0 68% 0); transform: translateX(-2px); }
-      45%, 55% { clip-path: inset(12% 0); transform: translateX(1px); }
-      75% { clip-path: inset(58% 0 0); transform: translateX(2px); }
-    }
-    @keyframes g2 {
-      0%, 100% { clip-path: inset(62% 0 0); transform: translateX(2px); }
-      40%, 50% { clip-path: inset(18% 0); transform: translateX(-1px); }
-      70% { clip-path: inset(0 0 62%); transform: translateX(-2px); }
-    }
-
-    /* ---- Terminal session (log + prompt + input) ------------------------ */
-    .ln {
-      font-size: 14px;
-      line-height: 1.75;
-      white-space: pre-wrap;
-      overflow-wrap: break-word;
-    }
-    .pr  { color: var(--terminal-accent); }
-    .pth { color: var(--terminal-text); }
-    .go  { color: var(--terminal-accent); }
-    .go a { color: inherit; text-decoration: none; }
-    .go a:hover { text-decoration: underline; }
-    .err { color: var(--terminal-text); opacity: .65; }
-    #log {
-      flex: 0 1 auto;
-      min-height: 0;
-      overflow-y: auto;
-      scrollbar-gutter: stable;
-    }
-    .help {
-      display: grid;
-      grid-template-columns: max-content 1fr;
-      column-gap: 18px;
-    }
-    .help-command { color: var(--terminal-accent); }
-    .help-description { opacity: .65; }
-    .help-section {
-      grid-column: 1 / -1;
-      margin-top: 10px;
-      font-size: 12px;
-      letter-spacing: .08em;
-      opacity: .5;
-      text-transform: uppercase;
-    }
-    .help-section:first-child { margin-top: 0; }
-    .help-note { grid-column: 1 / -1; margin-top: 8px; }
-
-    #cmd { display: flex; flex: none; align-items: center; }
-    #in {
-      flex: 1;
-      min-width: 0;
-      margin-left: 8px;
-      padding: 0;
-      background: transparent;
-      border: 0;
-      outline: 0;
-      font: inherit;
-      color: var(--terminal-text);
-      caret-color: var(--terminal-accent);
-    }
-    .autocomplete {
-      flex: none;
-      margin-top: 4px;
-      color: var(--terminal-text);
-      opacity: .65;
-    }
-    .autocomplete-choice + .autocomplete-choice { margin-left: 14px; }
-    .autocomplete-choice.active {
-      color: var(--terminal-accent);
-      opacity: 1;
-    }
-    .mobile-keys { display: none; }
-    .terminal-resize {
-      position: absolute;
-      right: 7px;
-      bottom: 7px;
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      border: 0;
-      background: repeating-linear-gradient(
-        135deg,
-        transparent 0 4px,
-        var(--terminal-accent) 4px 6px
-      );
-      clip-path: polygon(100% 0, 100% 100%, 0 100%);
-      cursor: nwse-resize;
-      opacity: .45;
-      touch-action: none;
-      transition: opacity .15s ease;
-    }
-    .terminal-resize:hover,
-    .terminal-resize:focus-visible,
-    .terminal-resize.dragging { opacity: 1; }
-
-    /* ---- Hint ----------------------------------------------------------- */
-    .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
-
-    /* ---- Responsive / motion -------------------------------------------- */
-    @media (max-width: 900px) {
-      .term {
-        width: 88vw;
-        height: 80dvh;
-      }
-    }
-    @media (max-width: 560px) {
-      .term {
-        width: 100% !important;
-        height: calc(100dvh - 96px) !important;
-        padding: 28px 20px 24px;
-      }
-      .glitch {
-        font-size: clamp(20px, 7vw, 32px);
-        letter-spacing: 2px;
-      }
-      .help { grid-template-columns: 1fr; }
-      .help-description { margin-bottom: 5px; }
-      .help-note { grid-column: 1; }
-      .mobile-keys {
-        display: flex;
-        gap: 8px;
-        margin-top: 10px;
-      }
-      .mobile-key {
-        padding: 3px 9px;
-        color: var(--terminal-text);
-        background: transparent;
-        border: 1px solid var(--card-border);
-        font: inherit;
-      }
-      .terminal-resize { display: none; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .term, .glitch::before, .glitch::after { animation: none; }
-    }
-  </style>
 </head>
 <body>
-  <div class="wrap">
-    <main class="term">
-      <div class="banner">
-        <span class="glitch" data-t="404" aria-label="krasow.dev 404">krasow.dev</span>
-      </div>
-
-      <div id="log">
-        <p class="ln"><span class="pr">david:~$</span> <span class="req">/</span></p>
-        <p class="ln err">zsh: no such file or directory: <span class="req">/</span></p>
-        <p class="hint"># that page didn't exist. use <span class="pth">help</span> for more details.</p>
-      </div>
-
-      <form id="cmd" class="ln" autocomplete="off">
-        <span id="prompt" class="pr">david:~$</span>
-        <input id="in" type="text" spellcheck="false" autocomplete="off" aria-label="terminal input">
-      </form>
-      <div id="autocomplete" class="ln autocomplete" hidden></div>
-      <div class="mobile-keys" aria-label="Terminal keys">
-        <button class="mobile-key" type="button" data-key="Tab">Tab</button>
-        <button class="mobile-key" type="button" data-key="ArrowLeft">←</button>
-        <button class="mobile-key" type="button" data-key="ArrowUp">↑</button>
-        <button class="mobile-key" type="button" data-key="ArrowDown">↓</button>
-        <button class="mobile-key" type="button" data-key="ArrowRight">→</button>
-        <button class="mobile-key" type="button" data-key="Escape">Esc</button>
-      </div>
-      <button class="terminal-resize" type="button" aria-label="Resize terminal"></button>
-    </main>
-  </div>
-
-  <div id="site-footer"></div>
-
-  <!-- Shared controller: /terminal omits the missing-page message. -->
-  <script src="/common/js/chat.js"></script>
-  <script src="/common/js/snake.js"></script>
-  <script src="/common/js/terminal-resize.js"></script>
-  <script src="/common/js/terminal.js"></script>
+  <noscript>
+    <p>That page does not exist. <a href="/terminal/">Open the terminal</a>.</p>
+  </noscript>
 </body>
 </html>
