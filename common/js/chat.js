@@ -3,10 +3,12 @@
 
   const KNOWLEDGE_URL = '/assets/documents/terminal/chat.json';
   const COMMON_WORDS = new Set([
-    'about', 'area', 'came', 'can', 'david', 'did', 'do', 'does', 'find', 'from',
-    'give', 'given', 'has', 'have', 'he', 'help', 'his', 'how', 'into', 'is', 'kind',
+    'a', 'about', 'an', 'and', 'area', 'at', 'came', 'can', 'david', 'did', 'do',
+    'does', 'find', 'for', 'from', 'give', 'given', 'has', 'have', 'he', 'help',
+    'his', 'how', 'in', 'into', 'is', 'kind',
     'krasowska', 'me', 'tell', 'the', 'their', 'them',
-    'they', 'this', 'was', 'what', 'when', 'where', 'which', 'with', 'you', 'your',
+    'of', 'on', 'they', 'this', 'to', 'was', 'what', 'when', 'where', 'which',
+    'with', 'you', 'your',
   ]);
 
   const wordsIn = (text) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
@@ -54,7 +56,8 @@
         .then(({ entries, fallback }) => {
           const indexed = entries.map((entry) => ({
             ...entry,
-            words: [...new Set(entry.keywords.flatMap(wordsIn))],
+            words: [...new Set(entry.keywords.flatMap(wordsIn)
+              .filter((word) => !COMMON_WORDS.has(word)))],
             phrases: (entry.phrases ?? []).map((phrase) => ({
               compact: normalizePhrase(phrase),
               words: wordsIn(phrase).map(normalizeReference),
@@ -83,7 +86,7 @@
         const distance = editDistance(word, candidate);
         return distance < best.distance ? { word: candidate, distance } : best;
       }, { word, distance: 3 });
-      return closest.distance <= 2 ? closest.word : word;
+      return closest.distance <= 1 ? closest.word : word;
     }
   }
 

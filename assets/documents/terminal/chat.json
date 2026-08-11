@@ -3,6 +3,7 @@
     {
       "topic": "name",
       "keywords": ["name", "named", "called", "full name"],
+      "phrases": ["what should i call"],
       "answer": "His name is David Krasowska."
     },
     {
@@ -16,14 +17,14 @@
     {
       "topic": "Northwestern experience",
       "keywords": ["peter dinda"],
-      "phrases": ["at northwestern", "northwestern research", "northwestern work", "doing for phd"],
+      "phrases": ["at northwestern", "northwestern research", "northwestern work", "doing for phd", "phd research", "research is he doing", "doctoral work"],
       "answer": "At Northwestern University, David is a Computer Science Ph.D. candidate advised by Peter Dinda. His work there includes distributed Julia applications for GPU systems and using Legion to make Processing-in-Memory systems easier to program.",
       "hint": "Try asking about his Julia or PIM work."
     },
     {
       "topic": "Clemson experience",
       "keywords": ["fthpc", "jon calhoun"],
-      "phrases": ["at clemson", "at argonne", "clemson experience", "clemson research", "clemson work", "undergraduate research"],
+      "phrases": ["at clemson", "at argonne", "clemson experience", "clemson research", "clemson work", "undergraduate research", "group undergraduate"],
       "answer": "At Clemson University, David earned a B.S. in Computer Engineering and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data.",
       "readMore": {
         "prompt": "Would you like to read more about the compression project? (y/n)",
@@ -32,7 +33,7 @@
     },
     {
       "topic": "education",
-      "keywords": ["education", "school", "go", "attend", "attended", "graduate", "graduated", "study", "studied", "degree", "degrees", "major", "undergrad", "college", "clemson", "northwestern", "bachelor", "computer engineering", "computer science"],
+      "keywords": ["education", "school", "go", "attend", "attended", "graduate", "graduated", "study", "studied", "degree", "degrees", "major", "undergrad", "college", "clemson", "northwestern", "bachelor", "doctorate", "doctoral", "computer engineering", "computer science"],
       "answer": "David graduated from Clemson University with a B.S. in Computer Engineering and is currently pursuing a Ph.D. in Computer Science at Northwestern University."
     },
     {
@@ -47,6 +48,7 @@
     {
       "topic": "curriculum vitae",
       "keywords": ["cv", "curriculum vitae", "vitae"],
+      "phrases": ["full cv"],
       "answer": "David's full curriculum vitae is available on this site.",
       "readMore": {
         "prompt": "Would you like to open his CV? (y/n)",
@@ -56,7 +58,7 @@
     {
       "topic": "experience and background",
       "keywords": ["experience", "background", "career", "professionally", "employment", "employer", "workplace", "history"],
-      "phrases": ["where has he worked", "where did he work", "places he worked", "where was he a researcher"],
+      "phrases": ["where has he worked", "where did he work", "places he worked", "where was he a researcher", "national laboratories", "both argonne and los alamos"],
       "answer": "David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University and collaborates with Los Alamos National Laboratory on distributed heterogeneous computing.",
       "readMore": { "command": "cat /home/experience.pg" }
     },
@@ -72,7 +74,7 @@
     {
       "topic": "hiring availability",
       "keywords": ["hire", "hiring", "available", "availability", "recruit", "recruiting", "job", "internship", "intern", "full time", "full-time"],
-      "phrases": ["open to work", "available to work", "looking for work"],
+      "phrases": ["open to work", "available to work", "looking for work", "expect to graduate", "expected graduation", "graduation date"],
       "answer": "David is looking for an internship for 2027. He expects to graduate in December 2027 and plans to begin looking for full-time positions around that time.",
       "readMore": {
         "prompt": "Would you like to open his contact card? (y/n)",
@@ -92,13 +94,13 @@
     {
       "topic": "research interests",
       "keywords": ["work", "research", "hpc", "high performance computing", "distributed", "heterogeneous", "accelerators", "domain scientists"],
-      "phrases": ["what does he do", "what does he study", "area of cs"],
-      "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads. His current work explores scheduling across distributed heterogeneous systems."
+      "phrases": ["what does he do", "what does he study", "area of cs", "scientific workloads", "emerging accelerators", "intended users", "accelerator research"],
+      "answer": "David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads and the domain scientists who run them. His current work explores scheduling across distributed heterogeneous systems."
     },
     {
       "topic": "lossy compression research",
       "keywords": ["compression", "lossy", "prediction", "scientific data", "argonne", "clemson", "compressibility"],
-      "phrases": ["lossy compression", "compression work", "compression papers"],
+      "phrases": ["lossy compression", "compression work", "compression papers", "compressibility work", "compression ratios"],
       "answer": "David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:",
       "links": [
         {
@@ -119,7 +121,7 @@
     {
       "topic": "Legion runtime",
       "keywords": ["legion", "julia", "gpu", "gpus", "cunumeric", "runtime", "arrays", "constellation"],
-      "phrases": ["what is legion", "legion runtime", "julia work", "julia project", "gpu work"],
+      "phrases": ["what is legion", "legion runtime", "task based scheduler", "data movement", "julia work", "julia project", "gpu work"],
       "answer": "Legion is a task-based runtime for programming distributed, heterogeneous systems. It manages parallel work and data movement across different processors and accelerators. David's work connects to Legion in two ways: cuNumeric.jl uses the Legion-based Legate ecosystem to run array-oriented Julia applications across distributed systems and NVIDIA GPUs, while Legion PIM extends the runtime to support UPMEM Processing-in-Memory accelerators.",
       "links": [
         { "label": "Legion", "url": "https://legion.stanford.edu/" },
@@ -141,7 +143,7 @@
     {
       "topic": "Los Alamos National Laboratory",
       "keywords": ["lanl", "los alamos", "pat mccormick", "laboratory", "lab"],
-      "phrases": ["at lanl"],
+      "phrases": ["at lanl", "lanl collaboration"],
       "answer": "David collaborates with Pat McCormick at Los Alamos National Laboratory on scheduling for distributed heterogeneous systems."
     },
     {
@@ -198,6 +200,7 @@
     {
       "topic": "presentations and talks",
       "keywords": ["presentation", "presentations", "talk", "talks", "slide", "slides", "lecture", "lectures"],
+      "phrases": ["research talks", "conference slides"],
       "answer": "Here are David's listed presentations:",
       "command": "ls /home/presentations"
     },

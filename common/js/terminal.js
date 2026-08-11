@@ -403,6 +403,7 @@
       }, width, height, cellWidth,
       Math.round(120 * charWidth * cellWidth / lineHeight), 120);
       this.snakeGame.start();
+      this.ui.log.scrollTop = this.ui.log.scrollHeight;
     }
 
     withArity(args, count, action) {
