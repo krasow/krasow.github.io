@@ -325,16 +325,8 @@
         return;
       }
 
-      const [command, target] = this.ui.input.value.trim().split(/\s+/);
-      if (
-        event.key === 'Enter' &&
-        command === 'open' &&
-        !this.ui.autocomplete.hidden &&
-        this.entriesIn(this.resolvePath(target))
-      ) {
+      if (event.key === 'Enter' && this.autocomplete.accept()) {
         event.preventDefault();
-        this.autocomplete.cycle = null;
-        this.autocomplete.complete();
         return;
       }
 

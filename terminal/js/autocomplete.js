@@ -17,6 +17,14 @@
       this.hide();
     }
 
+    accept() {
+      if (this.terminal.ui.autocomplete.hidden) return false;
+      const token = this.terminal.ui.input.value.trim().split(/\s+/).at(-1);
+      if (!this.terminal.entriesIn(this.terminal.resolvePath(token))) return false;
+      this.hide();
+      return true;
+    }
+
     recall(delta) {
       const terminal = this.terminal;
       terminal.historyCursor = Math.max(
