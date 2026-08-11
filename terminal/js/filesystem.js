@@ -116,11 +116,18 @@
 
     entriesIn(directory) {
       if (this.terminal.trash.contains(directory) || !this.directories[directory]) return null;
-      return this.directories[directory].filter((name) => {
-        if (name.startsWith('.')) return false;
-        const child = `${directory === '/' ? '' : directory}/${name.replace(/\/$/, '')}`;
-        return !this.terminal.trash.contains(child);
-      });
+      return this.directories[directory]
+        .filter((name) => {
+          if (name.startsWith('.')) return false;
+          const child = `${directory === '/' ? '' : directory}/${name.replace(/\/$/, '')}`;
+          return !this.terminal.trash.contains(child);
+        })
+        .sort((left, right) =>
+          left.replace(/\/$/, '').localeCompare(right.replace(/\/$/, ''), undefined, {
+            numeric: true,
+            sensitivity: 'base',
+          }),
+        );
     }
 
     async fileText(path) {
