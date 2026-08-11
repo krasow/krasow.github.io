@@ -117,15 +117,16 @@
       "readMore": { "command": "open /home/projects/compression" }
     },
     {
-      "topic": "Legion Julia and GPUs",
+      "topic": "Legion runtime",
       "keywords": ["legion", "julia", "gpu", "gpus", "cunumeric", "runtime", "arrays", "constellation"],
-      "phrases": ["julia work", "julia project", "gpu work"],
-      "answer": "David works on cuNumeric.jl, which uses the Legion runtime to run array-oriented Julia applications across distributed systems and NVIDIA GPUs.",
+      "phrases": ["what is legion", "legion runtime", "julia work", "julia project", "gpu work"],
+      "answer": "Legion is a task-based runtime for programming distributed, heterogeneous systems. It manages parallel work and data movement across different processors and accelerators. David's work connects to Legion in two ways: cuNumeric.jl uses the Legion-based Legate ecosystem to run array-oriented Julia applications across distributed systems and NVIDIA GPUs, while Legion PIM extends the runtime to support UPMEM Processing-in-Memory accelerators.",
       "links": [
-        { "label": "GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" },
-        { "label": "Documentation", "url": "https://julialegate.github.io/cuNumeric.jl/dev/" }
-      ],
-      "readMore": { "command": "open /home/projects/cunumeric" }
+        { "label": "Legion", "url": "https://legion.stanford.edu/" },
+        { "label": "cuNumeric.jl GitHub", "url": "https://github.com/JuliaLegate/cuNumeric.jl/" },
+        { "label": "cuNumeric.jl documentation", "url": "https://julialegate.github.io/cuNumeric.jl/dev/" },
+        { "label": "Legion PIM GitHub", "url": "https://github.com/presciencelab/upmem-legion" }
+      ]
     },
     {
       "topic": "processing in memory",
