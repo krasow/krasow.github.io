@@ -188,16 +188,16 @@
     return node;
   };
   const fileIcon = (name) => {
-    if (name.endsWith('/')) return '📁';
-    if (name.endsWith('.pg')) return '🌐';
-    if (name.endsWith('.md')) return '📝';
-    if (name.endsWith('.pdf')) return '📕';
-    if (name.endsWith('.sh')) return '⚙';
-    if (name.endsWith('.pub')) return '🔑';
-    if (name.endsWith('.vcf')) return '👤';
-    return '📄';
+    if (name.endsWith('/')) return '\uf07b';
+    if (name.endsWith('.pg')) return '\uf0ac';
+    if (name.endsWith('.md')) return '\ue73e';
+    if (name.endsWith('.pdf')) return '\uf1c1';
+    if (name.endsWith('.sh')) return '\uf489';
+    if (name.endsWith('.pub')) return '\uf084';
+    if (name.endsWith('.vcf')) return '\uf2bb';
+    return '\uf15b';
   };
-  const displayFile = (name) => `${fileIcon(name)}\u00a0${name}`;
+  const displayFile = (name) => `${fileIcon(name)} ${name}`;
   const globRegex = (pattern) => {
     const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
     return new RegExp(`^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`);
@@ -514,7 +514,7 @@
         this.write(`ls: ${path}: not a directory`, 'err');
         return;
       }
-      this.write(entries.map(displayFile).join('   '), 'pth');
+      this.write(this.formatListing(entries), 'pth');
     }
 
     listMatches(path) {
@@ -522,10 +522,32 @@
       if (matches === null) {
         this.write(`ls: ${directoryPath}: not a directory`, 'err');
       } else if (matches.length) {
-        this.write(matches.map(displayFile).join('   '), 'pth');
+        this.write(this.formatListing(matches), 'pth');
       } else {
         this.write(`ls: no matches found: ${path}`, 'err');
       }
+    }
+
+    formatListing(entries) {
+      const labels = entries.map(displayFile);
+      const gap = 3;
+      const columnWidth = Math.max(...labels.map((label) => label.length)) + gap;
+      const style = getComputedStyle(this.ui.log);
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      if (context) context.font = style.font;
+      const charWidth = context?.measureText('0').width || parseFloat(style.fontSize) * 0.62 || 8;
+      const availableCharacters = Math.max(1, Math.floor(this.ui.log.clientWidth / charWidth));
+      const columns = Math.max(1, Math.floor((availableCharacters + gap) / columnWidth));
+
+      const rows = [];
+      for (let index = 0; index < labels.length; index += columns) {
+        const row = labels.slice(index, index + columns);
+        rows.push(row.map((label, column) => (
+          column === row.length - 1 ? label : label.padEnd(columnWidth)
+        )).join(''));
+      }
+      return rows.join('\n');
     }
 
     matchingEntries(path) {

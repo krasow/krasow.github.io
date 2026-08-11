@@ -39,11 +39,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <style>
+    @font-face {
+      font-family: 'Symbols Nerd Font Mono';
+      src: url('/assets/fonts/SymbolsNerdFontMono-Regular.ttf') format('truetype');
+      font-display: swap;
+    }
+
     /* ---- Page layout ---------------------------------------------------- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { min-height: 100%; }
     body {
-      font-family: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: 'JetBrains Mono', 'Symbols Nerd Font Mono', 'IBM Plex Mono', ui-monospace,
+        SFMono-Regular, Menlo, monospace;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -147,7 +154,7 @@
     .go a:hover { text-decoration: underline; }
     .err { color: var(--terminal-text); opacity: .65; }
     #log {
-      flex: 1;
+      flex: 0 1 auto;
       min-height: 0;
       overflow-y: auto;
       scrollbar-gutter: stable;
