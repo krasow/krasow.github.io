@@ -316,7 +316,10 @@
         thinking.remove();
         this.write(result.answer, 'pth');
         if (result.hint) this.write(result.hint, 'hint');
-        result.links?.forEach(({ label, url }) => this.writeLink(url, `→ ${label}: ${url}`));
+        result.links?.forEach(({ label, url }) => {
+          const text = url.startsWith('/') ? `→ ${label}` : `→ ${label}: ${url}`;
+          this.writeLink(url, text);
+        });
         if (result.command) this.runChatCommand(result.command);
         if (this.chatMode && result.readMore) {
           this.chatConfirmation = result.readMore;
