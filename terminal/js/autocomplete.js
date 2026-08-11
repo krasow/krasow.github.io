@@ -19,8 +19,11 @@
 
     accept() {
       if (this.terminal.ui.autocomplete.hidden) return false;
-      const token = this.terminal.ui.input.value.trim().split(/\s+/).at(-1);
-      if (!this.terminal.entriesIn(this.terminal.resolvePath(token))) return false;
+      const [command, ...args] = this.terminal.ui.input.value.trim().split(/\s+/);
+      const token = args.at(-1) ?? command;
+      const entries = this.terminal.entriesIn(this.terminal.resolvePath(token));
+      if (!entries) return false;
+      if (command === 'cd' && !entries.some((entry) => entry.endsWith('/'))) return false;
       this.hide();
       return true;
     }
