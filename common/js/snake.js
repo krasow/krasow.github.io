@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  const HIGH_SCORE_KEY = 'krasow-terminal-snake-high-score';
+
   class SnakeGame {
     constructor(output, onEnd, width = 24, height = 12, cellWidth = 1,
       horizontalDelay = 45, verticalDelay = 120) {
@@ -11,7 +13,25 @@
       this.cellWidth = cellWidth;
       this.horizontalDelay = horizontalDelay;
       this.verticalDelay = verticalDelay;
+      this.highScore = this.loadHighScore();
       this.reset();
+    }
+
+    loadHighScore() {
+      try {
+        const value = Number.parseInt(localStorage.getItem(HIGH_SCORE_KEY), 10);
+        return Number.isSafeInteger(value) && value >= 0 ? value : 0;
+      } catch (error) {
+        return 0;
+      }
+    }
+
+    saveHighScore() {
+      try {
+        localStorage.setItem(HIGH_SCORE_KEY, String(this.highScore));
+      } catch (error) {
+        // Storage may be unavailable in private or restricted browser contexts.
+      }
     }
 
     reset() {
@@ -83,6 +103,10 @@
       this.snake.unshift(head);
       if (eating) {
         this.score += 1;
+        if (this.score > this.highScore) {
+          this.highScore = this.score;
+          this.saveHighScore();
+        }
         this.food = this.placeFood();
       } else {
         this.snake.pop();
@@ -111,7 +135,7 @@
         : cell.padStart(Math.ceil(this.cellWidth / 2), ' ').padEnd(this.cellWidth, ' ');
       const border = `+${'-'.repeat(this.width * this.cellWidth)}+`;
       this.output.textContent = [
-        `snake · score ${this.score}`,
+        `snake · score ${this.score} · high score ${this.highScore}`,
         border,
         ...cells.map((row) => `|${row.map(drawCell).join('')}|`),
         border,
