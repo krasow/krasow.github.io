@@ -140,16 +140,6 @@
       '    / ____ \\    Shell: zsh',
       '   /_/    \\_\\   Runtime: Legion',
     ].join('\n')],
-    ['cowsay moo', [
-      ' _____',
-      '< moo >',
-      ' -----',
-      '        \\   ^__^',
-      '         \\  (oo)\\_______',
-      '            (__)\\       )\\/\\',
-      '                ||----w |',
-      '                ||     ||',
-    ].join('\n')],
   ]);
   const COMMAND_USAGE = {
     chat: 'chat [question]',
@@ -164,6 +154,7 @@
     cd: 'cd [folder|..|-]',
     show: 'show <script>',
     echo: 'echo [text]',
+    cowsay: 'cowsay [text]',
     grep: 'grep <pattern> <file|pattern> [...]',
     copy: 'copy <file>',
     wc: 'wc <file|pattern> [...]',
@@ -342,12 +333,16 @@
           this.write(args.join(' '), 'pth');
           return true;
         }],
+        ['cowsay', (args) => {
+          this.cowsay(args.join(' ') || 'Moo.');
+          return true;
+        }],
       ]);
     }
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'download', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'download', 'find', 'show', 'echo', 'cowsay', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -471,6 +466,40 @@
       if (args.length > count) return false;
       action();
       return true;
+    }
+
+    cowsay(message) {
+      const style = getComputedStyle(this.ui.log);
+      const fontSize = parseFloat(style.fontSize) || 14;
+      const characterWidth = fontSize * 0.62;
+      const maximumWidth = Math.max(12, Math.min(60,
+        Math.floor(this.ui.log.clientWidth / characterWidth) - 6));
+      const lines = [];
+      let remaining = message;
+      while (remaining.length > maximumWidth) {
+        const breakpoint = remaining.lastIndexOf(' ', maximumWidth);
+        const length = breakpoint > 0 ? breakpoint : maximumWidth;
+        lines.push(remaining.slice(0, length));
+        remaining = remaining.slice(length).trimStart();
+      }
+      lines.push(remaining);
+
+      const width = Math.max(...lines.map((line) => line.length));
+      const bubble = lines.map((line, index) => {
+        const left = lines.length === 1 ? '<' : index === 0 ? '/' : index === lines.length - 1 ? '\\' : '|';
+        const right = lines.length === 1 ? '>' : index === 0 ? '\\' : index === lines.length - 1 ? '/' : '|';
+        return `${left} ${line.padEnd(width)} ${right}`;
+      });
+      this.write([
+        ` ${'_'.repeat(width + 2)}`,
+        ...bubble,
+        ` ${'-'.repeat(width + 2)}`,
+        '        \\   ^__^',
+        '         \\  (oo)\\_______',
+        '            (__)\\       )\\/\\',
+        '                ||----w |',
+        '                ||     ||',
+      ].join('\n'), 'pth');
     }
 
     execute(raw) {
