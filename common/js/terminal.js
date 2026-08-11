@@ -831,11 +831,13 @@
     }
 
     navigate(url) {
+      const download = url.endsWith('.vcf');
       this.writeLink(
         url,
-        url.endsWith('.vcf') ? '→ downloading contact.vcf' : `→ ${url}`,
+        download ? '→ downloading contact.vcf' : `→ ${url}`,
       );
-      setTimeout(() => { location.href = url; }, 120);
+      if (download) setTimeout(() => { location.href = url; }, 120);
+      else window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     write(text, className = '') {
@@ -849,6 +851,8 @@
       const line = makeElement('p', 'ln go');
       const link = makeElement('a', '', text);
       link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
       line.append(link);
       this.append(line, { type: 'link', url, text });
     }
@@ -931,6 +935,8 @@
         const line = makeElement('p', 'ln go');
         const link = makeElement('a', '', record.text);
         link.href = record.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
         line.append(link);
         this.append(line);
       } else if (record.type === 'echo') {
