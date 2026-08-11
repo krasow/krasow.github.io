@@ -1,4 +1,26 @@
-/venv
-venv
-.DS_STORE
+# macOS
 .DS_Store
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+.npm/
+.pnpm-store/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Tool caches and reports
+.cache/
+.prettier-cache
+coverage/
+
+# Local environment files
+.env
+.env.*
+!.env.example

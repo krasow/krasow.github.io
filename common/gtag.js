@@ -10,7 +10,9 @@
   document.head.appendChild(s);
 
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function () { dataLayer.push(arguments); };
+  window.gtag = function () {
+    dataLayer.push(arguments);
+  };
   gtag('js', new Date());
   gtag('config', GA_ID);
 })();

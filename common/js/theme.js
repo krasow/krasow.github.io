@@ -22,7 +22,9 @@
     // Keep the inline background (set pre-paint to avoid FOUC) in sync — an
     // inline style would otherwise override the stylesheet's --bg-page rule.
     d.style.backgroundColor = theme === 'dark' ? '#121212' : '#ffffff';
-    try { localStorage.setItem('theme', theme); } catch (e) {}
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (e) {}
     syncIcon();
   }
 
