@@ -16,7 +16,7 @@
         '       /\\       david@krasow.dev',
         '      /  \\      ----------------',
         '     / /\\ \\     OS: krasow.dev',
-        '    / ____  \\    Shell: zsh',
+        '    / ____ \\    Shell: zsh',
         '   /_/    \\_\\   Runtime: Legion',
       ].join('\n'),
     ],
