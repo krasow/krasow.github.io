@@ -144,13 +144,14 @@
     }
 
     showMenu(matches, active) {
-      const commandPrefix = `${matches[0].split(' ')[0]} `;
+      const argumentStart = matches[0].lastIndexOf(' ') + 1;
+      const argumentPrefix = matches[0].slice(0, argumentStart);
       const slash = matches[0].lastIndexOf('/');
       const pathPrefix = slash < 0 ? '' : matches[0].slice(0, slash + 1);
       const prefix =
         pathPrefix && matches.every((match) => match.startsWith(pathPrefix))
           ? pathPrefix
-          : commandPrefix;
+          : argumentPrefix;
       const label = (match) => (match.startsWith(prefix) ? match.slice(prefix.length) : match);
       this.show(matches.map(label), label(active));
     }
