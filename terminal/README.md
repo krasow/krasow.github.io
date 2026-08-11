@@ -5,12 +5,13 @@ The browser terminal and its virtual filesystem are self-contained in this direc
 ## Structure
 
 - `index.html` is the terminal page.
-- `js/terminal.js` manages input, output, history, completion, and shared filesystem primitives.
+- `js/terminal.js` is the shell controller for input, command execution, and app coordination.
 - `js/commands.js` registers apps and dispatches commands, responses, and easter eggs.
 - `js/apps/` contains commands with meaningful behavior or state; trivial built-ins stay in the
   registry.
 - `js/games/` contains terminal games.
-- `js/filesystem.js` loads the generated filesystem and manages locally hidden entries.
+- `js/autocomplete.js` manages command, history, and path completion.
+- `js/filesystem.js` handles paths, file loading, manifest hydration, and locally hidden entries.
 - `js/resize.js` handles mouse resizing.
 - `fs/` mirrors the virtual filesystem.
 

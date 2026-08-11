@@ -42,10 +42,6 @@
     return '\uf15b';
   };
   const displayFile = (name) => `${fileIcon(name)} ${name}`;
-  const globRegex = (pattern) => {
-    const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`);
-  };
 
   class Terminal {
     constructor() {
@@ -72,9 +68,17 @@
 
       this.currentDirectory = '/home';
       this.previousDirectory = null;
+      this.files = new window.KrasowTerminalFileSystem.TerminalFiles(this, {
+        directories: DIRECTORIES,
+        fileRoutes: FILE_ROUTES,
+        hiddenFiles: HIDDEN_FILES,
+        pageSources: PAGE_SOURCES,
+        readableFiles: READABLE_FILES,
+        shortcuts: SHORTCUTS,
+        textPaths: TEXT_PATHS,
+      });
       this.history = [];
       this.historyCursor = 0;
-      this.completionCycle = null;
       this.transcript = [];
       this.commandSet = new window.KrasowTerminalCommands.TerminalCommands(this, {
         shortcuts: SHORTCUTS,
@@ -83,19 +87,24 @@
         directories: DIRECTORIES,
       });
 
-      this.completions = this.commandSet.completions();
       this.commands = this.commandSet.commands();
+      this.autocomplete = new window.TerminalAutocomplete(this, {
+        directories: DIRECTORIES,
+        fileRoutes: FILE_ROUTES,
+        hiddenFiles: HIDDEN_FILES,
+        textPaths: TEXT_PATHS,
+      });
       this.restore();
     }
 
     start() {
       this.ui.form.addEventListener('submit', (event) => {
         event.preventDefault();
-        this.hideCompletions();
+        this.autocomplete.hide();
         this.execute(this.ui.input.value);
         this.ui.input.value = '';
       });
-      this.ui.input.addEventListener('input', () => this.hideCompletions());
+      this.ui.input.addEventListener('input', () => this.autocomplete.hide());
       this.ui.input.addEventListener('keydown', (event) => this.handleKey(event));
       this.ui.mobileKeys.addEventListener('click', (event) => {
         const key = event.target.closest('[data-key]')?.dataset.key;
@@ -151,26 +160,6 @@
       this.ui.prompt.textContent = this.promptText();
     }
 
-    resolvePath(input) {
-      let path = input.trim();
-      if (!path || path === '~') return '/home';
-      if (path.startsWith('~/')) path = `/home/${path.slice(2)}`;
-      else if (!path.startsWith('/')) path = `${this.currentDirectory}/${path}`;
-
-      const parts = [];
-      path.split('/').forEach((part) => {
-        if (!part || part === '.') return;
-        if (part === '..') parts.pop();
-        else parts.push(part);
-      });
-      return `/${parts.join('/')}`;
-    }
-
-    resolve(command) {
-      const path = this.resolvePath(command);
-      return SHORTCUTS[command] ?? (this.trash.contains(path) ? null : FILE_ROUTES.get(path));
-    }
-
     writeListing(entries, track = true) {
       const listing = makeElement('div', 'ln pth ls-grid');
       listing.append(...entries.map((name) => makeElement('span', 'ls-entry', displayFile(name))));
@@ -179,94 +168,6 @@
 
     displayFile(name) {
       return displayFile(name);
-    }
-
-    matchingEntries(path) {
-      const separator = path.lastIndexOf('/');
-      const pattern = path.slice(separator + 1);
-      const directoryPath = separator < 0 ? '.' : path.slice(0, separator) || '/';
-      const directory = this.resolvePath(directoryPath);
-      const entries = this.entriesIn(directory);
-      const prefix = separator < 0 ? '' : `${directory === '/' ? '' : directory}/`;
-
-      if (!entries) return { directoryPath, prefix, matches: null };
-
-      const matches = entries.filter((entry) => globRegex(pattern).test(entry));
-      return { directoryPath, prefix, matches };
-    }
-
-    expandPath(path) {
-      if (!/[*?]/.test(path)) return [path];
-      const { prefix, matches } = this.matchingEntries(path);
-      return (matches ?? []).map((name) => `${prefix}${name}`);
-    }
-
-    entriesIn(directory) {
-      if (this.trash.contains(directory) || !DIRECTORIES[directory]) return null;
-      return DIRECTORIES[directory].filter((name) => {
-        if (name.startsWith('.')) return false;
-        const child = `${directory === '/' ? '' : directory}/${name.replace(/\/$/, '')}`;
-        return !this.trash.contains(child);
-      });
-    }
-
-    async fileText(path) {
-      const resolved = this.resolvePath(path);
-      if (this.trash.contains(resolved)) throw new Error('ENOENT');
-      if (DIRECTORIES[resolved]) throw new Error('EISDIR');
-      const source = this.textSource(path);
-      if (!source) throw new Error('ENOENT');
-      return this.loadText(source);
-    }
-
-    textSource(path) {
-      const absolutePath = this.resolvePath(path);
-      if (this.trash.contains(absolutePath)) return null;
-      if (HIDDEN_FILES[absolutePath]) return { url: HIDDEN_FILES[absolutePath] };
-      const homePath = absolutePath.replace(/^\/home\//, '');
-      if (PAGE_SOURCES[homePath]) return PAGE_SOURCES[homePath];
-
-      const url =
-        READABLE_FILES[homePath] ??
-        (TEXT_PATHS.has(absolutePath) ? FILE_ROUTES.get(absolutePath) : null);
-      return url ? { url } : null;
-    }
-
-    async loadText(source) {
-      const response = await fetch(source.url);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const content = (await response.text()).trim();
-      if (!source.selector) return content;
-
-      const document = new DOMParser().parseFromString(content, 'text/html');
-      const text = [...document.querySelectorAll(source.selector)]
-        .map((section) => this.pageText(section))
-        .filter(Boolean)
-        .join('\n\n')
-        .replace(/\n{3,}/g, '\n\n');
-      if (!text) throw new Error('No readable content');
-      return text;
-    }
-
-    pageText(section) {
-      const copy = section.cloneNode(true);
-      copy.querySelectorAll('.cv-date span + span').forEach((span) => span.before(' – '));
-      copy
-        .querySelectorAll('.pub-date br')
-        .forEach((breakElement) => breakElement.replaceWith(' – '));
-      copy
-        .querySelectorAll(
-          ['br', 'div', 'p', 'li', 'hr', 'h1', 'h2', 'h3', '.cv-title', '.cv-org', '.cv-desc'].join(
-            ',',
-          ),
-        )
-        .forEach((element) => element.after('\n'));
-
-      return copy.textContent
-        .replace(/[ \t]+/g, ' ')
-        .replace(/ *\n */g, '\n')
-        .replace(/\n{3,}/g, '\n\n')
-        .trim();
     }
 
     navigate(url) {
@@ -417,7 +318,7 @@
       if (event.ctrlKey && event.key.toLowerCase() === 'c') {
         event.preventDefault();
         this.echo(`${this.ui.input.value}^C`);
-        this.clearInput();
+        this.autocomplete.clear();
         this.commandSet.apps.chat.cancel();
         return;
       }
@@ -430,186 +331,20 @@
         this.entriesIn(this.resolvePath(target))
       ) {
         event.preventDefault();
-        this.completionCycle = null;
-        this.complete();
+        this.autocomplete.cycle = null;
+        this.autocomplete.complete();
         return;
       }
 
       const actions = {
-        ArrowUp: () => this.recall(-1),
-        ArrowDown: () => this.recall(1),
-        Tab: () => this.complete(),
-        Escape: () => this.clearInput(),
+        ArrowUp: () => this.autocomplete.recall(-1),
+        ArrowDown: () => this.autocomplete.recall(1),
+        Tab: () => this.autocomplete.complete(),
+        Escape: () => this.autocomplete.clear(),
       };
       if (!actions[event.key]) return;
       event.preventDefault();
       actions[event.key]();
-    }
-
-    clearInput() {
-      this.ui.input.value = '';
-      this.hideCompletions();
-    }
-
-    recall(delta) {
-      this.historyCursor = Math.max(0, Math.min(this.history.length, this.historyCursor + delta));
-      this.ui.input.value = this.history[this.historyCursor] ?? '';
-      this.hideCompletions();
-    }
-
-    complete() {
-      const typed = this.ui.input.value.trimStart();
-      if (!typed.trim()) {
-        this.hideCompletions();
-        return;
-      }
-      if (this.completionCycle?.value === typed) {
-        this.cycleCompletion();
-        return;
-      }
-
-      const tokenStart = typed.lastIndexOf(' ') + 1;
-      const path = typed.slice(tokenStart);
-      const pathCommand = /^(cat|cd|copy|download|find|grep|ls|open|rm|show|wc)\b/.test(typed)
-        ? typed.split(/\s/)[0]
-        : !typed.includes(' ')
-          ? ''
-          : null;
-      const paths =
-        pathCommand !== null
-          ? this.pathCompletions(path, pathCommand).map(
-              (candidate) => `${typed.slice(0, tokenStart)}${candidate}`,
-            )
-          : [];
-      const matches = [...new Set([...this.completions, ...paths])]
-        .filter((command) => command.startsWith(typed))
-        .sort((a, b) => a.localeCompare(b));
-
-      if (!matches.length) {
-        this.hideCompletions();
-      } else if (matches.length === 1) {
-        this.ui.input.value = matches[0];
-        this.hideCompletions();
-      } else {
-        this.completeMultiple(typed, matches);
-      }
-    }
-
-    pathCompletions(path, command) {
-      const separator = path.lastIndexOf('/');
-      let candidates;
-      if (separator < 0) {
-        candidates = this.completionEntries(this.currentDirectory, path).map((name) => ({
-          name,
-          path: this.resolvePath(name),
-        }));
-      } else {
-        const directory = this.resolvePath(path.slice(0, separator) || '/');
-        const prefix = path.slice(0, separator + 1);
-        candidates = this.completionEntries(directory, path.slice(separator + 1)).map((name) => ({
-          name: `${prefix}${name}`,
-          path: this.resolvePath(`${prefix}${name}`),
-        }));
-      }
-
-      return candidates
-        .filter(({ name }) => name.startsWith(path))
-        .filter(({ path: candidate }) => {
-          if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
-          if (command === 'open' || command === 'download') {
-            const openable = [...FILE_ROUTES.keys(), ...Object.keys(HIDDEN_FILES)];
-            const matchesPath =
-              openable.includes(candidate) ||
-              ((path.includes('/') || path.startsWith('.')) &&
-                openable.some((target) => target.startsWith(`${candidate}/`)));
-            if (!matchesPath) return false;
-            if (command === 'open' && /\.vcf$/i.test(candidate)) return false;
-            if (command === 'download' && !DIRECTORIES[candidate]) {
-              return /\.(pdf|sh|vcf)$/i.test(candidate);
-            }
-            return true;
-          }
-          if (!['cat', 'copy', 'grep', 'wc'].includes(command)) return true;
-          return (
-            TEXT_PATHS.has(candidate) ||
-            ((path.includes('/') || path.startsWith('.')) &&
-              [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)))
-          );
-        })
-        .map(({ name }) => name);
-    }
-
-    completionEntries(directory, partial) {
-      const visible = this.entriesIn(directory) ?? [];
-      if (!partial.startsWith('.')) return visible;
-
-      const prefix = directory === '/' ? '/' : `${directory}/`;
-      const hidden = Object.keys(DIRECTORIES)
-        .filter((path) => path.startsWith(`${prefix}.`))
-        .filter((path) => !this.trash.contains(path))
-        .map((path) => path.slice(prefix.length).split('/')[0])
-        .filter(Boolean)
-        .map((name) => `${name}/`);
-      return [...new Set([...visible, ...hidden])];
-    }
-
-    completeMultiple(typed, matches) {
-      const prefix = matches.reduce((common, match) => {
-        let end = 0;
-        while (end < common.length && common[end] === match[end]) end += 1;
-        return common.slice(0, end);
-      });
-
-      if (prefix.length > typed.length) {
-        this.ui.input.value = prefix;
-        const index = matches.indexOf(prefix);
-        this.completionCycle = { matches, index, value: prefix };
-      } else {
-        this.ui.input.value = matches[0];
-        this.completionCycle = { matches, index: 0, value: matches[0] };
-      }
-
-      const active =
-        this.completionCycle.index < 0
-          ? ''
-          : this.completionCycle.matches[this.completionCycle.index];
-      this.showCompletionMenu(matches, active);
-    }
-
-    cycleCompletion() {
-      const cycle = this.completionCycle;
-      cycle.index = (cycle.index + 1) % cycle.matches.length;
-      cycle.value = cycle.matches[cycle.index];
-      this.ui.input.value = cycle.value;
-
-      this.showCompletionMenu(cycle.matches, cycle.value);
-    }
-
-    showCompletionMenu(matches, active) {
-      const commandPrefix = `${matches[0].split(' ')[0]} `;
-      const slash = matches[0].lastIndexOf('/');
-      const pathPrefix = slash < 0 ? '' : matches[0].slice(0, slash + 1);
-      const prefix =
-        pathPrefix && matches.every((match) => match.startsWith(pathPrefix))
-          ? pathPrefix
-          : commandPrefix;
-      const label = (match) => (match.startsWith(prefix) ? match.slice(prefix.length) : match);
-      this.showCompletions(matches.map(label), label(active));
-    }
-
-    showCompletions(choices, active = '') {
-      this.ui.autocomplete.replaceChildren(
-        ...choices.map((choice) =>
-          makeElement('span', `autocomplete-choice${choice === active ? ' active' : ''}`, choice),
-        ),
-      );
-      this.ui.autocomplete.hidden = !choices.length;
-    }
-
-    hideCompletions() {
-      this.completionCycle = null;
-      this.ui.autocomplete.hidden = true;
-      this.ui.autocomplete.replaceChildren();
     }
   }
 
