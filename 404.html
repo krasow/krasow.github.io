@@ -1,37 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>404 — Not Found | David Krasowska</title>
-  <script>
-    (() => {
-      const redirects = {
-        '/resume': 'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
-        '/pim': 'https://northwestern.zoom.us/j/5406080251',
-        '/village': 'https://northwestern.zoom.us/j/92716568456?pwd=0YxLTlbjAIXLJvvKgDLBigEQXpy2PZ.1',
-        '/zoom': 'https://northwestern.zoom.us/my/krasow',
-        '/github': 'https://github.com/krasow',
-        '/contact': '/assets/documents/Krasowska_David_contact.vcf',
-        '/cunumeric': '/pages/show.html?page=cunumeric',
-        '/legionpim': '/pages/show.html?page=legionpim',
-        '/compression': '/pages/show.html?page=compression',
-        '/polish': '/pages/show.html?page=polish',
-      };
-      const target = redirects[location.pathname];
-      if (target) {
-        location.replace(target);
-        return;
-      }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 — Not Found | David Krasowska</title>
+    <script>
+      (() => {
+        const redirects = {
+          '/resume': 'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
+          '/pim': 'https://northwestern.zoom.us/j/5406080251',
+          '/village':
+            'https://northwestern.zoom.us/j/92716568456?pwd=0YxLTlbjAIXLJvvKgDLBigEQXpy2PZ.1',
+          '/zoom': 'https://northwestern.zoom.us/my/krasow',
+          '/github': 'https://github.com/krasow',
+          '/contact': '/assets/documents/Krasowska_David_contact.vcf',
+          '/cunumeric': '/pages/show.html?page=cunumeric',
+          '/legionpim': '/pages/show.html?page=legionpim',
+          '/compression': '/pages/show.html?page=compression',
+          '/polish': '/pages/show.html?page=polish',
+        };
+        const target = redirects[location.pathname];
+        if (target) {
+          location.replace(target);
+          return;
+        }
 
-      const requestedPath = `${location.pathname}${location.search}${location.hash}`;
-      location.replace(`/terminal/?notFound=${encodeURIComponent(requestedPath)}`);
-    })();
-  </script>
-</head>
-<body>
-  <noscript>
-    <p>That page does not exist. <a href="/terminal/">Open the terminal</a>.</p>
-  </noscript>
-</body>
+        const requestedPath = `${location.pathname}${location.search}${location.hash}`;
+        location.replace(`/terminal/?notFound=${encodeURIComponent(requestedPath)}`);
+      })();
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <p>That page does not exist. <a href="/terminal/">Open the terminal</a>.</p>
+    </noscript>
+  </body>
 </html>

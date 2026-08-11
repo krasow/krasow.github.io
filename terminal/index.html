@@ -1,253 +1,403 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Terminal | David Krasowska</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Terminal | David Krasowska</title>
 
-  <script>
-    (() => {
-      try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light'); } catch (e) {}
-    })();
-  </script>
-  <script src="/common/gtag.js"></script>
+    <script>
+      (() => {
+        try {
+          document.documentElement.setAttribute(
+            'data-theme',
+            localStorage.getItem('theme') || 'light',
+          );
+        } catch (e) {}
+      })();
+    </script>
+    <script src="/common/gtag.js"></script>
 
-  <link rel="stylesheet" href="/common/css/theme.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/common/css/theme.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
 
-  <style>
-    @font-face {
-      font-family: 'Symbols Nerd Font Mono';
-      src: url('/terminal/fonts/SymbolsNerdFontMono-Regular.ttf') format('truetype');
-      font-display: swap;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { min-height: 100%; }
-    body {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      font-family: 'JetBrains Mono', 'Symbols Nerd Font Mono', 'IBM Plex Mono', ui-monospace,
-        SFMono-Regular, Menlo, monospace;
-    }
-    .wrap {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .footer { padding-left: 0 !important; gap: 6px; }
-    .footer .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px 8px;
-      color: var(--footer-text);
-      font-size: 18px;
-      line-height: 1;
-      text-decoration: none;
-      transition: opacity .18s ease;
-    }
-    .footer .btn:hover { opacity: .72; }
-    .term {
-      position: relative;
-      width: min(82vw, 1400px);
-      height: min(82dvh, 900px);
-      padding: 36px 30px 30px;
-      display: flex;
-      flex-direction: column;
-      background: var(--terminal-bg);
-      color: var(--terminal-text);
-      border: 1px solid var(--card-border);
-      border-left: 4px solid var(--terminal-accent);
-      box-shadow: 0 20px 50px var(--shadow);
-      animation: rise .5s ease both;
-    }
-    html[data-theme="light"] .term {
-      --terminal-bg: #fff;
-      --terminal-text: #222;
-      --terminal-accent: #3f51b5;
-    }
-    @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
-    .banner { margin: 0 auto 24px; }
-    .glitch {
-      display: block;
-      position: relative;
-      width: max-content;
-      max-width: 100%;
-      margin: 0 auto;
-      color: var(--terminal-text);
-      font-size: clamp(34px, 11vw, 74px);
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: 4px;
-    }
-    .glitch::before,
-    .glitch::after {
-      content: attr(data-t);
-      position: absolute;
-      inset: -.12em -.35em;
-      overflow: hidden;
-      color: var(--terminal-accent);
-      font-size: 1em;
-      line-height: 1;
-      letter-spacing: .14em;
-      text-align: center;
-      text-shadow: 0 0 12px var(--terminal-accent);
-    }
-    .glitch::before { animation: g1 2.6s infinite steps(2); }
-    .glitch::after { opacity: .65; animation: g2 3.3s infinite steps(2); }
-    @keyframes g1 {
-      0%, 100% { clip-path: inset(0 0 68% 0); transform: translateX(-2px); }
-      45%, 55% { clip-path: inset(12% 0); transform: translateX(1px); }
-      75% { clip-path: inset(58% 0 0); transform: translateX(2px); }
-    }
-    @keyframes g2 {
-      0%, 100% { clip-path: inset(62% 0 0); transform: translateX(2px); }
-      40%, 50% { clip-path: inset(18% 0); transform: translateX(-1px); }
-      70% { clip-path: inset(0 0 62%); transform: translateX(-2px); }
-    }
-    .ln { font-size: 14px; line-height: 1.75; white-space: pre-wrap; overflow-wrap: break-word; }
-    .pr, .go { color: var(--terminal-accent); }
-    .pth { color: var(--terminal-text); }
-    .err { color: var(--terminal-text); opacity: .65; }
-    .go a { color: inherit; text-decoration: none; }
-    .go a:hover { text-decoration: underline; }
-    #log { flex: 0 1 auto; min-height: 0; overflow-y: auto; scrollbar-gutter: stable; }
-    #cmd { display: flex; flex: none; align-items: center; }
-    #in {
-      flex: 1;
-      min-width: 0;
-      margin-left: 8px;
-      padding: 0;
-      background: transparent;
-      border: 0;
-      outline: 0;
-      color: var(--terminal-text);
-      caret-color: var(--terminal-accent);
-      font: inherit;
-    }
-    .help { display: grid; grid-template-columns: max-content 1fr; column-gap: 18px; }
-    .help-command { color: var(--terminal-accent); }
-    .help-description { opacity: .65; }
-    .help-section {
-      grid-column: 1 / -1;
-      margin-top: 10px;
-      font-size: 12px;
-      letter-spacing: .08em;
-      opacity: .5;
-      text-transform: uppercase;
-    }
-    .help-section:first-child { margin-top: 0; }
-    .help-note { grid-column: 1 / -1; margin-top: 8px; }
-    .hint { margin-top: 24px; color: var(--terminal-text); opacity: .55; font-size: 13px; }
-    .autocomplete { flex: none; margin-top: 4px; color: var(--terminal-text); opacity: .65; }
-    .autocomplete-choice + .autocomplete-choice { margin-left: 14px; }
-    .autocomplete-choice.active { color: var(--terminal-accent); opacity: 1; }
-    .ls-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, var(--ls-column-width, 16ch));
-      column-gap: 3ch;
-      justify-content: start;
-    }
-    .ls-entry {
-      min-width: 0;
-      white-space: nowrap;
-    }
-    .mobile-keys { display: none; }
-    .terminal-resize {
-      position: absolute;
-      right: 7px;
-      bottom: 7px;
-      width: 18px;
-      height: 18px;
-      padding: 0;
-      border: 0;
-      background: repeating-linear-gradient(135deg, transparent 0 4px, var(--terminal-accent) 4px 6px);
-      clip-path: polygon(100% 0, 100% 100%, 0 100%);
-      cursor: nwse-resize;
-      opacity: .45;
-      touch-action: none;
-    }
-    .terminal-resize:hover,
-    .terminal-resize:focus-visible,
-    .terminal-resize.dragging { opacity: 1; }
-    @media (max-width: 900px) {
-      .term { width: 88vw; height: 80dvh; }
-    }
-    @media (max-width: 560px) {
-      .term { width: 100% !important; height: calc(100dvh - 96px) !important; padding: 28px 20px 24px; }
-      .glitch { font-size: clamp(20px, 7vw, 32px); letter-spacing: 2px; }
-      .help { grid-template-columns: 1fr; }
-      .help-description { margin-bottom: 5px; }
-      .help-note { grid-column: 1; }
-      .mobile-keys { display: flex; gap: 8px; margin-top: 10px; }
-      .mobile-key {
-        padding: 3px 9px;
+    <style>
+      @font-face {
+        font-family: 'Symbols Nerd Font Mono';
+        src: url('/terminal/fonts/SymbolsNerdFontMono-Regular.ttf') format('truetype');
+        font-display: swap;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        min-height: 100%;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family:
+          'JetBrains Mono', 'Symbols Nerd Font Mono', 'IBM Plex Mono', ui-monospace, SFMono-Regular,
+          Menlo, monospace;
+      }
+      .wrap {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .footer {
+        padding-left: 0 !important;
+        gap: 6px;
+      }
+      .footer .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 8px;
+        color: var(--footer-text);
+        font-size: 18px;
+        line-height: 1;
+        text-decoration: none;
+        transition: opacity 0.18s ease;
+      }
+      .footer .btn:hover {
+        opacity: 0.72;
+      }
+      .term {
+        position: relative;
+        width: min(82vw, 1400px);
+        height: min(82dvh, 900px);
+        padding: 36px 30px 30px;
+        display: flex;
+        flex-direction: column;
+        background: var(--terminal-bg);
         color: var(--terminal-text);
-        background: transparent;
         border: 1px solid var(--card-border);
+        border-left: 4px solid var(--terminal-accent);
+        box-shadow: 0 20px 50px var(--shadow);
+        animation: rise 0.5s ease both;
+      }
+      html[data-theme='light'] .term {
+        --terminal-bg: #fff;
+        --terminal-text: #222;
+        --terminal-accent: #3f51b5;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+      }
+      .banner {
+        margin: 0 auto 24px;
+      }
+      .glitch {
+        display: block;
+        position: relative;
+        width: max-content;
+        max-width: 100%;
+        margin: 0 auto;
+        color: var(--terminal-text);
+        font-size: clamp(34px, 11vw, 74px);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: 4px;
+      }
+      .glitch::before,
+      .glitch::after {
+        content: attr(data-t);
+        position: absolute;
+        inset: -0.12em -0.35em;
+        overflow: hidden;
+        color: var(--terminal-accent);
+        font-size: 1em;
+        line-height: 1;
+        letter-spacing: 0.14em;
+        text-align: center;
+        text-shadow: 0 0 12px var(--terminal-accent);
+      }
+      .glitch::before {
+        animation: g1 2.6s infinite steps(2);
+      }
+      .glitch::after {
+        opacity: 0.65;
+        animation: g2 3.3s infinite steps(2);
+      }
+      @keyframes g1 {
+        0%,
+        100% {
+          clip-path: inset(0 0 68% 0);
+          transform: translateX(-2px);
+        }
+        45%,
+        55% {
+          clip-path: inset(12% 0);
+          transform: translateX(1px);
+        }
+        75% {
+          clip-path: inset(58% 0 0);
+          transform: translateX(2px);
+        }
+      }
+      @keyframes g2 {
+        0%,
+        100% {
+          clip-path: inset(62% 0 0);
+          transform: translateX(2px);
+        }
+        40%,
+        50% {
+          clip-path: inset(18% 0);
+          transform: translateX(-1px);
+        }
+        70% {
+          clip-path: inset(0 0 62%);
+          transform: translateX(-2px);
+        }
+      }
+      .ln {
+        font-size: 14px;
+        line-height: 1.75;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+      }
+      .pr,
+      .go {
+        color: var(--terminal-accent);
+      }
+      .pth {
+        color: var(--terminal-text);
+      }
+      .err {
+        color: var(--terminal-text);
+        opacity: 0.65;
+      }
+      .go a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .go a:hover {
+        text-decoration: underline;
+      }
+      #log {
+        flex: 0 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        scrollbar-gutter: stable;
+      }
+      #cmd {
+        display: flex;
+        flex: none;
+        align-items: center;
+      }
+      #in {
+        flex: 1;
+        min-width: 0;
+        margin-left: 8px;
+        padding: 0;
+        background: transparent;
+        border: 0;
+        outline: 0;
+        color: var(--terminal-text);
+        caret-color: var(--terminal-accent);
         font: inherit;
       }
-      .terminal-resize { display: none; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .term, .glitch::before, .glitch::after { animation: none; }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <main class="term">
-      <div class="banner">
-        <span class="glitch" data-t="terminal" aria-label="krasow.dev terminal">krasow.dev</span>
-      </div>
-      <div id="log">
-        <p class="hint"># use help for more details.</p>
-      </div>
-      <form id="cmd" class="ln" autocomplete="off">
-        <span id="prompt" class="pr">david:~$</span>
-        <input id="in" type="text" spellcheck="false" autocomplete="off" aria-label="terminal input">
-      </form>
-      <div id="autocomplete" class="ln autocomplete" hidden></div>
-      <div class="mobile-keys" aria-label="Terminal keys">
-        <button class="mobile-key" type="button" data-key="Tab">Tab</button>
-        <button class="mobile-key" type="button" data-key="ArrowLeft">←</button>
-        <button class="mobile-key" type="button" data-key="ArrowUp">↑</button>
-        <button class="mobile-key" type="button" data-key="ArrowDown">↓</button>
-        <button class="mobile-key" type="button" data-key="ArrowRight">→</button>
-        <button class="mobile-key" type="button" data-key="Escape">Esc</button>
-      </div>
-      <button class="terminal-resize" type="button" aria-label="Resize terminal"></button>
-    </main>
-  </div>
-  <div id="site-footer"></div>
+      .help {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        column-gap: 18px;
+      }
+      .help-command {
+        color: var(--terminal-accent);
+      }
+      .help-description {
+        opacity: 0.65;
+      }
+      .help-section {
+        grid-column: 1 / -1;
+        margin-top: 10px;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        opacity: 0.5;
+        text-transform: uppercase;
+      }
+      .help-section:first-child {
+        margin-top: 0;
+      }
+      .help-note {
+        grid-column: 1 / -1;
+        margin-top: 8px;
+      }
+      .hint {
+        margin-top: 24px;
+        color: var(--terminal-text);
+        opacity: 0.55;
+        font-size: 13px;
+      }
+      .autocomplete {
+        flex: none;
+        margin-top: 4px;
+        color: var(--terminal-text);
+        opacity: 0.65;
+      }
+      .autocomplete-choice + .autocomplete-choice {
+        margin-left: 14px;
+      }
+      .autocomplete-choice.active {
+        color: var(--terminal-accent);
+        opacity: 1;
+      }
+      .ls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, var(--ls-column-width, 16ch));
+        column-gap: 3ch;
+        justify-content: start;
+      }
+      .ls-entry {
+        min-width: 0;
+        white-space: nowrap;
+      }
+      .mobile-keys {
+        display: none;
+      }
+      .terminal-resize {
+        position: absolute;
+        right: 7px;
+        bottom: 7px;
+        width: 18px;
+        height: 18px;
+        padding: 0;
+        border: 0;
+        background: repeating-linear-gradient(
+          135deg,
+          transparent 0 4px,
+          var(--terminal-accent) 4px 6px
+        );
+        clip-path: polygon(100% 0, 100% 100%, 0 100%);
+        cursor: nwse-resize;
+        opacity: 0.45;
+        touch-action: none;
+      }
+      .terminal-resize:hover,
+      .terminal-resize:focus-visible,
+      .terminal-resize.dragging {
+        opacity: 1;
+      }
+      @media (max-width: 900px) {
+        .term {
+          width: 88vw;
+          height: 80dvh;
+        }
+      }
+      @media (max-width: 560px) {
+        .term {
+          width: 100% !important;
+          height: calc(100dvh - 96px) !important;
+          padding: 28px 20px 24px;
+        }
+        .glitch {
+          font-size: clamp(20px, 7vw, 32px);
+          letter-spacing: 2px;
+        }
+        .help {
+          grid-template-columns: 1fr;
+        }
+        .help-description {
+          margin-bottom: 5px;
+        }
+        .help-note {
+          grid-column: 1;
+        }
+        .mobile-keys {
+          display: flex;
+          gap: 8px;
+          margin-top: 10px;
+        }
+        .mobile-key {
+          padding: 3px 9px;
+          color: var(--terminal-text);
+          background: transparent;
+          border: 1px solid var(--card-border);
+          font: inherit;
+        }
+        .terminal-resize {
+          display: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .term,
+        .glitch::before,
+        .glitch::after {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <main class="term">
+        <div class="banner">
+          <span class="glitch" data-t="terminal" aria-label="krasow.dev terminal">krasow.dev</span>
+        </div>
+        <div id="log">
+          <p class="hint"># use help for more details.</p>
+        </div>
+        <form id="cmd" class="ln" autocomplete="off">
+          <span id="prompt" class="pr">david:~$</span>
+          <input
+            id="in"
+            type="text"
+            spellcheck="false"
+            autocomplete="off"
+            aria-label="terminal input"
+          />
+        </form>
+        <div id="autocomplete" class="ln autocomplete" hidden></div>
+        <div class="mobile-keys" aria-label="Terminal keys">
+          <button class="mobile-key" type="button" data-key="Tab">Tab</button>
+          <button class="mobile-key" type="button" data-key="ArrowLeft">←</button>
+          <button class="mobile-key" type="button" data-key="ArrowUp">↑</button>
+          <button class="mobile-key" type="button" data-key="ArrowDown">↓</button>
+          <button class="mobile-key" type="button" data-key="ArrowRight">→</button>
+          <button class="mobile-key" type="button" data-key="Escape">Esc</button>
+        </div>
+        <button class="terminal-resize" type="button" aria-label="Resize terminal"></button>
+      </main>
+    </div>
+    <div id="site-footer"></div>
 
-  <script src="/terminal/js/app.js"></script>
-  <script src="/terminal/js/apps/cat.js"></script>
-  <script src="/terminal/js/apps/cd.js"></script>
-  <script src="/terminal/js/apps/chat.js"></script>
-  <script src="/terminal/js/apps/clear.js"></script>
-  <script src="/terminal/js/apps/copy.js"></script>
-  <script src="/terminal/js/apps/cowsay.js"></script>
-  <script src="/terminal/js/apps/download.js"></script>
-  <script src="/terminal/js/apps/find.js"></script>
-  <script src="/terminal/js/apps/grep.js"></script>
-  <script src="/terminal/js/apps/help.js"></script>
-  <script src="/terminal/js/apps/ls.js"></script>
-  <script src="/terminal/js/apps/open.js"></script>
-  <script src="/terminal/js/apps/reset.js"></script>
-  <script src="/terminal/js/apps/rm.js"></script>
-  <script src="/terminal/js/apps/show.js"></script>
-  <script src="/terminal/js/apps/theme.js"></script>
-  <script src="/terminal/js/apps/tree.js"></script>
-  <script src="/terminal/js/apps/wc.js"></script>
-  <script src="/terminal/js/games/snake.js"></script>
-  <script src="/terminal/js/commands.js"></script>
-  <script src="/terminal/js/autocomplete.js"></script>
-  <script src="/terminal/js/filesystem.js"></script>
-  <script src="/terminal/js/resize.js"></script>
-  <script src="/terminal/js/terminal.js"></script>
-</body>
+    <script src="/terminal/js/app.js"></script>
+    <script src="/terminal/js/apps/cat.js"></script>
+    <script src="/terminal/js/apps/cd.js"></script>
+    <script src="/terminal/js/apps/chat.js"></script>
+    <script src="/terminal/js/apps/clear.js"></script>
+    <script src="/terminal/js/apps/copy.js"></script>
+    <script src="/terminal/js/apps/cowsay.js"></script>
+    <script src="/terminal/js/apps/download.js"></script>
+    <script src="/terminal/js/apps/find.js"></script>
+    <script src="/terminal/js/apps/grep.js"></script>
+    <script src="/terminal/js/apps/help.js"></script>
+    <script src="/terminal/js/apps/ls.js"></script>
+    <script src="/terminal/js/apps/open.js"></script>
+    <script src="/terminal/js/apps/reset.js"></script>
+    <script src="/terminal/js/apps/rm.js"></script>
+    <script src="/terminal/js/apps/show.js"></script>
+    <script src="/terminal/js/apps/theme.js"></script>
+    <script src="/terminal/js/apps/tree.js"></script>
+    <script src="/terminal/js/apps/wc.js"></script>
+    <script src="/terminal/js/games/snake.js"></script>
+    <script src="/terminal/js/commands.js"></script>
+    <script src="/terminal/js/autocomplete.js"></script>
+    <script src="/terminal/js/filesystem.js"></script>
+    <script src="/terminal/js/resize.js"></script>
+    <script src="/terminal/js/terminal.js"></script>
+  </body>
 </html>

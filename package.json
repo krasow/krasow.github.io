@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "format": "prettier --write \"**/*.js\"",
-    "format:check": "prettier --check \"**/*.js\""
+    "format": "prettier --write \"**/*.{js,html}\"",
+    "format:check": "prettier --check \"**/*.{js,html}\""
   },
   "devDependencies": {
     "prettier": "^3"

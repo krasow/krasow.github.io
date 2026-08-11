@@ -1,110 +1,125 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
-    <script>
-      /* Set theme before paint to avoid a flash of the wrong colors. */
-      (function () {
-        try {
-          var t = localStorage.getItem('theme') || 'light';
-          var d = document.documentElement;
-          d.setAttribute('data-theme', t);
-          d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
-        } catch (e) {}
-      })();
-    </script>
-    <!-- Google Analytics -->
-    <script src="/common/gtag.js"></script>
-    <div id="header"></div>
-    <title>David Krasowska</title>
+  <script>
+    /* Set theme before paint to avoid a flash of the wrong colors. */
+    (function () {
+      try {
+        var t = localStorage.getItem('theme') || 'light';
+        var d = document.documentElement;
+        d.setAttribute('data-theme', t);
+        d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Google Analytics -->
+  <script src="/common/gtag.js"></script>
+  <div id="header"></div>
+  <title>David Krasowska</title>
 
-    <body>
-        <div class="content" id="content" style="display: none;">
-            <div id="navbar"></div>
+  <body>
+    <div class="content" id="content" style="display: none">
+      <div id="navbar"></div>
 
-            <div class="holder title-lg hello-world">
-               Hello World! I'm David Krasowska.
-            </div>
+      <div class="holder title-lg hello-world">Hello World! I'm David Krasowska.</div>
 
-            <div id="terminal"></div>
-            <div class="holder"><div class="section-divider"></div></div> <div id="projects"></div>
-            <div class="holder"><div class="section-divider"></div></div> <div id="experience"></div>
-            <div class="holder"><div class="section-divider"></div></div> <div id="publications"></div>
+      <div id="terminal"></div>
+      <div class="holder"><div class="section-divider"></div></div>
+      <div id="projects"></div>
+      <div class="holder"><div class="section-divider"></div></div>
+      <div id="experience"></div>
+      <div class="holder"><div class="section-divider"></div></div>
+      <div id="publications"></div>
 
-            <div class="container language">
-                <div class="language-item"> MPI </div>
-                <div class="language-item"> CUDA </div>
-                <div class="language-item"> C  </div>
-                <div class="language-item"> C++ </div>
-                <div class="language-item"> Python </div>
-                <div class="language-item"> Julia </div>
-                <div class="language-item"> LLVM </div>
-                <div class="language-item"> HPC </div>
-            </div>
-        </div>
-        <!-- end content -->
-    </body>
+      <div class="container language">
+        <div class="language-item">MPI</div>
+        <div class="language-item">CUDA</div>
+        <div class="language-item">C</div>
+        <div class="language-item">C++</div>
+        <div class="language-item">Python</div>
+        <div class="language-item">Julia</div>
+        <div class="language-item">LLVM</div>
+        <div class="language-item">HPC</div>
+      </div>
+    </div>
+    <!-- end content -->
+  </body>
 
-    <div id="footer"></div>
+  <div id="footer"></div>
 
-    <script src="/common/js/navbar.js"></script>
-    <script src="/common/js/theme.js"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        Promise.all([
-            fetch("/common/navbar.html").then(res => res.text()),
-            fetch("/common/header.html").then(res => res.text()),
-            fetch("/common/footer.html").then(res => res.text()),
-            fetch("/terminal/homepage.html").then(res => res.text()),
-            fetch("/homepage/experience.html").then(res => res.text()),
-            fetch("/homepage/publications.html").then(res => res.text()),
-            fetch("/homepage/projects.html").then(res => res.text()),
-            fetch("/terminal/fs/home/summary.md").then(res => res.text()),
-            fetch("/terminal/fs/home/education.md").then(res => res.text())
-        ]).then(([navbar, header, footer, terminal, experience, publications, projects, summary, education]) => {
-            document.getElementById("navbar").innerHTML = navbar;
-            document.getElementById("header").innerHTML = header;
-            document.getElementById("footer").innerHTML = footer;
-            document.getElementById("terminal").innerHTML = terminal;
-            document.getElementById("experience").innerHTML = experience;
-            document.getElementById("publications").innerHTML = publications;
-            document.getElementById("projects").innerHTML = projects;
-            document.getElementById("terminal-summary").textContent = summary.trim();
-            document.getElementById("terminal-education").textContent = education.trim();
-            document.getElementById("content").style.display = "flex";
+  <script src="/common/js/navbar.js"></script>
+  <script src="/common/js/theme.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      Promise.all([
+        fetch('/common/navbar.html').then((res) => res.text()),
+        fetch('/common/header.html').then((res) => res.text()),
+        fetch('/common/footer.html').then((res) => res.text()),
+        fetch('/terminal/homepage.html').then((res) => res.text()),
+        fetch('/homepage/experience.html').then((res) => res.text()),
+        fetch('/homepage/publications.html').then((res) => res.text()),
+        fetch('/homepage/projects.html').then((res) => res.text()),
+        fetch('/terminal/fs/home/summary.md').then((res) => res.text()),
+        fetch('/terminal/fs/home/education.md').then((res) => res.text()),
+      ]).then(
+        ([
+          navbar,
+          header,
+          footer,
+          terminal,
+          experience,
+          publications,
+          projects,
+          summary,
+          education,
+        ]) => {
+          document.getElementById('navbar').innerHTML = navbar;
+          document.getElementById('header').innerHTML = header;
+          document.getElementById('footer').innerHTML = footer;
+          document.getElementById('terminal').innerHTML = terminal;
+          document.getElementById('experience').innerHTML = experience;
+          document.getElementById('publications').innerHTML = publications;
+          document.getElementById('projects').innerHTML = projects;
+          document.getElementById('terminal-summary').textContent = summary.trim();
+          document.getElementById('terminal-education').textContent = education.trim();
+          document.getElementById('content').style.display = 'flex';
 
-            // terminal hover + arrow keys
-            const termCmds = document.querySelectorAll('.terminal-split .command');
-            const termResponses = document.querySelectorAll('.terminal-split .response');
+          // terminal hover + arrow keys
+          const termCmds = document.querySelectorAll('.terminal-split .command');
+          const termResponses = document.querySelectorAll('.terminal-split .response');
 
-            function activateTerminal(idx) {
-                termCmds.forEach(c => c.classList.remove('active'));
-                termResponses.forEach(r => r.classList.remove('active'));
-                termCmds[idx].classList.add('active');
-                document.querySelector(`.terminal-split .response[data-idx="${idx}"]`).classList.add('active');
-            }
+          function activateTerminal(idx) {
+            termCmds.forEach((c) => c.classList.remove('active'));
+            termResponses.forEach((r) => r.classList.remove('active'));
+            termCmds[idx].classList.add('active');
+            document
+              .querySelector(`.terminal-split .response[data-idx="${idx}"]`)
+              .classList.add('active');
+          }
 
-            termCmds.forEach(cmd => {
-                cmd.addEventListener('mouseenter', () => activateTerminal(+cmd.dataset.idx));
-            });
+          termCmds.forEach((cmd) => {
+            cmd.addEventListener('mouseenter', () => activateTerminal(+cmd.dataset.idx));
+          });
 
-            document.addEventListener('keydown', e => {
-                if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
-                const active = document.querySelector('.terminal-split .command.active');
-                if (!active) return;
-                e.preventDefault();
-                const cur = +active.dataset.idx;
-                const next = e.key === 'ArrowDown' ? Math.min(cur + 1, termCmds.length - 1) : Math.max(cur - 1, 0);
-                activateTerminal(next);
-            });
+          document.addEventListener('keydown', (e) => {
+            if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+            const active = document.querySelector('.terminal-split .command.active');
+            if (!active) return;
+            e.preventDefault();
+            const cur = +active.dataset.idx;
+            const next =
+              e.key === 'ArrowDown' ? Math.min(cur + 1, termCmds.length - 1) : Math.max(cur - 1, 0);
+            activateTerminal(next);
+          });
 
-            // this is used for scrolling to hash
-            // the anchor now exists.
-            if (window.location.hash) {
-                const id = window.location.hash.substring(1);
-                const el = document.getElementById(id);
-                if (el) el.scrollIntoView({ behavior: "smooth" });
-            }
-            
-        });
+          // this is used for scrolling to hash
+          // the anchor now exists.
+          if (window.location.hash) {
+            const id = window.location.hash.substring(1);
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }
+        },
+      );
     });
-    </script>
+  </script>
 </html>

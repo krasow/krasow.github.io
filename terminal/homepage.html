@@ -1,78 +1,101 @@
-<link rel="stylesheet" type="text/css" href="/terminal/homepage.css">
+<link rel="stylesheet" type="text/css" href="/terminal/homepage.css" />
 
 <!-- Mobile: business card -->
 <div class="mobile-card">
-    <div class="mobile-card-command">david:~$ whoami</div>
-    <div class="mobile-card-header">
-        <div>
-            <div class="mobile-card-name">David Krasowska</div>
-            <div class="mobile-card-title">Ph.D. Candidate &middot; Northwestern</div>
-        </div>
-        <div class="mobile-card-links">
-            <a href="assets/documents/Krasowska_David_resume.pdf" class="mobile-card-save">Resume</a>
-        </div>
+  <div class="mobile-card-command">david:~$ whoami</div>
+  <div class="mobile-card-header">
+    <div>
+      <div class="mobile-card-name">David Krasowska</div>
+      <div class="mobile-card-title">Ph.D. Candidate &middot; Northwestern</div>
     </div>
-    <hr class="mobile-card-divider">
-    <div class="mobile-card-contact-row">
-        <div>
-            <div class="mobile-card-row">Chicago, IL</div>
-            <div class="mobile-card-row">+1 (224) 355-2715</div>
-            <div class="mobile-card-row"><a href="mailto:david@krasow.dev">david@krasow.dev</a></div>
-        </div>
-        <a href="assets/documents/Krasowska_David_contact.vcf" download class="mobile-card-save">Contact</a>
+    <div class="mobile-card-links">
+      <a href="assets/documents/Krasowska_David_resume.pdf" class="mobile-card-save">Resume</a>
     </div>
-    <hr class="mobile-card-divider">
-    <div class="mobile-card-icons">
-        <a href="https://github.com/Krasow" target="_blank"><i class="fa fa-github"></i></a>
-        <a href="https://www.linkedin.com/in/davidkrasowska/" target="_blank"><i class="fa fa-linkedin"></i></a>
-        <a href="https://scholar.google.com/citations?user=MKrD7IcAAAAJ" target="_blank"><i class="fa fa-graduation-cap"></i></a>
+  </div>
+  <hr class="mobile-card-divider" />
+  <div class="mobile-card-contact-row">
+    <div>
+      <div class="mobile-card-row">Chicago, IL</div>
+      <div class="mobile-card-row">+1 (224) 355-2715</div>
+      <div class="mobile-card-row"><a href="mailto:david@krasow.dev">david@krasow.dev</a></div>
     </div>
-    <hr class="mobile-card-divider">
-    <div class="mobile-card-row">Northwestern University (2023&ndash;Current)</div>
-    <div class="mobile-card-sub">Computer Science Ph.D.</div>
-    <div class="mobile-card-row">Clemson University (2019&ndash;2022)</div>
-    <div class="mobile-card-sub">Computer Engineering B.S.</div>
+    <a href="assets/documents/Krasowska_David_contact.vcf" download class="mobile-card-save"
+      >Contact</a
+    >
+  </div>
+  <hr class="mobile-card-divider" />
+  <div class="mobile-card-icons">
+    <a href="https://github.com/Krasow" target="_blank"><i class="fa fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/davidkrasowska/" target="_blank"
+      ><i class="fa fa-linkedin"></i
+    ></a>
+    <a href="https://scholar.google.com/citations?user=MKrD7IcAAAAJ" target="_blank"
+      ><i class="fa fa-graduation-cap"></i
+    ></a>
+  </div>
+  <hr class="mobile-card-divider" />
+  <div class="mobile-card-row">Northwestern University (2023&ndash;Current)</div>
+  <div class="mobile-card-sub">Computer Science Ph.D.</div>
+  <div class="mobile-card-row">Clemson University (2019&ndash;2022)</div>
+  <div class="mobile-card-sub">Computer Engineering B.S.</div>
 </div>
 
 <!-- Desktop: split terminal -->
 <div class="terminal-split terminal-desktop-only">
-    <div class="terminal-cmds">
-        <div class="command active" data-idx="0">david:~$ summary</div>
-        <div class="command" data-idx="1">david:~$ education</div>
-        <div class="command" data-idx="2">david:~$ contact</div>
+  <div class="terminal-cmds">
+    <div class="command active" data-idx="0">david:~$ summary</div>
+    <div class="command" data-idx="1">david:~$ education</div>
+    <div class="command" data-idx="2">david:~$ contact</div>
+  </div>
+  <div class="terminal-output">
+    <div class="response response-sm active" data-idx="0">
+      <div id="terminal-summary" class="md-response"></div>
+      <div class="summary-links">
+        <a href="/pages/cv.html" class="mobile-card-save">View CV</a>
+        <a href="assets/documents/Krasowska_David_resume.pdf" download class="mobile-card-save"
+          >Download Resume</a
+        >
+      </div>
     </div>
-    <div class="terminal-output">
-        <div class="response response-sm active" data-idx="0">
-            <div id="terminal-summary" class="md-response"></div>
-            <div class="summary-links">
-                <a href="/pages/cv.html" class="mobile-card-save">View CV</a>
-                <a href="assets/documents/Krasowska_David_resume.pdf" download class="mobile-card-save">Download Resume</a>
-            </div>
-        </div>
-        <div class="response response-md" data-idx="1">
-            <div id="terminal-education" class="response-block md-response"></div>
-        </div>
-        <div class="response response-md" data-idx="2">
-            <div class="contact-flex">
-                <div class="contact-left">
-                    <div class="response-block">
-                        David Krasowska<br>
-                        Chicago, IL<br>
-                        <a href="mailto:david@krasow.dev">david@krasow.dev</a><br>
-                        +1 (224) 355-2715
-                    </div>
-                    <div class="contact-icons">
-                        <a href="https://github.com/Krasow" target="_blank"><i class="fa fa-github"></i></a>
-                        <a href="https://www.linkedin.com/in/davidkrasowska/" target="_blank"><i class="fa fa-linkedin"></i></a>
-                        <a href="https://scholar.google.com/citations?user=MKrD7IcAAAAJ" target="_blank"><i class="fa fa-graduation-cap"></i></a>
-                    </div>
-                    <div class="contact-buttons">
-                        <a href="assets/documents/Krasowska_David_contact.vcf" download class="mobile-card-save">Download Contact</a>
-                        <a href="https://calendar.app.google/NMcvTiZxBHDVDKsW9" target="_blank" class="mobile-card-save">Schedule a Meeting</a>
-                    </div>
-                </div>
-                <img class="contact-photo" src="/assets/images/david_krasowska_squareimg.png" alt="David Krasowska">
-            </div>
-        </div>
+    <div class="response response-md" data-idx="1">
+      <div id="terminal-education" class="response-block md-response"></div>
     </div>
+    <div class="response response-md" data-idx="2">
+      <div class="contact-flex">
+        <div class="contact-left">
+          <div class="response-block">
+            David Krasowska<br />
+            Chicago, IL<br />
+            <a href="mailto:david@krasow.dev">david@krasow.dev</a><br />
+            +1 (224) 355-2715
+          </div>
+          <div class="contact-icons">
+            <a href="https://github.com/Krasow" target="_blank"><i class="fa fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/davidkrasowska/" target="_blank"
+              ><i class="fa fa-linkedin"></i
+            ></a>
+            <a href="https://scholar.google.com/citations?user=MKrD7IcAAAAJ" target="_blank"
+              ><i class="fa fa-graduation-cap"></i
+            ></a>
+          </div>
+          <div class="contact-buttons">
+            <a href="assets/documents/Krasowska_David_contact.vcf" download class="mobile-card-save"
+              >Download Contact</a
+            >
+            <a
+              href="https://calendar.app.google/NMcvTiZxBHDVDKsW9"
+              target="_blank"
+              class="mobile-card-save"
+              >Schedule a Meeting</a
+            >
+          </div>
+        </div>
+        <img
+          class="contact-photo"
+          src="/assets/images/david_krasowska_squareimg.png"
+          alt="David Krasowska"
+        />
+      </div>
+    </div>
+  </div>
 </div>

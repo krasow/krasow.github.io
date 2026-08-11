@@ -1,81 +1,86 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
-    <script>
-      /* Set theme before paint to avoid a flash of the wrong colors. */
-      (function () {
-        try {
-          var t = localStorage.getItem('theme') || 'light';
-          var d = document.documentElement;
-          d.setAttribute('data-theme', t);
-          d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
-        } catch (e) {}
-      })();
-    </script>
-    <!-- Google Analytics -->
-    <script src="/common/gtag.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    /* Set theme before paint to avoid a flash of the wrong colors. */
+    (function () {
+      try {
+        var t = localStorage.getItem('theme') || 'light';
+        var d = document.documentElement;
+        d.setAttribute('data-theme', t);
+        d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Google Analytics -->
+  <script src="/common/gtag.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-    <!-- Highlight.js CSS theme -->
-    <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css" />
-    <!-- Highlight.js core JS -->
-    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
-    <!-- Load Julia language support -->
-    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/julia.min.js"></script>
+  <!-- Highlight.js CSS theme -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css"
+  />
+  <!-- Highlight.js core JS -->
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+  <!-- Load Julia language support -->
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/julia.min.js"></script>
 
-    <div id="header"></div>
-    <link rel="stylesheet" type = "text/css" href="/common/css/markdown.css">
-    <title>David Krasowska | Projects </title>
+  <div id="header"></div>
+  <link rel="stylesheet" type="text/css" href="/common/css/markdown.css" />
+  <title>David Krasowska | Projects</title>
 
-    <body>
-        <div class="content" id="content" style="display: none;">
-            <div id="navbar"></div>
-            
-            <div class ="holder">
-                <div class="markdown-content"  id="project"></div>
-            </div>
-        </div>
-    </body>
+  <body>
+    <div class="content" id="content" style="display: none">
+      <div id="navbar"></div>
 
-    <div id="footer"></div>
+      <div class="holder">
+        <div class="markdown-content" id="project"></div>
+      </div>
+    </div>
+  </body>
 
-    <script src="/common/js/navbar.js"></script>
-    <script src="/common/js/theme.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const params = new URLSearchParams(window.location.search);
-            const page = params.get('page') || 'cunumeric'; 
+  <div id="footer"></div>
 
-            Promise.all([
-                fetch("/common/navbar.html").then(res => res.text()),
-                fetch("/common/header.html").then(res => res.text()),
-                fetch("/common/footer.html").then(res => res.text()),
-                fetch(`/pages/projects/${page}.html`).then(res => res.text())
-            ]).then(([navbar, header, footer, projectPage]) => {
-                document.getElementById("navbar").innerHTML = navbar;
-                document.getElementById("header").innerHTML = header;
-                document.getElementById("footer").innerHTML = footer;
-                document.getElementById("project").innerHTML = projectPage;
+  <script src="/common/js/navbar.js"></script>
+  <script src="/common/js/theme.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const params = new URLSearchParams(window.location.search);
+      const page = params.get('page') || 'cunumeric';
 
-                document.getElementById("content").style.display = "flex";
+      Promise.all([
+        fetch('/common/navbar.html').then((res) => res.text()),
+        fetch('/common/header.html').then((res) => res.text()),
+        fetch('/common/footer.html').then((res) => res.text()),
+        fetch(`/pages/projects/${page}.html`).then((res) => res.text()),
+      ])
+        .then(([navbar, header, footer, projectPage]) => {
+          document.getElementById('navbar').innerHTML = navbar;
+          document.getElementById('header').innerHTML = header;
+          document.getElementById('footer').innerHTML = footer;
+          document.getElementById('project').innerHTML = projectPage;
 
-                // this is used for scrolling to hash
-                // the anchor now exists. 
-                if (window.location.hash) {
-                    const id = window.location.hash.substring(1);
-                    const el = document.getElementById(id);
-                    if (el) el.scrollIntoView({ behavior: "smooth" });
-                }
+          document.getElementById('content').style.display = 'flex';
 
-                MathJax.typesetPromise([document.getElementById("project")])
-                    .then(() => hljs.highlightAll())
-                    .catch((err) => console.error("MathJax typeset failed:", err));
-            }).catch(err => {
-                console.error(err);
-                document.getElementById("project").innerHTML = `<p>Could not load project page: ${page}</p>`;
-                const content = document.getElementById("content");
-                content.style.display = "flex";
-            });
+          // this is used for scrolling to hash
+          // the anchor now exists.
+          if (window.location.hash) {
+            const id = window.location.hash.substring(1);
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }
+
+          MathJax.typesetPromise([document.getElementById('project')])
+            .then(() => hljs.highlightAll())
+            .catch((err) => console.error('MathJax typeset failed:', err));
+        })
+        .catch((err) => {
+          console.error(err);
+          document.getElementById('project').innerHTML =
+            `<p>Could not load project page: ${page}</p>`;
+          const content = document.getElementById('content');
+          content.style.display = 'flex';
         });
-    </script>
+    });
+  </script>
 </html>

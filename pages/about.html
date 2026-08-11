@@ -1,91 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
-    <script>
-      /* Set theme before paint to avoid a flash of the wrong colors. */
-      (function () {
-        try {
-          var t = localStorage.getItem('theme') || 'light';
-          var d = document.documentElement;
-          d.setAttribute('data-theme', t);
-          d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
-        } catch (e) {}
-      })();
-    </script>
-    <!-- Google Analytics -->
-    <script src="/common/gtag.js"></script>
-    <div id="header"></div>
-    <title>David Krasowska | About </title>
+  <script>
+    /* Set theme before paint to avoid a flash of the wrong colors. */
+    (function () {
+      try {
+        var t = localStorage.getItem('theme') || 'light';
+        var d = document.documentElement;
+        d.setAttribute('data-theme', t);
+        d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Google Analytics -->
+  <script src="/common/gtag.js"></script>
+  <div id="header"></div>
+  <title>David Krasowska | About</title>
 
-    <body>
-        <div class="content" id="content" style="display: none;">
-            <div id="navbar"></div>
-            
-            <div class="holder">
-                <div class="event">
-                    <a href="https://sc22.supercomputing.org/presentation/?id=spostu110&sess=sess227#038;sess=sess227"> <img src="/assets/images/sc.JPG"></a>
-                    <div class="title-xlg">My background</div>
-                    <div class="description">
-                        <br>
-                        I am a Computer Science Ph.D. candidate at Northwestern University under Dr. Peter Dinda and a recipient of the Department of Energy Computational Science Graduate Fellowship.
-                        I've become interested in helping domain scientists run their workloads on distributed, heterogeneous computing systems. This focus is part of the <a href="https://constellation-project.net">Constellation Project</a> which enables frictionless heterogeneous parallelism.
-                        My research introduction began with research within the FTHPC group at Clemson University under Dr. Jon C. Calhoun. 
-                        Within this group, I collaborated with Argonne National Laboratory as a visiting student on lossy data compression research.
-                        Our goal was to determine different statistical predictions that would allow for estimation of lossy compression ratios (more info <a href="/pages/show.html?page=compression">here</a>). This had lead to 
-                        <a href="/index.html#publications">publications</a> and <a href="/pages/news.html">awards</a>.
-                        Also, I participated in the Student Cluster Competition at Super Computing (SC) '21 and INDYSCC at SC '22.
+  <body>
+    <div class="content" id="content" style="display: none">
+      <div id="navbar"></div>
 
-                    </div>
-                </div>
-                <div class="event">
-                    <div class="title-lg">David's interests?</div>
-                    <div class="description">
-                        The end of Moore's law has resulted in development of new specialized architectures for computing [1]. AI companies are driving the current accelerator boom, but I find this question particularly compelling:
-                        <b>How can we leverage emerging AI-focused heterogeneous accelerators to support the workloads of HPC domain scientists?</b>
-                        <br><br>
-                        I've became interested in utilizing higher-level languages in a performant way. I am working on a project that brings the ability to run Julia applications across a distributed system using NVIDIA GPUs.
-                        This takes advantage of Julia's abstract array interface to implement distributed heterogeneous arrays managed by a novel HPC runtime- Legion (more info <a href="/pages/show.html?page=cunumeric">here</a>).
-                        <br><br>
-                        Outside of GPUs, I've worked with CGRAs, FPGAs, etc. However, one specific accelerator that has peaked my interest in Processing in Memory (PIM). There has been countless prior work in the area of increasing computational 
-                        speed using processing in memory (PIM) accelerators. There are a few issues that require a demanding amount of work for adoption for these newer ideas. 
-                        This challenge stems from the fact that domain scientists are often required to rewrite their code using specialized directives to take advantage of new hardware. Unfortunately, this portability issue isn't unique to PIM- many emerging AI accelerators face the same barrier.
-                        
-                        Using the same novel runtime mentioned above (Legion), I have made progress towards resolving the complexities of programming PIM systems (more info <a href="/pages/show.html?page=legionpim">here</a>).
-                    </div>
-                </div>
-                <div class="event">
-                    <div class="cite">
-                        [1] T. N. Theis and H. . -S. P. Wong, "The End of Moore's Law: A New Beginning for Information Technology," in Computing in Science & Engineering, vol. 19, no. 2, pp. 41-50, Mar.-Apr. 2017, doi: 10.1109/MCSE.2017.29.
-                        <br>
-                    </div>
-                </div>
-            </div>
-            <!-- end content -->
+      <div class="holder">
+        <div class="event">
+          <a
+            href="https://sc22.supercomputing.org/presentation/?id=spostu110&sess=sess227#038;sess=sess227"
+          >
+            <img src="/assets/images/sc.JPG"
+          /></a>
+          <div class="title-xlg">My background</div>
+          <div class="description">
+            <br />
+            I am a Computer Science Ph.D. candidate at Northwestern University under Dr. Peter Dinda
+            and a recipient of the Department of Energy Computational Science Graduate Fellowship.
+            I've become interested in helping domain scientists run their workloads on distributed,
+            heterogeneous computing systems. This focus is part of the
+            <a href="https://constellation-project.net">Constellation Project</a> which enables
+            frictionless heterogeneous parallelism. My research introduction began with research
+            within the FTHPC group at Clemson University under Dr. Jon C. Calhoun. Within this
+            group, I collaborated with Argonne National Laboratory as a visiting student on lossy
+            data compression research. Our goal was to determine different statistical predictions
+            that would allow for estimation of lossy compression ratios (more info
+            <a href="/pages/show.html?page=compression">here</a>). This had lead to
+            <a href="/index.html#publications">publications</a> and
+            <a href="/pages/news.html">awards</a>. Also, I participated in the Student Cluster
+            Competition at Super Computing (SC) '21 and INDYSCC at SC '22.
+          </div>
         </div>
-    </body>
-    <div id="footer"></div>
+        <div class="event">
+          <div class="title-lg">David's interests?</div>
+          <div class="description">
+            The end of Moore's law has resulted in development of new specialized architectures for
+            computing [1]. AI companies are driving the current accelerator boom, but I find this
+            question particularly compelling:
+            <b
+              >How can we leverage emerging AI-focused heterogeneous accelerators to support the
+              workloads of HPC domain scientists?</b
+            >
+            <br /><br />
+            I've became interested in utilizing higher-level languages in a performant way. I am
+            working on a project that brings the ability to run Julia applications across a
+            distributed system using NVIDIA GPUs. This takes advantage of Julia's abstract array
+            interface to implement distributed heterogeneous arrays managed by a novel HPC runtime-
+            Legion (more info <a href="/pages/show.html?page=cunumeric">here</a>). <br /><br />
+            Outside of GPUs, I've worked with CGRAs, FPGAs, etc. However, one specific accelerator
+            that has peaked my interest in Processing in Memory (PIM). There has been countless
+            prior work in the area of increasing computational speed using processing in memory
+            (PIM) accelerators. There are a few issues that require a demanding amount of work for
+            adoption for these newer ideas. This challenge stems from the fact that domain
+            scientists are often required to rewrite their code using specialized directives to take
+            advantage of new hardware. Unfortunately, this portability issue isn't unique to PIM-
+            many emerging AI accelerators face the same barrier. Using the same novel runtime
+            mentioned above (Legion), I have made progress towards resolving the complexities of
+            programming PIM systems (more info <a href="/pages/show.html?page=legionpim">here</a>).
+          </div>
+        </div>
+        <div class="event">
+          <div class="cite">
+            [1] T. N. Theis and H. . -S. P. Wong, "The End of Moore's Law: A New Beginning for
+            Information Technology," in Computing in Science & Engineering, vol. 19, no. 2, pp.
+            41-50, Mar.-Apr. 2017, doi: 10.1109/MCSE.2017.29.
+            <br />
+          </div>
+        </div>
+      </div>
+      <!-- end content -->
+    </div>
+  </body>
+  <div id="footer"></div>
 
-    <script src="/common/js/navbar.js"></script>
-    <script src="/common/js/theme.js"></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        Promise.all([
-        fetch("/common/navbar.html").then(res => res.text()),
-        fetch("/common/header.html").then(res => res.text()),
-        fetch("/common/footer.html").then(res => res.text())
-        ]).then(([navbar, header, footer]) => {
-        document.getElementById("navbar").innerHTML = navbar;
-        document.getElementById("header").innerHTML = header;
-        document.getElementById("footer").innerHTML = footer;
-        document.getElementById("content").style.display = "flex";
+  <script src="/common/js/navbar.js"></script>
+  <script src="/common/js/theme.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      Promise.all([
+        fetch('/common/navbar.html').then((res) => res.text()),
+        fetch('/common/header.html').then((res) => res.text()),
+        fetch('/common/footer.html').then((res) => res.text()),
+      ]).then(([navbar, header, footer]) => {
+        document.getElementById('navbar').innerHTML = navbar;
+        document.getElementById('header').innerHTML = header;
+        document.getElementById('footer').innerHTML = footer;
+        document.getElementById('content').style.display = 'flex';
 
         // this is used for scrolling to hash
-        // the anchor now exists. 
+        // the anchor now exists.
         if (window.location.hash) {
-            const id = window.location.hash.substring(1);
-            const el = document.getElementById(id);
-            if (el) el.scrollIntoView({ behavior: "smooth" });
+          const id = window.location.hash.substring(1);
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
         }
-        });
+      });
     });
-    </script>
+  </script>
 </html>
