@@ -83,8 +83,8 @@
       "phrases": ["open to work", "available to work", "looking for work", "expect to graduate", "expected graduation", "graduation date"],
       "answer": "David is looking for an internship for 2027. He expects to graduate in December 2027 and plans to begin looking for full-time positions around that time.",
       "readMore": {
-        "prompt": "Would you like to open his contact card? (y/n)",
-        "command": "open /home/contact.vcf"
+        "prompt": "Would you like to download his contact card? (y/n)",
+        "command": "download /home/contact.vcf"
       }
     },
     {
@@ -225,10 +225,10 @@
       "topic": "contact",
       "keywords": ["contact", "card", "vcard", "vcf", "download", "save", "reach", "location", "live", "lives", "based", "chicago"],
       "phrases": ["contact card", "download contact", "save contact", "recruiter reach", "recruiter contact"],
-      "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `open contact.vcf` to save his contact card.",
+      "answer": "David is based in Chicago. You can reach him at david@krasow.dev or run `download contact.vcf` to save his contact card.",
       "readMore": {
-        "prompt": "Would you like to run `open contact.vcf`? (y/n)",
-        "command": "open /home/contact.vcf"
+        "prompt": "Would you like to download his contact card? (y/n)",
+        "command": "download /home/contact.vcf"
       }
     },
     {

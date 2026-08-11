@@ -139,6 +139,7 @@
     copy: 'copy <file>',
     wc: 'wc <file|pattern> [...]',
     open: 'open <file|page>',
+    download: 'download <file>',
     find: 'find [folder] [pattern]',
   };
   const STORAGE_KEY = 'krasow-terminal-state';
@@ -153,6 +154,7 @@
       ['pwd · tree', 'inspect the current directory'],
       ['find [folder] [pattern]', 'find files recursively'],
       ['open file|page', 'open a page or document'],
+      ['download file', 'download a file'],
       ['cat file|pattern', 'read one or more text files'],
       ['grep pattern file', 'search one or more text files'],
       ['copy file', 'copy a text file'],
@@ -287,6 +289,7 @@
         }],
         ['cd', (args) => this.withMaximumArity(args, 1, () => this.changeDirectory(args[0] ?? ''))],
         ['open', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
+        ['download', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
         ['find', (args) => this.withMaximumArity(args, 2, () => this.find(args))],
         ['show', (args) => this.withArity(args, 1, () => this.showScript(args[0]))],
         ['echo', (args) => {
@@ -298,7 +301,7 @@
 
     buildCompletions() {
       return [...new Set([
-        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
+        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'open', 'download', 'find', 'show', 'echo', 'ls', 'cd', 'cd ..', 'cd -'],
         'theme',
         'theme light',
         'theme dark',
@@ -1014,7 +1017,7 @@
 
       const tokenStart = typed.lastIndexOf(' ') + 1;
       const path = typed.slice(tokenStart);
-      const pathCommand = /^(cat|cd|copy|find|grep|ls|open|show|wc)\b/.test(typed)
+      const pathCommand = /^(cat|cd|copy|download|find|grep|ls|open|show|wc)\b/.test(typed)
         ? typed.split(/\s/)[0]
         : !typed.includes(' ') ? '' : null;
       const paths = pathCommand !== null
@@ -1052,7 +1055,7 @@
         .filter(({ name }) => name.startsWith(path))
         .filter(({ path: candidate }) => {
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
-          if (command === 'open') {
+          if (command === 'open' || command === 'download') {
             const openable = [...FILE_ROUTES.keys(), ...Object.keys(HIDDEN_FILES)];
             return openable.includes(candidate)
               || ((path.includes('/') || path.startsWith('.'))
