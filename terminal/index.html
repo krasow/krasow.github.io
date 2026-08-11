@@ -147,8 +147,9 @@
     .autocomplete-choice.active { color: var(--terminal-accent); opacity: 1; }
     .ls-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(16ch, 1fr));
+      grid-template-columns: repeat(auto-fill, var(--ls-column-width, 16ch));
       column-gap: 3ch;
+      justify-content: start;
     }
     .ls-entry {
       min-width: 0;

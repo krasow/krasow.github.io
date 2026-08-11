@@ -162,6 +162,8 @@
 
     writeListing(entries, track = true) {
       const listing = makeElement('div', 'ln pth ls-grid');
+      const columnWidth = Math.max(16, ...entries.map((name) => name.length + 3));
+      listing.style.setProperty('--ls-column-width', `${columnWidth}ch`);
       listing.append(...entries.map((name) => makeElement('span', 'ls-entry', displayFile(name))));
       this.append(listing, track ? { type: 'listing', entries } : null);
     }
