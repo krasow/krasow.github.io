@@ -1,0 +1,11 @@
+{
+  "entries": [
+    { "name": "JULIACON25", "target": "/assets/documents/slides/2025/juliacon.pdf" },
+    { "name": "LEGION24", "target": "/assets/documents/slides/2024/legion24.pdf" },
+    { "name": "CONSTELLATION23", "target": "/assets/documents/slides/2023/Constellation_Krasowska.pdf" },
+    { "name": "GRADSCHOOL22", "target": "/assets/documents/slides/2022/grad_school_talk_dube_krasowska.pdf" },
+    { "name": "SC22", "target": "/assets/documents/slides/2022/best_krasowska.pdf" },
+    { "name": "SASSY22", "target": "/assets/documents/slides/2022/prediction_lossy_compression_krasowska.pdf" },
+    { "name": "DRBSD21", "target": "/assets/documents/slides/2021/DRBSB-7-Krasowska.pdf" }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "entries": [
+    { "name": "compression", "target": "/pages/show.html?page=compression" },
+    { "name": "cunumeric", "target": "/pages/show.html?page=cunumeric" },
+    { "name": "legionpim", "target": "/pages/show.html?page=legionpim" }
+  ]
+}

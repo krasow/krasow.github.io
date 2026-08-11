@@ -1,4 +1,11 @@
 {
+  "directories": [
+    "/home/posters",
+    "/home/presentations",
+    "/home/projects",
+    "/home/publications",
+    "/home/scripts"
+  ],
   "files": [
     {
       "path": "/etc/hostname",
@@ -21,14 +28,149 @@
       "text": true
     },
     {
+      "path": "/home/about.pg",
+      "url": "/terminal/fs/home/about.pg",
+      "text": true,
+      "target": "/pages/about.html"
+    },
+    {
+      "path": "/home/ai-notice.md",
+      "url": "/terminal/fs/home/ai-notice.md",
+      "text": true
+    },
+    {
       "path": "/home/contact.md",
       "url": "/terminal/fs/home/contact.md",
       "text": true
     },
     {
+      "path": "/home/contact.vcf",
+      "target": "/assets/documents/Krasowska_David_contact.vcf",
+      "text": false
+    },
+    {
+      "path": "/home/cv.pg",
+      "url": "/terminal/fs/home/cv.pg",
+      "text": true,
+      "target": "/pages/cv.html"
+    },
+    {
       "path": "/home/education.md",
       "url": "/terminal/fs/home/education.md",
       "text": true
+    },
+    {
+      "path": "/home/experience.pg",
+      "url": "/terminal/fs/home/experience.pg",
+      "text": true,
+      "target": "/index.html#experience",
+      "source": "/homepage/experience.html"
+    },
+    {
+      "path": "/home/news.pg",
+      "url": "/terminal/fs/home/news.pg",
+      "text": true,
+      "target": "/pages/news.html"
+    },
+    {
+      "path": "/home/posters/CSGF25",
+      "text": false,
+      "target": "/assets/documents/posters/2025_csgf_krasoska.pdf"
+    },
+    {
+      "path": "/home/posters/CSGF26",
+      "text": false,
+      "target": "/assets/documents/posters/2026_csgf_krasowska.pdf"
+    },
+    {
+      "path": "/home/posters/GCASR26",
+      "text": false,
+      "target": "/assets/documents/posters/2026_gcasr_krasowska.pdf"
+    },
+    {
+      "path": "/home/posters/SC22",
+      "text": false,
+      "target": "/assets/documents/posters/poster_krasowska.pdf"
+    },
+    {
+      "path": "/home/presentations/CONSTELLATION23",
+      "text": false,
+      "target": "/assets/documents/slides/2023/Constellation_Krasowska.pdf"
+    },
+    {
+      "path": "/home/presentations/DRBSD21",
+      "text": false,
+      "target": "/assets/documents/slides/2021/DRBSB-7-Krasowska.pdf"
+    },
+    {
+      "path": "/home/presentations/GRADSCHOOL22",
+      "text": false,
+      "target": "/assets/documents/slides/2022/grad_school_talk_dube_krasowska.pdf"
+    },
+    {
+      "path": "/home/presentations/JULIACON25",
+      "text": false,
+      "target": "/assets/documents/slides/2025/juliacon.pdf"
+    },
+    {
+      "path": "/home/presentations/LEGION24",
+      "text": false,
+      "target": "/assets/documents/slides/2024/legion24.pdf"
+    },
+    {
+      "path": "/home/presentations/SASSY22",
+      "text": false,
+      "target": "/assets/documents/slides/2022/prediction_lossy_compression_krasowska.pdf"
+    },
+    {
+      "path": "/home/presentations/SC22",
+      "text": false,
+      "target": "/assets/documents/slides/2022/best_krasowska.pdf"
+    },
+    {
+      "path": "/home/projects/compression",
+      "text": false,
+      "target": "/pages/show.html?page=compression"
+    },
+    {
+      "path": "/home/projects/cunumeric",
+      "text": false,
+      "target": "/pages/show.html?page=cunumeric"
+    },
+    {
+      "path": "/home/projects/legionpim",
+      "text": false,
+      "target": "/pages/show.html?page=legionpim"
+    },
+    {
+      "path": "/home/publications/CLUSTER23",
+      "text": false,
+      "target": "https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ"
+    },
+    {
+      "path": "/home/publications/DRBSD21",
+      "text": false,
+      "target": "https://ieeexplore.ieee.org/abstract/document/9652575"
+    },
+    {
+      "path": "/home/publications/IJHPCA23",
+      "text": false,
+      "target": "https://journals.sagepub.com/doi/abs/10.1177/10943420231179417"
+    },
+    {
+      "path": "/home/publications/VILLAGE25",
+      "text": false,
+      "target": "https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf"
+    },
+    {
+      "path": "/home/resume.pdf",
+      "target": "/assets/documents/Krasowska_David_resume.pdf",
+      "text": false
+    },
+    {
+      "path": "/home/scripts/cunumeric-install.sh",
+      "text": true,
+      "target": "/scripts/cunumeric-install.sh"
     },
     {
       "path": "/home/summary.md",

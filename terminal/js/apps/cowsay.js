@@ -37,5 +37,20 @@
     ].join('\n');
   };
 
-  window.KrasowCowsay = { render };
+  class CowsayApp {
+    constructor(terminal) {
+      this.terminal = terminal;
+    }
+
+    run(message = 'Moo.') {
+      const style = getComputedStyle(this.terminal.ui.log);
+      const fontSize = parseFloat(style.fontSize) || 14;
+      const characterWidth = fontSize * 0.62;
+      const maximumWidth = Math.floor(this.terminal.ui.log.clientWidth / characterWidth) - 6;
+      this.terminal.write(render(message, maximumWidth), 'pth');
+      return true;
+    }
+  }
+
+  window.CowsayApp = CowsayApp;
 })();

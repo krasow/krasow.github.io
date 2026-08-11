@@ -1,0 +1,8 @@
+{
+  "entries": [
+    { "name": "VILLAGE25", "target": "https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf" },
+    { "name": "CLUSTER23", "target": "https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ" },
+    { "name": "IJHPCA23", "target": "https://journals.sagepub.com/doi/abs/10.1177/10943420231179417" },
+    { "name": "DRBSD21", "target": "https://ieeexplore.ieee.org/abstract/document/9652575" }
+  ]
+}

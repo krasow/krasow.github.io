@@ -1,197 +1,28 @@
 (() => {
   'use strict';
 
-  const ROUTES = {
-    projects: '/index.html#projects',
-    publications: '/index.html#publications',
-    posters: '/pages/presentations.html',
-    experience: '/index.html#experience',
-    cv: '/pages/cv.html',
-    about: '/pages/about.html',
-    news: '/pages/news.html',
-    presentations: '/pages/presentations.html',
-    resume: 'https://krasow.dev/assets/documents/Krasowska_David_resume.pdf',
+  const SHORTCUTS = {
     github: 'https://github.com/krasow',
     zoom: 'https://northwestern.zoom.us/my/krasow',
-    contact: '/assets/documents/Krasowska_David_contact.vcf',
   };
+  const PAGE_SOURCES = {};
+  const READABLE_FILES = {};
 
-  const FILES = {
-    'about.pg': ROUTES.about,
-    'ai-notice.md': '/assets/documents/notice/ai-notice.md',
-    'contact.md': '/terminal/fs/home/contact.md',
-    'contact.vcf': ROUTES.contact,
-    'cv.pg': ROUTES.cv,
-    'education.md': '/terminal/fs/home/education.md',
-    'experience.pg': ROUTES.experience,
-    'news.pg': ROUTES.news,
-    'resume.pdf': ROUTES.resume,
-    'summary.md': '/terminal/fs/home/summary.md',
-  };
-  const SHORTCUTS = {
-    github: ROUTES.github,
-    zoom: ROUTES.zoom,
-  };
-  const PAGE_SOURCES = {
-    'about.pg': { url: FILES['about.pg'], selector: '.holder' },
-    'cv.pg': { url: FILES['cv.pg'], selector: '.holder' },
-    'experience.pg': { url: '/homepage/experience.html', selector: '.holder' },
-    'news.pg': { url: FILES['news.pg'], selector: '.holder' },
-  };
-  const READABLE_FILES = {
-    'ai-notice.md': FILES['ai-notice.md'],
-    'contact.md': FILES['contact.md'],
-    'summary.md': FILES['summary.md'],
-    'education.md': FILES['education.md'],
-  };
-
-  const FOLDERS = {
-    projects: [
-      ['compression', '/pages/show.html?page=compression'],
-      ['cunumeric', '/pages/show.html?page=cunumeric'],
-      ['legionpim', '/pages/show.html?page=legionpim'],
-    ],
-    publications: [
-      ['VILLAGE25', 'https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf'],
-      ['CLUSTER23', 'https://www.computer.org/csdl/proceedings-article/cluster/2023/079200a247/1SfUsploNQQ'],
-      ['IJHPCA23', 'https://journals.sagepub.com/doi/abs/10.1177/10943420231179417'],
-      ['DRBSD21', 'https://ieeexplore.ieee.org/abstract/document/9652575'],
-    ],
-    posters: [
-      ['CSGF26', '/assets/documents/posters/2026_csgf_krasowska.pdf'],
-      ['GCASR26', '/assets/documents/posters/2026_gcasr_krasowska.pdf'],
-      ['CSGF25', '/assets/documents/posters/2025_csgf_krasoska.pdf'],
-      ['SC22', '/assets/documents/posters/poster_krasowska.pdf'],
-    ],
-    presentations: [
-      ['JULIACON25', '/assets/documents/slides/2025/juliacon.pdf'],
-      ['LEGION24', '/assets/documents/slides/2024/legion24.pdf'],
-      ['CONSTELLATION23', '/assets/documents/slides/2023/Constellation_Krasowska.pdf'],
-      ['GRADSCHOOL22', '/assets/documents/slides/2022/grad_school_talk_dube_krasowska.pdf'],
-      ['SC22', '/assets/documents/slides/2022/best_krasowska.pdf'],
-      ['SASSY22', '/assets/documents/slides/2022/prediction_lossy_compression_krasowska.pdf'],
-      ['DRBSD21', '/assets/documents/slides/2021/DRBSB-7-Krasowska.pdf'],
-    ],
-    scripts: [
-      ['cunumeric-install.sh', '/scripts/cunumeric-install.sh'],
-    ],
-  };
   const HIDDEN_FILES = {};
-  const ROOT_ENTRIES = [
-    'about.pg', 'ai-notice.md', 'contact.vcf', 'cv.pg',
-    'experience.pg', 'news.pg',
-    'posters/', 'presentations/', 'projects/', 'publications/',
-    'resume.pdf', 'scripts/',
-  ];
-  const ROOT_DIRECTORIES = ['home/'];
   const DIRECTORIES = {
-    '/': ROOT_DIRECTORIES,
-    '/home': ROOT_ENTRIES,
-    ...Object.fromEntries(Object.entries(FOLDERS).map(([name, entries]) => [
-      `/home/${name}`,
-      entries.map(([entry]) => entry),
-    ])),
+    '/': [],
   };
-  const FILE_ROUTES = new Map([
-    ...Object.entries(FILES).map(([name, url]) => [`/home/${name}`, url]),
-    ...Object.entries(FOLDERS).flatMap(([folder, entries]) => (
-      entries.filter(([, url]) => url).map(([name, url]) => [`/home/${folder}/${name}`, url])
-    )),
-  ]);
+  const FILE_ROUTES = new Map();
   const TEXT_PATHS = new Set([
     ...Object.keys(READABLE_FILES).map((name) => `/home/${name}`),
     ...Object.keys(PAGE_SOURCES).map((name) => `/home/${name}`),
     ...Object.keys(HIDDEN_FILES),
-    ...FOLDERS.scripts.map(([name]) => `/home/scripts/${name}`),
   ]);
 
-  const RESPONSES = {
-    whoami: 'David Krasowska',
-  };
-
-  const HIDDEN_RESPONSES = { hi: 'Hello!', hello: 'Hello!' };
-  const EASTER_EGGS = new Map([
-    ['sudo make me a sandwich', 'Okay. [sandwich delivered]'],
-    ['make me a sandwich', 'What? Make it yourself.'],
-    ['rm -rf /', 'rm: /: permission denied'],
-    ['exit', 'There is no escape. This is a website.'],
-    ['42', 'The answer to life, the universe, and distributed computing.'],
-    ['coffee', 'Error: coffee machine is not attached to this runtime.'],
-    ['fortune', 'Parallelism is easy. Scheduling it is the research project.'],
-    ['neofetch', [
-      '       /\\       david@krasow.dev',
-      '      /  \\      ----------------',
-      '     / /\\ \\     OS: krasow.dev',
-      '    / ____ \\    Shell: zsh',
-      '   /_/    \\_\\   Runtime: Legion',
-    ].join('\n')],
-  ]);
-  const COMMAND_USAGE = {
-    chat: 'chat [question]',
-    snake: 'snake',
-    clear: 'clear [-x]',
-    help: 'help',
-    pwd: 'pwd',
-    tree: 'tree',
-    theme: 'theme [light|dark]',
-    cat: 'cat <file|pattern> [...]',
-    ls: 'ls [folder|pattern]',
-    cd: 'cd [folder|..|-]',
-    show: 'show <script>',
-    echo: 'echo [text]',
-    cowsay: 'cowsay [text]',
-    grep: 'grep <pattern> <file|pattern> [...]',
-    copy: 'copy <file>',
-    wc: 'wc <file|pattern> [...]',
-    rm: 'rm [-rf] <file|folder> [...]',
-    open: 'open <file|page>',
-    download: 'download <file>',
-    find: 'find [folder] [pattern]',
-    reset: 'reset',
-    sudo: 'sudo <command>',
-  };
   const STORAGE_KEY = 'krasow-terminal-state';
   const REMOVED_PATHS_KEY = 'krasow-terminal-removed-paths';
   const HISTORY_LIMIT = 10;
   const NOT_FOUND_PATH = new URLSearchParams(location.search).get('notFound');
-
-  const HELP = [
-    ['Navigation', [
-      ['ls [folder|pattern]', 'list pages or matching files'],
-      ['cd folder · cd .. · cd -', 'change directory'],
-      ['pwd · tree', 'inspect the current directory'],
-      ['find [folder] [pattern]', 'find files recursively'],
-      ['open file|page', 'open a page or document'],
-      ['download file', 'download a file'],
-      ['cat file|pattern', 'read one or more text files'],
-      ['grep pattern file', 'search one or more text files'],
-      ['copy file', 'copy a text file'],
-      ['wc file|pattern', 'count lines, words, and characters'],
-      ['rm [-rf] file|folder', 'hide entries from the virtual filesystem'],
-      ['echo text', 'print text'],
-      ['show script', 'print an install command'],
-    ]],
-    ['Information', [
-      ['chat [question]', 'ask about David or enter chat mode'],
-      ['whoami', 'show name'],
-      ['cat contact.md', 'show contact details'],
-    ]],
-    ['Games', [
-      ['snake', 'play Snake in the terminal'],
-    ]],
-    ['Links', [
-      ['github · zoom', 'open an external page'],
-      ['resume.pdf · contact.vcf', 'open or download a document'],
-    ]],
-    ['Controls', [
-      ['clear', 'clear the terminal and scrollback'],
-      ['clear -x', 'clear the screen but preserve scrollback'],
-      ['theme [light|dark]', 'change color theme'],
-      ['reset', 'restore all locally saved terminal state'],
-      ['Esc · Ctrl+C', 'cancel current input'],
-      ['↑ / ↓ · Tab', 'history and autocomplete'],
-    ]],
-  ];
 
   const byId = (id) => document.getElementById(id);
   const makeElement = (tag, className, text = '') => {
@@ -245,14 +76,15 @@
       this.historyCursor = 0;
       this.completionCycle = null;
       this.transcript = [];
-      this.chatModel = new window.KrasowChat.LocalChat();
-      this.chatSession = false;
-      this.chatMode = false;
-      this.chatConfirmation = null;
-      this.snakeGame = null;
+      this.commandSet = new window.KrasowTerminalCommands.TerminalCommands(this, {
+        shortcuts: SHORTCUTS,
+        fileRoutes: FILE_ROUTES,
+        hiddenFiles: HIDDEN_FILES,
+        directories: DIRECTORIES,
+      });
 
-      this.completions = this.buildCompletions();
-      this.commands = this.buildCommands();
+      this.completions = this.commandSet.completions();
+      this.commands = this.commandSet.commands();
       this.restore();
     }
 
@@ -275,209 +107,6 @@
       this.ui.input.focus();
     }
 
-    buildCommands() {
-      return new Map([
-        ['chat', (args) => {
-          if (args.length) this.askChat(args.join(' '));
-          else this.enterChat();
-          return true;
-        }],
-        ['snake', (args) => this.withArity(args, 0, () => this.startSnake())],
-        ['clear', (args) => {
-          if (!args.length) {
-            this.clearLog();
-            return true;
-          }
-          if (args.length === 1 && args[0] === '-x') {
-            this.clearScreen();
-            return true;
-          }
-          return false;
-        }],
-        ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
-        ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
-        ['tree', (args) => this.withArity(args, 0, () => this.showTree())],
-        ['theme', (args) => this.withMaximumArity(args, 1, () => this.setTheme(args[0]))],
-        ['cat', (args) => {
-          if (!args.length) return false;
-          this.readFiles(args);
-          return true;
-        }],
-        ['grep', (args) => {
-          const ignoreCase = args[0] === '-i';
-          const offset = ignoreCase ? 1 : 0;
-          if (args.length < offset + 2) return false;
-          this.grep(args[offset], args.slice(offset + 1), ignoreCase);
-          return true;
-        }],
-        ['copy', (args) => this.withArity(args, 1, () => this.copyFile(args[0]))],
-        ['wc', (args) => {
-          if (!args.length) return false;
-          this.countFiles(args);
-          return true;
-        }],
-        ['rm', (args) => this.remove(args)],
-        ['ls', (args) => {
-          this.list(args.join(' '));
-          return true;
-        }],
-        ['cd', (args) => this.withMaximumArity(args, 1, () => this.changeDirectory(args[0] ?? ''))],
-        ['open', (args) => this.withArity(args, 1, () => this.openPath(args[0]))],
-        ['download', (args) => this.withArity(args, 1, () => this.downloadPath(args[0]))],
-        ['find', (args) => this.withMaximumArity(args, 2, () => this.find(args))],
-        ['reset', (args) => this.withArity(args, 0, () => this.resetLocalState())],
-        ['sudo', () => {
-          this.write('david is not in the sudoers file. This incident will be reported.', 'err');
-          return true;
-        }],
-        ['show', (args) => this.withArity(args, 1, () => this.showScript(args[0]))],
-        ['echo', (args) => {
-          this.write(args.join(' '), 'pth');
-          return true;
-        }],
-        ['cowsay', (args) => {
-          this.cowsay(args.join(' ') || 'Moo.');
-          return true;
-        }],
-      ]);
-    }
-
-    buildCompletions() {
-      return [...new Set([
-        ...['help', 'chat', 'snake', 'clear', 'pwd', 'tree', 'whoami', 'cat', 'grep', 'copy', 'wc', 'rm', 'open', 'download', 'find', 'show', 'echo', 'cowsay', 'reset', 'sudo', 'ls', 'cd', 'cd ..', 'cd -'],
-        'theme',
-        'theme light',
-        'theme dark',
-        'clear -x',
-        ...FOLDERS.scripts.map(([name]) => `show ${name}`),
-        ...Object.keys(SHORTCUTS),
-        ...Object.keys(RESPONSES),
-      ])];
-    }
-
-    async askChat(question) {
-      const thinking = makeElement('p', 'ln hint', 'local model: thinking…');
-      this.append(thinking);
-
-      try {
-        const result = await this.chatModel.ask(question);
-        thinking.remove();
-        this.write(result.answer, 'pth');
-        if (result.hint) this.write(result.hint, 'hint');
-        result.links?.forEach(({ label, url }) => {
-          const text = url.startsWith('/') ? `→ ${label}` : `→ ${label}: ${url}`;
-          this.writeLink(url, text);
-        });
-        if (result.command) this.runChatCommand(result.command);
-        if (this.chatMode && result.readMore) {
-          this.chatConfirmation = result.readMore;
-          this.ui.prompt.textContent = this.promptText();
-          this.write(result.readMore.prompt ?? 'Would you like to read more? (y/n)', 'hint');
-        }
-      } catch (error) {
-        thinking.remove();
-        this.write('chat: the local knowledge model could not be loaded', 'err');
-      }
-    }
-
-    enterChat() {
-      this.chatSession = true;
-      this.chatMode = true;
-      this.ui.prompt.textContent = this.promptText();
-      this.write('Ask me about David. Type `exit` to return to the terminal.', 'hint');
-    }
-
-    leaveChat() {
-      this.chatSession = false;
-      this.chatMode = false;
-      this.chatConfirmation = null;
-      this.ui.prompt.textContent = this.promptText();
-      this.write('leaving chat', 'hint');
-    }
-
-    confirmChat(answer) {
-      if (!this.chatConfirmation) return false;
-      if (!['y', 'yes', 'n', 'no'].includes(answer)) {
-        this.write('Please answer y or n.', 'hint');
-        return true;
-      }
-      const command = this.chatConfirmation.command;
-      this.chatConfirmation = null;
-      this.ui.prompt.textContent = this.promptText();
-      if (['y', 'yes'].includes(answer)) {
-        this.runChatCommand(command);
-      }
-      return true;
-    }
-
-    toggleChatShell() {
-      this.chatMode = !this.chatMode;
-      this.ui.prompt.textContent = this.promptText();
-    }
-
-    showChatHelp() {
-      this.write([
-        'Ask about David using natural language. For example:',
-        '  what does he work on?',
-        '  where did he study?',
-        '  who is his advisor?',
-        '  what publications does he have?',
-        '  what is his work on PIM?',
-        '  how can I contact him?',
-        '',
-        'Commands: help · ] toggle shell mode · exit · quit · Ctrl+C',
-      ].join('\n'), 'pth');
-    }
-
-    runChatCommand(command) {
-      this.echo(command, 'david:~$');
-      const [name, ...args] = command.split(/\s+/);
-      this.commands.get(name)?.(args);
-    }
-
-    startSnake() {
-      const output = makeElement('pre', 'ln snake-game');
-      this.append(output);
-      const style = getComputedStyle(output);
-      const fontSize = parseFloat(style.fontSize) || 14;
-      const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.75;
-      const charWidth = fontSize * 0.62;
-      const cellWidth = Math.max(1, Math.round(lineHeight / charWidth));
-      const width = Math.max(10, Math.min(60,
-        Math.floor(this.ui.log.clientWidth / (charWidth * cellWidth)) - 2));
-      const height = Math.max(12, Math.min(30,
-        Math.floor(this.ui.log.clientHeight / lineHeight) - 5));
-      this.snakeGame = new window.KrasowSnake.SnakeGame(output, (score) => {
-        this.snakeGame = null;
-        this.write(`snake: quit · score ${score}`, 'hint');
-        this.ui.input.focus();
-      }, width, height, cellWidth,
-      Math.round(120 * charWidth * cellWidth / lineHeight), 120);
-      this.snakeGame.start();
-      this.ui.log.scrollTop = this.ui.log.scrollHeight;
-    }
-
-    withArity(args, count, action) {
-      if (args.length !== count) return false;
-      action();
-      return true;
-    }
-
-    withMaximumArity(args, count, action) {
-      if (args.length > count) return false;
-      action();
-      return true;
-    }
-
-    cowsay(message) {
-      const style = getComputedStyle(this.ui.log);
-      const fontSize = parseFloat(style.fontSize) || 14;
-      const characterWidth = fontSize * 0.62;
-      const maximumWidth = Math.max(12, Math.min(60,
-        Math.floor(this.ui.log.clientWidth / characterWidth) - 6));
-      this.write(window.KrasowCowsay.render(message, maximumWidth), 'pth');
-    }
-
     execute(raw) {
       const command = raw.trim();
       if (!command) return;
@@ -488,43 +117,17 @@
       this.historyCursor = this.history.length;
       this.persist();
 
-      if (this.chatSession && !this.chatMode && command === ']') {
-        this.toggleChatShell();
+      if (this.commandSet.apps.chat.session && !this.commandSet.apps.chat.mode && command === ']') {
+        this.commandSet.apps.chat.toggle();
         return;
       }
 
-      if (this.chatMode) {
-        const chatCommand = command.toLowerCase();
-        if (this.confirmChat(chatCommand)) return;
-        if (['exit', 'quit'].includes(chatCommand)) this.leaveChat();
-        else if (['help', '?'].includes(chatCommand)) this.showChatHelp();
-        else if (['hello', 'hi', 'hey'].includes(chatCommand)) {
-          this.write('Hello! Ask me anything about David, or type `help` for examples.', 'pth');
-        }
-        else if (command === ']') this.toggleChatShell();
-        else this.askChat(command);
+      if (this.commandSet.apps.chat.mode) {
+        this.commandSet.apps.chat.handle(command);
         return;
       }
 
-      const easterEgg = EASTER_EGGS.get(command.toLowerCase());
-      if (easterEgg) {
-        this.write(easterEgg, 'pth');
-        return;
-      }
-
-      const [name, ...args] = command.split(/\s+/);
-      const handler = this.commands.get(name);
-      if (handler) {
-        if (handler(args)) return;
-        this.write(`${name}: usage: ${COMMAND_USAGE[name]}`, 'err');
-        return;
-      }
-
-      const response = RESPONSES[name] ?? HIDDEN_RESPONSES[name];
-      if (response && !args.length) {
-        this.write(response, 'pth');
-        return;
-      }
+      if (this.commandSet.execute(command)) return;
 
       if (this.entriesIn(this.resolvePath(command))) {
         this.write(`zsh: is a directory: ${command}`, 'err');
@@ -541,8 +144,11 @@
     }
 
     promptText() {
-      if (this.chatConfirmation) return 'david:[y/n]>';
-      return this.chatMode ? 'david:chat>' : `david:${this.path()}$`;
+      return this.commandSet.apps.chat.prompt(`david:${this.path()}$`);
+    }
+
+    updatePrompt() {
+      this.ui.prompt.textContent = this.promptText();
     }
 
     resolvePath(input) {
@@ -565,35 +171,14 @@
       return SHORTCUTS[command] ?? (this.trash.contains(path) ? null : FILE_ROUTES.get(path));
     }
 
-    list(path) {
-      if (/[*?]/.test(path)) {
-        this.listMatches(path);
-        return;
-      }
-      const directory = path ? this.resolvePath(path) : this.currentDirectory;
-      const entries = this.entriesIn(directory);
-      if (!entries) {
-        this.write(`ls: ${path}: not a directory`, 'err');
-        return;
-      }
-      this.writeListing(entries);
-    }
-
-    listMatches(path) {
-      const { directoryPath, matches } = this.matchingEntries(path);
-      if (matches === null) {
-        this.write(`ls: ${directoryPath}: not a directory`, 'err');
-      } else if (matches.length) {
-        this.writeListing(matches);
-      } else {
-        this.write(`ls: no matches found: ${path}`, 'err');
-      }
-    }
-
     writeListing(entries, track = true) {
       const listing = makeElement('div', 'ln pth ls-grid');
       listing.append(...entries.map((name) => makeElement('span', 'ls-entry', displayFile(name))));
       this.append(listing, track ? { type: 'listing', entries } : null);
+    }
+
+    displayFile(name) {
+      return displayFile(name);
     }
 
     matchingEntries(path) {
@@ -625,158 +210,6 @@
       });
     }
 
-    remove(args) {
-      let recursive = false;
-      let force = false;
-      const targets = [];
-      for (const arg of args) {
-        if (arg.startsWith('-') && arg.length > 1 && !targets.length) {
-          const flags = arg.slice(1);
-          if (/[^rf]/.test(flags)) return false;
-          recursive ||= flags.includes('r');
-          force ||= flags.includes('f');
-        } else targets.push(arg);
-      }
-      if (!targets.length) return false;
-
-      for (const target of targets) {
-        const expanded = /[*?]/.test(target) ? this.expandPath(target) : [target];
-        if (!expanded.length && !force) this.write(`rm: ${target}: no matches found`, 'err');
-        for (const item of expanded) {
-          const path = this.resolvePath(item);
-          const error = this.trash.remove(path, { recursive });
-          if (error && (!force || error !== 'no such file or directory')) {
-            this.write(`rm: ${item}: ${error}`, 'err');
-          } else if (!error && (path === this.currentDirectory
-            || this.currentDirectory.startsWith(`${path}/`))) {
-            this.currentDirectory = path.slice(0, path.lastIndexOf('/')) || '/';
-            this.previousDirectory = null;
-            this.ui.prompt.textContent = this.promptText();
-            this.persist();
-          }
-        }
-      }
-      this.trash.persist();
-      return true;
-    }
-
-    resetLocalState() {
-      try { localStorage.clear(); } catch (error) {}
-      this.append(makeElement('p', 'ln hint', 'resetting local terminal state…'));
-      setTimeout(() => location.reload(), 250);
-    }
-
-    changeDirectory(target) {
-      const requested = target === '-' ? '-' : this.resolvePath(target);
-      let next = requested;
-
-      if (requested === '-') {
-        if (this.previousDirectory === null) {
-          this.write('cd: no previous directory', 'err');
-          return;
-        }
-        next = this.previousDirectory;
-      } else if (!this.entriesIn(requested)) {
-        this.write(`cd: no such file or directory: ${target}`, 'err');
-        return;
-      }
-
-      this.previousDirectory = this.currentDirectory;
-      this.currentDirectory = next;
-      this.ui.prompt.textContent = this.promptText();
-      this.persist();
-    }
-
-    openPath(target, allowDownload = false) {
-      const path = this.resolvePath(target);
-      if (path.endsWith('.vcf') && !allowDownload) {
-        this.write(`open: ${target}: use \`download ${target}\` for contact cards`, 'err');
-        return;
-      }
-      if (this.entriesIn(path)) {
-        this.write(`open: ${target}: is a directory`, 'err');
-        return;
-      }
-      const url = SHORTCUTS[target]
-        ?? (this.trash.contains(path) ? null : FILE_ROUTES.get(path) ?? HIDDEN_FILES[path]);
-      if (url) this.navigate(url);
-      else this.write(`open: ${target}: no such file or page`, 'err');
-    }
-
-    downloadPath(target) {
-      const path = this.resolvePath(target);
-      if (!/\.(pdf|sh|vcf)$/i.test(path)) {
-        this.write(`download: ${target}: not a downloadable document`, 'err');
-        return;
-      }
-      this.openPath(target, true);
-    }
-
-    find(args) {
-      const hasDirectory = args.length === 2
-        || (args[0] && this.entriesIn(this.resolvePath(args[0])));
-      const directory = hasDirectory ? this.resolvePath(args[0]) : this.currentDirectory;
-      const pattern = args[hasDirectory ? 1 : 0] ?? '*';
-      if (!this.entriesIn(directory)) {
-        this.write(`find: ${args[0]}: not a directory`, 'err');
-        return;
-      }
-
-      const walk = (folder) => this.entriesIn(folder).flatMap((name) => {
-        const path = `${folder === '/' ? '' : folder}/${name.replace(/\/$/, '')}`;
-        return [path, ...(name.endsWith('/') ? walk(path) : [])];
-      });
-      const matches = globRegex(pattern);
-      const results = walk(directory)
-        .filter((path) => matches.test(path.split('/').at(-1)))
-        .map((path) => path.replace(/^\/home(?=\/|$)/, '~'));
-      this.write(results.join('\n') || `find: no matches found: ${pattern}`, results.length ? 'pth' : 'err');
-    }
-
-    showScript(path) {
-      const target = path.includes('/') || this.currentDirectory === '/home/scripts'
-        ? path
-        : `/home/scripts/${path}`;
-      const resolved = this.resolvePath(target);
-      const url = this.trash.contains(resolved) ? null : FILE_ROUTES.get(resolved);
-      if (url) this.write(`curl -fsSL https://krasow.dev${url} | bash`, 'pth');
-      else this.write(`show: no such script: ${path}`, 'err');
-    }
-
-    setTheme(requestedTheme) {
-      const current = document.documentElement.getAttribute('data-theme') || 'light';
-      const theme = requestedTheme ?? (current === 'dark' ? 'light' : 'dark');
-      if (!['light', 'dark'].includes(theme)) {
-        this.write(`theme: unknown theme: ${theme}`, 'err');
-        return;
-      }
-      document.documentElement.setAttribute('data-theme', theme);
-      try { localStorage.setItem('theme', theme); } catch (error) {}
-      this.write(`theme: ${theme}`, 'pth');
-    }
-
-    async readFile(path) {
-      try {
-        this.write(await this.fileText(path), 'pth');
-      } catch (error) {
-        const reason = error.message === 'EISDIR'
-          ? 'is a directory'
-          : error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
-        this.write(`cat: ${path}: ${reason}`, 'err');
-      }
-    }
-
-    async readFiles(paths) {
-      for (const path of paths) {
-        const files = this.expandPath(path);
-        if (!files.length) {
-          this.write(`cat: no matches found: ${path}`, 'err');
-          continue;
-        }
-        for (const file of files) await this.readFile(file);
-      }
-    }
-
     async fileText(path) {
       const resolved = this.resolvePath(path);
       if (this.trash.contains(resolved)) throw new Error('ENOENT');
@@ -793,8 +226,9 @@
       const homePath = absolutePath.replace(/^\/home\//, '');
       if (PAGE_SOURCES[homePath]) return PAGE_SOURCES[homePath];
 
-      const url = READABLE_FILES[homePath]
-        ?? (TEXT_PATHS.has(absolutePath) ? FILE_ROUTES.get(absolutePath) : null);
+      const url =
+        READABLE_FILES[homePath] ??
+        (TEXT_PATHS.has(absolutePath) ? FILE_ROUTES.get(absolutePath) : null);
       return url ? { url } : null;
     }
 
@@ -814,90 +248,19 @@
       return text;
     }
 
-    async grep(pattern, paths, ignoreCase = false) {
-      let expression;
-      try {
-        expression = new RegExp(pattern, ignoreCase ? 'i' : '');
-      } catch (error) {
-        this.write(`grep: invalid pattern: ${pattern}`, 'err');
-        return;
-      }
-
-      const files = paths.flatMap((path) => this.expandPath(path));
-      if (!files.length) {
-        this.write(`grep: no files matched`, 'err');
-        return;
-      }
-
-      for (const path of files) {
-        try {
-          const matches = (await this.fileText(path))
-            .split('\n')
-            .filter((line) => expression.test(line));
-          if (matches.length) this.write(matches.map((line) => `${path}:${line}`).join('\n'), 'pth');
-        } catch (error) {
-          const reason = error.message === 'EISDIR'
-            ? 'is a directory'
-            : error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
-          this.write(`grep: ${path}: ${reason}`, 'err');
-        }
-      }
-    }
-
-    async copyFile(path) {
-      try {
-        const text = await this.fileText(path);
-        try {
-          await navigator.clipboard.writeText(text);
-        } catch (error) {
-          const textarea = makeElement('textarea', '', text);
-          textarea.style.position = 'fixed';
-          textarea.style.opacity = '0';
-          document.body.append(textarea);
-          textarea.select();
-          const copied = document.execCommand('copy');
-          textarea.remove();
-          if (!copied) throw error;
-        }
-        this.write(`copied: ${path} to clipboard`, 'pth');
-      } catch (error) {
-        const reason = error.message === 'EISDIR'
-          ? 'is a directory'
-          : error.message === 'ENOENT' ? 'no such text file' : 'unable to copy file';
-        this.write(`copy: ${path}: ${reason}`, 'err');
-      }
-    }
-
-    async countFiles(paths) {
-      const files = paths.flatMap((path) => this.expandPath(path));
-      if (!files.length) {
-        this.write('wc: no files matched', 'err');
-        return;
-      }
-      for (const path of files) {
-        try {
-          const text = await this.fileText(path);
-          const lines = text ? text.split('\n').length : 0;
-          const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-          const characters = [...text].length;
-          this.write(`${lines} ${words} ${characters} ${path}`, 'pth');
-        } catch (error) {
-          const reason = error.message === 'EISDIR'
-            ? 'is a directory'
-            : error.message === 'ENOENT' ? 'no such text file' : 'unable to read file';
-          this.write(`wc: ${path}: ${reason}`, 'err');
-        }
-      }
-    }
-
     pageText(section) {
       const copy = section.cloneNode(true);
       copy.querySelectorAll('.cv-date span + span').forEach((span) => span.before(' – '));
-      copy.querySelectorAll('.pub-date br').forEach((breakElement) => breakElement.replaceWith(' – '));
-      copy.querySelectorAll([
-        'br', 'div', 'p', 'li', 'hr', 'h1', 'h2', 'h3',
-        '.cv-title', '.cv-org', '.cv-desc',
-      ].join(',')).forEach((element) => element.after('\n'));
+      copy
+        .querySelectorAll('.pub-date br')
+        .forEach((breakElement) => breakElement.replaceWith(' – '));
+      copy
+        .querySelectorAll(
+          ['br', 'div', 'p', 'li', 'hr', 'h1', 'h2', 'h3', '.cv-title', '.cv-org', '.cv-desc'].join(
+            ',',
+          ),
+        )
+        .forEach((element) => element.after('\n'));
 
       return copy.textContent
         .replace(/[ \t]+/g, ' ')
@@ -906,52 +269,22 @@
         .trim();
     }
 
-    showTree() {
-      const lines = ['.'];
-      this.appendTreeEntries(lines, this.currentDirectory);
-      this.write(lines.join('\n'), 'pth');
-    }
-
-    appendTreeEntries(lines, directory, prefix = '') {
-      const entries = this.entriesIn(directory);
-      entries.forEach((name, index) => {
-        const last = index === entries.length - 1;
-        const branch = last ? '└──' : '├──';
-        lines.push(`${prefix}${branch} ${displayFile(name)}`);
-        if (!name.endsWith('/')) return;
-        const child = `${directory === '/' ? '' : directory}/${name.slice(0, -1)}`;
-        this.appendTreeEntries(lines, child, `${prefix}${last ? '    ' : '│   '}`);
-      });
-    }
-
-    showHelp(track = true) {
-      const help = makeElement('div', 'ln help');
-      HELP.forEach(([heading, rows]) => {
-        help.append(makeElement('span', 'help-section', heading));
-        rows.forEach(([command, description]) => help.append(
-          makeElement('span', 'help-command', command),
-          makeElement('span', 'help-description', description),
-        ));
-      });
-      help.append(makeElement('span', 'help-note', 'Type any item shown by ls to open it.'));
-      this.append(help, track ? { type: 'help' } : null);
-    }
-
     navigate(url) {
       const download = url.endsWith('.vcf');
-      this.writeLink(
-        url,
-        download ? '→ downloading contact.vcf' : `→ ${url}`,
-      );
-      if (download) setTimeout(() => { location.href = url; }, 120);
+      this.writeLink(url, download ? '→ downloading contact.vcf' : `→ ${url}`);
+      if (download)
+        setTimeout(() => {
+          location.href = url;
+        }, 120);
       else window.open(url, '_blank', 'noopener,noreferrer');
     }
 
     write(text, className = '') {
-      this.append(
-        makeElement('p', `ln ${className}`.trim(), text),
-        { type: 'line', text, className },
-      );
+      this.append(makeElement('p', `ln ${className}`.trim(), text), {
+        type: 'line',
+        text,
+        className,
+      });
     }
 
     writeLink(url, text) {
@@ -987,11 +320,13 @@
 
     clearScreen(track = true) {
       const terminalStyle = getComputedStyle(this.ui.terminal);
-      const verticalPadding = parseFloat(terminalStyle.paddingTop)
-        + parseFloat(terminalStyle.paddingBottom);
+      const verticalPadding =
+        parseFloat(terminalStyle.paddingTop) + parseFloat(terminalStyle.paddingBottom);
       const bannerHeight = this.ui.terminal.querySelector('.banner')?.offsetHeight ?? 0;
-      const viewportHeight = Math.max(1, this.ui.terminal.clientHeight
-        - verticalPadding - bannerHeight - this.ui.form.offsetHeight);
+      const viewportHeight = Math.max(
+        1,
+        this.ui.terminal.clientHeight - verticalPadding - bannerHeight - this.ui.form.offsetHeight,
+      );
       const screen = makeElement('div', 'clear-screen');
       screen.style.height = `${viewportHeight}px`;
       this.append(screen, track ? { type: 'clear-screen' } : null);
@@ -999,12 +334,15 @@
 
     persist() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          currentDirectory: this.currentDirectory,
-          previousDirectory: this.previousDirectory,
-          history: this.history.slice(-HISTORY_LIMIT),
-          transcript: this.transcript.slice(-HISTORY_LIMIT),
-        }));
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            currentDirectory: this.currentDirectory,
+            previousDirectory: this.previousDirectory,
+            history: this.history.slice(-HISTORY_LIMIT),
+            transcript: this.transcript.slice(-HISTORY_LIMIT),
+          }),
+        );
       } catch (error) {
         // Storage may be unavailable in private or restricted browser contexts.
       }
@@ -1015,17 +353,12 @@
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
         if (!saved) return;
 
-        const savedDirectory = saved.currentDirectory === ''
-          ? '/home'
-          : saved.currentDirectory;
+        const savedDirectory = saved.currentDirectory === '' ? '/home' : saved.currentDirectory;
         const fallbackDirectory = this.entriesIn('/home') ? '/home' : '/';
-        this.currentDirectory = this.entriesIn(savedDirectory)
-          ? savedDirectory
-          : fallbackDirectory;
+        this.currentDirectory = this.entriesIn(savedDirectory) ? savedDirectory : fallbackDirectory;
         const previous = saved.previousDirectory === '' ? '/home' : saved.previousDirectory;
-        this.previousDirectory = typeof previous === 'string' && this.entriesIn(previous)
-          ? previous
-          : null;
+        this.previousDirectory =
+          typeof previous === 'string' && this.entriesIn(previous) ? previous : null;
         this.history = Array.isArray(saved.history)
           ? saved.history.filter((item) => typeof item === 'string').slice(-HISTORY_LIMIT)
           : [];
@@ -1064,7 +397,7 @@
         line.append(makeElement('span', 'pr', record.prompt), ` ${record.command}`);
         this.append(line);
       } else if (record.type === 'help') {
-        this.showHelp(false);
+        this.commandSet.apps.help.show(false);
       } else if (record.type === 'clear-screen') {
         this.clearScreen(false);
       } else if (record.type === 'listing' && Array.isArray(record.entries)) {
@@ -1073,18 +406,11 @@
     }
 
     handleKey(event) {
-      if (this.snakeGame) {
-        this.snakeGame.handleKey(event);
-        return;
-      }
+      if (this.commandSet.apps.snake.handleKey(event)) return;
 
-      if (event.key === ']' && !this.ui.input.value && this.chatSession) {
+      if (event.key === ']' && !this.ui.input.value && this.commandSet.apps.chat.session) {
         event.preventDefault();
-        if (this.chatConfirmation) {
-          this.write('Please answer y or n.', 'hint');
-          return;
-        }
-        this.toggleChatShell();
+        this.commandSet.apps.chat.handleBracket();
         return;
       }
 
@@ -1092,17 +418,17 @@
         event.preventDefault();
         this.echo(`${this.ui.input.value}^C`);
         this.clearInput();
-        if (this.chatConfirmation) {
-          this.chatConfirmation = null;
-          this.ui.prompt.textContent = this.promptText();
-          this.write('Cancelled.', 'hint');
-        } else if (this.chatMode) this.leaveChat();
+        this.commandSet.apps.chat.cancel();
         return;
       }
 
       const [command, target] = this.ui.input.value.trim().split(/\s+/);
-      if (event.key === 'Enter' && command === 'open'
-        && !this.ui.autocomplete.hidden && this.entriesIn(this.resolvePath(target))) {
+      if (
+        event.key === 'Enter' &&
+        command === 'open' &&
+        !this.ui.autocomplete.hidden &&
+        this.entriesIn(this.resolvePath(target))
+      ) {
         event.preventDefault();
         this.completionCycle = null;
         this.complete();
@@ -1126,10 +452,7 @@
     }
 
     recall(delta) {
-      this.historyCursor = Math.max(
-        0,
-        Math.min(this.history.length, this.historyCursor + delta),
-      );
+      this.historyCursor = Math.max(0, Math.min(this.history.length, this.historyCursor + delta));
       this.ui.input.value = this.history[this.historyCursor] ?? '';
       this.hideCompletions();
     }
@@ -1149,11 +472,15 @@
       const path = typed.slice(tokenStart);
       const pathCommand = /^(cat|cd|copy|download|find|grep|ls|open|rm|show|wc)\b/.test(typed)
         ? typed.split(/\s/)[0]
-        : !typed.includes(' ') ? '' : null;
-      const paths = pathCommand !== null
-        ? this.pathCompletions(path, pathCommand)
-          .map((candidate) => `${typed.slice(0, tokenStart)}${candidate}`)
-        : [];
+        : !typed.includes(' ')
+          ? ''
+          : null;
+      const paths =
+        pathCommand !== null
+          ? this.pathCompletions(path, pathCommand).map(
+              (candidate) => `${typed.slice(0, tokenStart)}${candidate}`,
+            )
+          : [];
       const matches = [...new Set([...this.completions, ...paths])]
         .filter((command) => command.startsWith(typed))
         .sort((a, b) => a.localeCompare(b));
@@ -1172,13 +499,17 @@
       const separator = path.lastIndexOf('/');
       let candidates;
       if (separator < 0) {
-        candidates = this.completionEntries(this.currentDirectory, path)
-          .map((name) => ({ name, path: this.resolvePath(name) }));
+        candidates = this.completionEntries(this.currentDirectory, path).map((name) => ({
+          name,
+          path: this.resolvePath(name),
+        }));
       } else {
         const directory = this.resolvePath(path.slice(0, separator) || '/');
         const prefix = path.slice(0, separator + 1);
-        candidates = this.completionEntries(directory, path.slice(separator + 1))
-          .map((name) => ({ name: `${prefix}${name}`, path: this.resolvePath(`${prefix}${name}`) }));
+        candidates = this.completionEntries(directory, path.slice(separator + 1)).map((name) => ({
+          name: `${prefix}${name}`,
+          path: this.resolvePath(`${prefix}${name}`),
+        }));
       }
 
       return candidates
@@ -1187,9 +518,10 @@
           if (command === 'cd') return Boolean(DIRECTORIES[candidate]);
           if (command === 'open' || command === 'download') {
             const openable = [...FILE_ROUTES.keys(), ...Object.keys(HIDDEN_FILES)];
-            const matchesPath = openable.includes(candidate)
-              || ((path.includes('/') || path.startsWith('.'))
-                && openable.some((target) => target.startsWith(`${candidate}/`)));
+            const matchesPath =
+              openable.includes(candidate) ||
+              ((path.includes('/') || path.startsWith('.')) &&
+                openable.some((target) => target.startsWith(`${candidate}/`)));
             if (!matchesPath) return false;
             if (command === 'open' && /\.vcf$/i.test(candidate)) return false;
             if (command === 'download' && !DIRECTORIES[candidate]) {
@@ -1198,9 +530,11 @@
             return true;
           }
           if (!['cat', 'copy', 'grep', 'wc'].includes(command)) return true;
-          return TEXT_PATHS.has(candidate)
-            || ((path.includes('/') || path.startsWith('.'))
-              && [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)));
+          return (
+            TEXT_PATHS.has(candidate) ||
+            ((path.includes('/') || path.startsWith('.')) &&
+              [...TEXT_PATHS].some((textPath) => textPath.startsWith(`${candidate}/`)))
+          );
         })
         .map(({ name }) => name);
     }
@@ -1235,9 +569,10 @@
         this.completionCycle = { matches, index: 0, value: matches[0] };
       }
 
-      const active = this.completionCycle.index < 0
-        ? ''
-        : this.completionCycle.matches[this.completionCycle.index];
+      const active =
+        this.completionCycle.index < 0
+          ? ''
+          : this.completionCycle.matches[this.completionCycle.index];
       this.showCompletionMenu(matches, active);
     }
 
@@ -1254,21 +589,20 @@
       const commandPrefix = `${matches[0].split(' ')[0]} `;
       const slash = matches[0].lastIndexOf('/');
       const pathPrefix = slash < 0 ? '' : matches[0].slice(0, slash + 1);
-      const prefix = pathPrefix && matches.every((match) => match.startsWith(pathPrefix))
-        ? pathPrefix
-        : commandPrefix;
-      const label = (match) => match.startsWith(prefix) ? match.slice(prefix.length) : match;
+      const prefix =
+        pathPrefix && matches.every((match) => match.startsWith(pathPrefix))
+          ? pathPrefix
+          : commandPrefix;
+      const label = (match) => (match.startsWith(prefix) ? match.slice(prefix.length) : match);
       this.showCompletions(matches.map(label), label(active));
     }
 
     showCompletions(choices, active = '') {
-      this.ui.autocomplete.replaceChildren(...choices.map((choice) => (
-        makeElement(
-          'span',
-          `autocomplete-choice${choice === active ? ' active' : ''}`,
-          choice,
-        )
-      )));
+      this.ui.autocomplete.replaceChildren(
+        ...choices.map((choice) =>
+          makeElement('span', `autocomplete-choice${choice === active ? ' active' : ''}`, choice),
+        ),
+      );
       this.ui.autocomplete.hidden = !choices.length;
     }
 
@@ -1288,14 +622,14 @@
       makeElement('p', 'hint', '# that page did not exist. use help for more details.'),
     );
   } else {
-    byId('log').replaceChildren(
-      makeElement('p', 'hint', '# use help for more details.'),
-    );
+    byId('log').replaceChildren(makeElement('p', 'hint', '# use help for more details.'));
   }
 
   fetch('/common/footer.html')
     .then((response) => response.text())
-    .then((html) => { byId('site-footer').innerHTML = html; })
+    .then((html) => {
+      byId('site-footer').innerHTML = html;
+    })
     .catch(() => {});
 
   const startTerminal = async () => {
@@ -1303,10 +637,11 @@
       await window.KrasowTerminalFileSystem.loadManifest('/terminal/fs/manifest.json', {
         directories: DIRECTORIES,
         fileRoutes: FILE_ROUTES,
+        pageSources: PAGE_SOURCES,
         textPaths: TEXT_PATHS,
       });
     } catch (error) {
-      // Keep the built-in links available if the generated manifest cannot be loaded.
+      // Start with an empty virtual filesystem if the generated manifest cannot be loaded.
     }
     new Terminal().start();
   };

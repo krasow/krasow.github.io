@@ -4,8 +4,15 @@
   const HIGH_SCORE_KEY = 'krasow-terminal-snake-high-score';
 
   class SnakeGame {
-    constructor(output, onEnd, width = 24, height = 12, cellWidth = 1,
-      horizontalDelay = 45, verticalDelay = 120) {
+    constructor(
+      output,
+      onEnd,
+      width = 24,
+      height = 12,
+      cellWidth = 1,
+      horizontalDelay = 45,
+      verticalDelay = 120,
+    ) {
       this.output = output;
       this.onEnd = onEnd;
       this.width = width;
@@ -37,7 +44,11 @@
     reset() {
       const x = Math.floor(this.width / 2);
       const y = Math.floor(this.height / 2);
-      this.snake = [{ x, y }, { x: x - 1, y }, { x: x - 2, y }];
+      this.snake = [
+        { x, y },
+        { x: x - 1, y },
+        { x: x - 2, y },
+      ];
       this.direction = { x: 1, y: 0 };
       this.nextDirection = this.direction;
       this.score = 0;
@@ -68,10 +79,14 @@
         return;
       }
       const directions = {
-        ArrowUp: { x: 0, y: -1 }, w: { x: 0, y: -1 },
-        ArrowDown: { x: 0, y: 1 }, s: { x: 0, y: 1 },
-        ArrowLeft: { x: -1, y: 0 }, a: { x: -1, y: 0 },
-        ArrowRight: { x: 1, y: 0 }, d: { x: 1, y: 0 },
+        ArrowUp: { x: 0, y: -1 },
+        w: { x: 0, y: -1 },
+        ArrowDown: { x: 0, y: 1 },
+        s: { x: 0, y: 1 },
+        ArrowLeft: { x: -1, y: 0 },
+        a: { x: -1, y: 0 },
+        ArrowRight: { x: 1, y: 0 },
+        d: { x: 1, y: 0 },
       };
       if (event.key === 'Escape' || event.key.toLowerCase() === 'q') {
         this.stop();
@@ -128,11 +143,14 @@
     render() {
       const cells = Array.from({ length: this.height }, () => Array(this.width).fill(' '));
       cells[this.food.y][this.food.x] = '*';
-      this.snake.slice(1).forEach(({ x, y }) => { cells[y][x] = 'o'; });
+      this.snake.slice(1).forEach(({ x, y }) => {
+        cells[y][x] = 'o';
+      });
       cells[this.snake[0].y][this.snake[0].x] = '@';
-      const drawCell = (cell) => cell === ' '
-        ? ' '.repeat(this.cellWidth)
-        : cell.padStart(Math.ceil(this.cellWidth / 2), ' ').padEnd(this.cellWidth, ' ');
+      const drawCell = (cell) =>
+        cell === ' '
+          ? ' '.repeat(this.cellWidth)
+          : cell.padStart(Math.ceil(this.cellWidth / 2), ' ').padEnd(this.cellWidth, ' ');
       const border = `+${'-'.repeat(this.width * this.cellWidth)}+`;
       this.output.textContent = [
         `snake · score ${this.score} · high score ${this.highScore}`,
@@ -152,5 +170,57 @@
     }
   }
 
-  window.KrasowSnake = { SnakeGame };
+  class SnakeApp {
+    constructor(terminal) {
+      this.terminal = terminal;
+      this.game = null;
+    }
+
+    run(args) {
+      return window.TerminalApp.exact(args, 0, () => this.start());
+    }
+
+    start() {
+      const output = document.createElement('pre');
+      output.className = 'ln snake-game';
+      this.terminal.append(output);
+      const style = getComputedStyle(output);
+      const fontSize = parseFloat(style.fontSize) || 14;
+      const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.75;
+      const charWidth = fontSize * 0.62;
+      const cellWidth = Math.max(1, Math.round(lineHeight / charWidth));
+      const width = Math.max(
+        10,
+        Math.min(60, Math.floor(this.terminal.ui.log.clientWidth / (charWidth * cellWidth)) - 2),
+      );
+      const height = Math.max(
+        12,
+        Math.min(30, Math.floor(this.terminal.ui.log.clientHeight / lineHeight) - 5),
+      );
+
+      this.game = new SnakeGame(
+        output,
+        (score) => {
+          this.game = null;
+          this.terminal.write(`snake: quit · score ${score}`, 'hint');
+          this.terminal.ui.input.focus();
+        },
+        width,
+        height,
+        cellWidth,
+        Math.round((120 * charWidth * cellWidth) / lineHeight),
+        120,
+      );
+      this.game.start();
+      this.terminal.ui.log.scrollTop = this.terminal.ui.log.scrollHeight;
+    }
+
+    handleKey(event) {
+      if (!this.game) return false;
+      this.game.handleKey(event);
+      return true;
+    }
+  }
+
+  window.SnakeApp = SnakeApp;
 })();
