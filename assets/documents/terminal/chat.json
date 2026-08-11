@@ -1,6 +1,12 @@
 {
   "entries": [
     {
+      "topic": "cooked easter egg",
+      "keywords": [],
+      "phrases": ["am i cooked"],
+      "answer": "Yes."
+    },
+    {
       "topic": "name",
       "keywords": ["name", "named", "called", "full name"],
       "phrases": ["what should i call"],
