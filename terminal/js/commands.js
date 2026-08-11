@@ -139,6 +139,10 @@
       );
     }
 
+    commands() {
+      return this.handlers;
+    }
+
     completions() {
       return [
         ...new Set([
