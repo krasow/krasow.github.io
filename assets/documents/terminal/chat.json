@@ -143,11 +143,11 @@
     },
     {
       "topic": "processing in memory",
-      "keywords": ["pim", "processing in memory", "upmem", "memory accelerator", "legionpim"],
-      "phrases": ["pim work", "pim accelerators", "legion pim", "upmem legion"],
-      "answer": "David researches Processing-in-Memory accelerators and uses Legion to reduce the programming and portability burden of adopting PIM systems.",
+      "keywords": ["pim", "processing in memory", "upmem", "memory accelerator", "legion", "legionpim"],
+      "phrases": ["what is pim", "what is processing in memory", "pim work", "pim accelerators", "legion pim", "upmem legion"],
+      "answer": "Processing-in-Memory (PIM) places compute capabilities in or near memory so data can be processed without repeatedly moving it to a traditional CPU or GPU. This can reduce the cost and bottleneck of data movement for memory-intensive workloads. David's Legion PIM work integrates UPMEM's PIM processors into the Legion runtime, using Legion to schedule tasks and manage data transfers while making the accelerators easier to program.",
       "links": [
-        { "label": "GitHub", "url": "https://github.com/presciencelab/upmem-legion" }
+        { "label": "Legion PIM GitHub", "url": "https://github.com/presciencelab/upmem-legion" }
       ],
       "readMore": { "command": "open /home/projects/legionpim" }
     },
