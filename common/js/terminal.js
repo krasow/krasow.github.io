@@ -125,7 +125,7 @@
   const COMMAND_USAGE = {
     chat: 'chat [question]',
     snake: 'snake',
-    clear: 'clear',
+    clear: 'clear [-x]',
     help: 'help',
     pwd: 'pwd',
     tree: 'tree',
@@ -175,7 +175,8 @@
       ['resume.pdf · contact.vcf', 'open or download a document'],
     ]],
     ['Controls', [
-      ['clear', 'clear the terminal'],
+      ['clear', 'clear the terminal and scrollback'],
+      ['clear -x', 'clear the screen but preserve scrollback'],
       ['theme [light|dark]', 'change color theme'],
       ['Esc · Ctrl+C', 'cancel current input'],
       ['↑ / ↓ · Tab', 'history and autocomplete'],
@@ -266,7 +267,17 @@
           return true;
         }],
         ['snake', (args) => this.withArity(args, 0, () => this.startSnake())],
-        ['clear', (args) => this.withArity(args, 0, () => this.clearLog())],
+        ['clear', (args) => {
+          if (!args.length) {
+            this.clearLog();
+            return true;
+          }
+          if (args.length === 1 && args[0] === '-x') {
+            this.clearScreen();
+            return true;
+          }
+          return false;
+        }],
         ['help', (args) => this.withArity(args, 0, () => this.showHelp())],
         ['pwd', (args) => this.withArity(args, 0, () => this.write(this.path(), 'pth'))],
         ['tree', (args) => this.withArity(args, 0, () => this.showTree())],
@@ -311,6 +322,7 @@
         'theme',
         'theme light',
         'theme dark',
+        'clear -x',
         ...FOLDERS.scripts.map(([name]) => `show ${name}`),
         ...Object.keys(SHORTCUTS),
         ...Object.keys(RESPONSES),
@@ -899,6 +911,18 @@
       this.persist();
     }
 
+    clearScreen(track = true) {
+      const terminalStyle = getComputedStyle(this.ui.terminal);
+      const verticalPadding = parseFloat(terminalStyle.paddingTop)
+        + parseFloat(terminalStyle.paddingBottom);
+      const bannerHeight = this.ui.terminal.querySelector('.banner')?.offsetHeight ?? 0;
+      const viewportHeight = Math.max(1, this.ui.terminal.clientHeight
+        - verticalPadding - bannerHeight - this.ui.form.offsetHeight);
+      const screen = makeElement('div', 'clear-screen');
+      screen.style.height = `${viewportHeight}px`;
+      this.append(screen, track ? { type: 'clear-screen' } : null);
+    }
+
     persist() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -966,6 +990,8 @@
         this.append(line);
       } else if (record.type === 'help') {
         this.showHelp(false);
+      } else if (record.type === 'clear-screen') {
+        this.clearScreen(false);
       }
     }
 
