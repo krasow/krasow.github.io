@@ -1,9 +1,9 @@
 /* desktop split terminal */
 .terminal-split {
   display: flex;
-  margin-left: 260px;
+  margin-left: 230px;
   width: 1000px;
-  max-width: calc(100vw - 280px);
+  max-width: calc(100vw - 250px);
   font-family: 'JetBrains Mono', monospace;
 }
 

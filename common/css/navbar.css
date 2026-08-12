@@ -1,13 +1,14 @@
 /* Left Side Navbar */
 .left-side-navbar {
   height: 100%;
-  width: 250px;
+  width: 220px;
   position: fixed;
   z-index: 1;
   top: 0px;
   left: 0;
   background-color: var(--surface-dark-bg);
   overflow-x: hidden;
+  overflow-y: hidden;
   transition: 0.5s;
   padding-top: 50px;
   text-align: left;
@@ -24,6 +25,13 @@
 
 .left-side-navbar a:hover{
   color: var(--surface-dark-text-hover);
+}
+
+.left-side-navbar .links a {
+  padding-right: 20px;
+  padding-left: 8px;
+  font-size: 23px;
+  text-align: right;
 }
 
 .left-side-navbar .terminal-button {
@@ -115,8 +123,11 @@
 }
 
 @media screen and (max-height: 450px) {
-  .left-side-navbar {padding-top: 15px;}
-  .left-side-navbar a {font-size: 18px;}
+  .left-side-navbar {padding-top: 50px;}
+  .left-side-navbar .links a {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
 }
 
 @media only screen and (max-width: 850px) {
@@ -147,19 +158,23 @@
   }
   /* Open state — toggled by JS */
   .left-side-navbar.open {
-    width: 250px;
+    width: 220px;
+    overflow-y: auto;
   }
   .left-side-navbar.open:hover {
-    width: 250px;
+    width: 220px;
   }
   .left-side-navbar.open .links a,
   .left-side-navbar.open .social {
     pointer-events: auto;
     opacity: 1;
   }
-  .left-side-navbar.open .links a,
-  .left-side-navbar.open:hover a {
-    padding-left: 15px;
+  .left-side-navbar.open .links a {
+    padding-right: 20px;
+    padding-left: 8px;
+  }
+  .left-side-navbar.open:hover .links a {
+    padding-right: 15px;
   }
   /* Move toggle button to top-right when open */
   .left-side-navbar.open .navbar-toggle {
@@ -196,25 +211,26 @@
 /* Tablet */
 @media only screen and (max-width: 1250px) and (min-width: 851px) {
   .left-side-navbar { width: 175px; }
-  .left-side-navbar a { font-size: 16px; padding-left: 20px; }
+  .left-side-navbar a { font-size: 16px; }
+  .left-side-navbar .links a { padding-right: 20px; padding-left: 8px; font-size: 16px; }
   .left-side-navbar:hover { width: 175px; }
-  .left-side-navbar:hover a { padding-left: 15px; }
+  .left-side-navbar:hover .links a { padding-right: 15px; padding-left: 8px; }
   .main { margin-left: 185px; }
 }
 
 /* Desktop hover expand */
 @media only screen and (min-width: 1251px) {
   .left-side-navbar:hover {
-    width: 250px;
+    width: 220px;
     display: block;
     background-color: var(--surface-dark-bg);
   }
-  .left-side-navbar:hover a {padding-left: 15px;}
+  .left-side-navbar:hover .links a { padding-right: 15px; padding-left: 8px; }
 }
 
 /* Page content */
 .main {
-  margin-left: 260px;
+  margin-left: 230px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -224,16 +240,27 @@
 
 
 .social {
+  display: flex;
+  width: 170px;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
   padding-top: 150px;
+}
+
+.left-side-navbar .social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
 }
 
 
 @media screen and (max-height: 650px) {
   .left-side-navbar {
-    padding-top: 15px;
-  }
-  .left-side-navbar a {
-    font-size: 18px;
+    padding-top: 50px;
   }
   .social {
     padding-top: 0px;
