@@ -189,9 +189,11 @@
       const lineHeight = parseFloat(style.lineHeight) || fontSize * 1.75;
       const charWidth = fontSize * 0.62;
       const cellWidth = Math.max(1, Math.round(lineHeight / charWidth));
+      const maxBoardPx = 720;
+      const availWidth = Math.min(this.terminal.ui.log.clientWidth, maxBoardPx);
       const width = Math.max(
         10,
-        Math.min(60, Math.floor(this.terminal.ui.log.clientWidth / (charWidth * cellWidth)) - 2),
+        Math.min(60, Math.floor(availWidth / (charWidth * cellWidth)) - 2),
       );
       const height = Math.max(
         12,
