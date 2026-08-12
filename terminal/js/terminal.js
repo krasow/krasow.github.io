@@ -249,7 +249,10 @@
     restore() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (!saved) return;
+        if (!saved) {
+          this.showMotd();
+          return;
+        }
 
         const savedDirectory = saved.currentDirectory === '' ? '/home' : saved.currentDirectory;
         const fallbackDirectory = this.entriesIn('/home') ? '/home' : '/';
@@ -266,7 +269,10 @@
           : [];
 
         this.ui.prompt.textContent = this.promptText();
-        if (!this.transcript.length) return;
+        if (!this.transcript.length) {
+          this.showMotd();
+          return;
+        }
         const warning = NOT_FOUND_PATH ? [...this.ui.log.childNodes] : [];
         this.ui.log.replaceChildren();
         this.transcript.forEach((record) => this.renderRecord(record));
@@ -276,6 +282,20 @@
         }
       } catch (error) {
         // Ignore malformed or inaccessible storage and start fresh.
+      }
+    }
+
+    async showMotd() {
+      // On a fresh start (empty storage) show the /etc/motd banner instead of
+      // the static help hint. A missing manifest or file leaves the hint in place.
+      if (NOT_FOUND_PATH) return;
+      try {
+        const text = (await this.fileText('/etc/motd')).trim();
+        if (!text) return;
+        const lines = text.split('\n').map((line) => makeElement('p', 'hint', line));
+        this.ui.log.replaceChildren(...lines);
+      } catch (error) {
+        // Keep the default hint already present in the log.
       }
     }
 
