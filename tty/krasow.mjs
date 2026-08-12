@@ -291,7 +291,16 @@ class Host {
     this.ui = {
       log: logDims(),
       prompt: { textContent: '' },
-      input: { value: '', focus: () => this._onSnakeEnd?.() },
+      input: {
+        value: '',
+        cursor: 0,
+        // SnakeGame calls focus() when a game ends — our cue to resume the shell.
+        focus: () => {
+          const end = this._onSnakeEnd;
+          this._onSnakeEnd = null;
+          end?.();
+        },
+      },
       autocomplete: { hidden: true, replaceChildren() {} },
       terminal: {},
     };
@@ -300,6 +309,9 @@ class Host {
     this.history = [];
     this.historyCursor = 0;
     this.transcript = [];
+    this.queue = [];
+    this.running = false;
+    this.exitRequested = false;
     this._onSnakeEnd = null;
     this._snakePre = null;
   }
@@ -397,9 +409,10 @@ class Host {
     openInBrowser(url);
   }
   exit() {
-    emit(paint.cyan('→ exiting to krasow.dev'));
+    if (this.closed) return;
     this.closed = true;
-    process.exit(0);
+    emit(paint.cyan('→ exiting to krasow.dev'));
+    process.exit(0); // the 'exit' handler restores raw mode and the cursor
   }
   async saveFile(url) {
     try {
@@ -419,6 +432,7 @@ class Host {
     if (className.includes('snake-game')) {
       this._snakePre = node;
       node._onChange = (frame) => this.renderSnake(frame);
+      if (process.stdout.isTTY) process.stdout.write('\x1b[?25l');
       return;
     }
     if (className.includes('motd')) return emit(paint.accent(node.textContent));
@@ -474,41 +488,156 @@ class Host {
     else this.write(`zsh: no such command, file, or directory: ${command}`, 'err');
   }
 
-  // Raw-mode input; SnakeGame renders its own frames into the <pre>.
-  runSnake(rl) {
+  start() {
     const input = process.stdin;
-    const wasRaw = input.isRaw;
-    // Detach readline's key handling so keys drive only the game, then feed the
-    // game keys decoded by Node's own keypress decoder (no escape-sequence
-    // parsing here), translated to the names SnakeGame expects.
-    const savedKeypress = input.listeners('keypress');
-    input.removeAllListeners('keypress');
-    rl.pause();
     if (input.isTTY) input.setRawMode(true);
-    input.resume();
-    process.stdout.write('\x1b[?25l');
-
-    const KEY = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight', return: 'Enter', space: ' ', escape: 'Escape' };
-    const onKey = (str, key) => {
-      const name = key?.ctrl && key.name === 'c' ? 'escape' : key?.name;
-      this.commandSet.apps.snake.handleKey({ key: KEY[name] ?? str, preventDefault() {} });
-    };
-    input.on('keypress', onKey);
-
-    return new Promise((resolve) => {
-      // SnakeGame calls ui.input.focus() when it ends (quit or death) — our cue
-      // to hand input back to the shell.
-      this._onSnakeEnd = () => {
-        this._onSnakeEnd = null;
-        input.removeListener('keypress', onKey);
-        if (input.isTTY) input.setRawMode(!!wasRaw);
-        process.stdout.write('\x1b[?25h');
-        if (this._snakePre) this._snakePre._onChange = null;
-        savedKeypress.forEach((listener) => input.on('keypress', listener));
-        rl.resume();
-        resolve();
-      };
+    readline.emitKeypressEvents(input);
+    input.on('keypress', (str, key) => this.handleKey(str, key));
+    input.on('end', () => {
+      this.exitRequested = true;
+      if (!this.running) this.exit();
     });
+    process.on('exit', () => {
+      if (input.isTTY) {
+        try {
+          input.setRawMode(false);
+        } catch {
+          // exiting anyway
+        }
+      }
+      process.stdout.write('\x1b[?25h');
+    });
+    input.resume();
+    this.reprompt();
+  }
+
+  reprompt() {
+    this.ui.input.value = '';
+    this.ui.input.cursor = 0;
+    this.renderInput();
+  }
+
+  renderInput() {
+    if (this.running || !process.stdout.isTTY) return;
+    const prompt = this.promptText();
+    const shown = color ? paint.accent(prompt) : prompt;
+    process.stdout.write(`\x1b[?25h\r\x1b[K${shown} ${this.ui.input.value}`);
+    process.stdout.write(`\r\x1b[${prompt.length + 1 + this.ui.input.cursor}C`);
+  }
+
+  submit(line) {
+    this.queue.push(line);
+    if (!this.running) this.drain();
+  }
+
+  async drain() {
+    this.running = true;
+    while (this.queue.length) {
+      const line = this.queue.shift();
+      try {
+        this.execute(line);
+        // A game runs itself; wait for SnakeGame to signal end via ui.input.focus().
+        if (this.commandSet.apps.snake.game) await new Promise((r) => (this._onSnakeEnd = r));
+        else await idle();
+      } catch (error) {
+        emit(`error: ${error.message}`, 'err');
+      }
+    }
+    this.running = false;
+    if (this.exitRequested) return this.exit();
+    if (!this.closed) this.reprompt();
+  }
+
+  // Every key routes through the engine, exactly as terminal.js's handleKey does;
+  // the host only adds the line editing a browser <input> provides for free.
+  handleKey(str, key) {
+    const input = this.ui.input;
+    const chat = this.commandSet.apps.chat;
+    const name = key?.name;
+
+    if (this.commandSet.apps.snake.game) {
+      const named = {
+        up: 'ArrowUp',
+        down: 'ArrowDown',
+        left: 'ArrowLeft',
+        right: 'ArrowRight',
+        return: 'Enter',
+        space: ' ',
+        escape: 'Escape',
+      };
+      const gameKey = key?.ctrl && name === 'c' ? 'Escape' : (named[name] ?? str);
+      this.commandSet.apps.snake.handleKey({ key: gameKey, preventDefault() {} });
+      return;
+    }
+
+    if (key?.ctrl && name === 'c') {
+      const shown = color ? paint.accent(this.promptText()) : this.promptText();
+      process.stdout.write(`\r\x1b[K${shown} ${input.value}^C\n`);
+      input.value = '';
+      input.cursor = 0;
+      this.autocomplete.hide();
+      chat.cancel();
+      this.reprompt();
+      return;
+    }
+    if (key?.ctrl && name === 'd' && !input.value) return void this.exit();
+
+    if (str === ']' && !input.value && chat.session) {
+      chat.handleBracket();
+      this.reprompt();
+      return;
+    }
+
+    if (name === 'tab') {
+      this.autocomplete.complete();
+      input.cursor = input.value.length;
+      return void this.renderInput();
+    }
+    if (name === 'up' || name === 'down') {
+      this.autocomplete.recall(name === 'up' ? -1 : 1);
+      input.cursor = input.value.length;
+      return void this.renderInput();
+    }
+    if (name === 'escape') {
+      this.autocomplete.clear();
+      input.cursor = 0;
+      return void this.renderInput();
+    }
+
+    if (name === 'return' || name === 'enter' || str === '\r' || str === '\n') {
+      if (this.autocomplete.accept()) return void this.renderInput();
+      const line = input.value;
+      input.value = '';
+      input.cursor = 0;
+      this.autocomplete.hide();
+      if (!this.running && process.stdout.isTTY) process.stdout.write('\n');
+      this.submit(line);
+      return;
+    }
+
+    if (name === 'backspace') {
+      if (input.cursor > 0) {
+        input.value = input.value.slice(0, input.cursor - 1) + input.value.slice(input.cursor);
+        input.cursor -= 1;
+      }
+      this.autocomplete.hide();
+      return void this.renderInput();
+    }
+    if (name === 'left') return void (input.cursor && (input.cursor -= 1), this.renderInput());
+    if (name === 'right') {
+      if (input.cursor < input.value.length) input.cursor += 1;
+      return void this.renderInput();
+    }
+    if (name === 'home') return void ((input.cursor = 0), this.renderInput());
+    if (name === 'end') return void ((input.cursor = input.value.length), this.renderInput());
+
+    // Printable character.
+    if (str && !key?.ctrl && !key?.meta && str >= ' ') {
+      input.value = input.value.slice(0, input.cursor) + str + input.value.slice(input.cursor);
+      input.cursor += str.length;
+      this.autocomplete.hide();
+      this.renderInput();
+    }
   }
 }
 
@@ -531,82 +660,13 @@ const main = async () => {
   }
   emit(paint.dim('# use help for more details.'));
 
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    completer: () => [[], ''], // Tab is handled below via the engine's autocomplete
-    historySize: HISTORY_LIMIT,
-  });
-  const setPrompt = () =>
-    rl.setPrompt(`${color ? paint.accent(host.promptText()) : host.promptText()} `);
-  const reprompt = () => {
-    setPrompt();
-    rl.prompt();
-  };
-  reprompt();
-
-  // `reset` (via the engine) calls location.reload(); redraw the prompt in place
-  // after the state has been cleared.
+  // reset (via the engine) calls location.reload(); re-render after clearing state.
   locationShim.reload = () => {
     host.resetState();
-    rl.history = [];
-    setPrompt();
-    rl._refreshLine();
+    if (!host.running) host.reprompt();
   };
 
-  // Keystroke behaviors the web has but readline doesn't, driven by the engine's
-  // own logic: Tab runs autocomplete.complete() (prefix + cycling), and `]`
-  // toggles chat's shell/question mode without Enter. readline still does the
-  // line editing, history, and submit.
-  if (process.stdin.isTTY) {
-    const setLine = (value) => {
-      rl.line = value;
-      rl.cursor = value.length;
-      rl._refreshLine();
-    };
-    process.stdin.on('keypress', (str, key) => {
-      if (!key || host._onSnakeEnd) return;
-      if (key.name === 'tab') {
-        host.ui.input.value = rl.line;
-        host.autocomplete.complete();
-        setLine(host.ui.input.value);
-        return;
-      }
-      host.autocomplete.hide(); // any other key ends a completion cycle
-      const chat = host.commandSet.apps.chat;
-      if (str === ']' && chat.session && rl.line === ']') {
-        rl.line = '';
-        rl.cursor = 0;
-        chat.handleBracket();
-        setPrompt();
-        rl._refreshLine();
-      }
-    });
-  }
-
-  // Serialize lines: for piped input readline emits every line (and `close`) up
-  // front, so chain work to keep output ordered and let fetches finish first.
-  let chain = Promise.resolve();
-  const enqueue = (task) =>
-    (chain = chain.then(task).catch((error) => emit(`error: ${error.message}`, 'err')));
-
-  rl.on('line', (line) =>
-    enqueue(async () => {
-      host.execute(line);
-      if (host.commandSet.apps.snake.game) await host.runSnake(rl);
-      else await idle();
-      if (!host.closed) reprompt();
-    }),
-  );
-
-  rl.on('SIGINT', () => {
-    const chat = host.commandSet.apps.chat;
-    if (chat.mode || chat.confirmation) chat.cancel();
-    else process.stdout.write('\n');
-    reprompt();
-  });
-
-  rl.on('close', () => enqueue(async () => host.closed || host.exit()));
+  host.start();
 };
 
 main();
