@@ -1,20 +1,18 @@
-# krasow.dev — in your terminal
+# @krasow/tty
 
-The terminal from [krasow.dev](https://krasow.dev), running in your own terminal.
+Run the interactive terminal from [krasow.dev](https://krasow.dev) in your own
+terminal.
 
 ```sh
-curl -fsSL https://krasow.dev/tty/krasow.mjs -o /tmp/krasow.mjs && node /tmp/krasow.mjs
+npx @krasow/tty
 ```
 
-Needs Node 18 or newer, and nothing to install. Once it starts, try `help`,
-`ls`, `cat about.pg`, or `snake`.
+Requires Node.js 18 or newer. Try `help`, `ls`, `cat about.pg`, or `snake` once
+it starts.
 
-## How it works
+The CLI loads the terminal and its content from krasow.dev. To use another host,
+set `KRASOW_BASE`:
 
-The website's terminal and this one run the same code. Every command — the
-filesystem, chat, snake, all of it — lives in `terminal/js/` and is shared. This
-file just lets that code run in a real terminal instead of a browser tab, and it
-loads its content live from krasow.dev, so the site stays a plain static site.
-
-Set `KRASOW_BASE` to load content from somewhere other than `https://krasow.dev`
-— point it at a local copy while developing.
+```sh
+KRASOW_BASE=http://localhost:8000 npx @krasow/tty
+```
