@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: prettier
+        name: Check JavaScript and HTML formatting
+        entry: npm run format:check
+        language: system
+        pass_filenames: false
+        files: \.(js|html)$

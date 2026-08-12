@@ -26,6 +26,23 @@
   color: var(--surface-dark-text-hover);
 }
 
+.left-side-navbar .terminal-button {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  margin: 18px 24px 0 32px;
+  padding: 7px 12px;
+  gap: 9px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.left-side-navbar:hover .terminal-button {
+  padding-left: 12px;
+}
+
 .left-side-navbar .closebtn {
   position: absolute;
   top: 0;
@@ -121,6 +138,10 @@
   .left-side-navbar.open:hover a {
     padding-left: 15px;
   }
+  .left-side-navbar.open .links .terminal-button {
+    margin-left: 15px;
+    padding-left: 12px;
+  }
   /* Move toggle button to top-right when open */
   .left-side-navbar.open .navbar-toggle {
     left: auto;
@@ -146,6 +167,7 @@
 @media only screen and (max-width: 1250px) and (min-width: 851px) {
   .left-side-navbar { width: 175px; }
   .left-side-navbar a { font-size: 16px; padding-left: 20px; }
+  .left-side-navbar .terminal-button { margin-left: 20px; padding-left: 12px; }
   .left-side-navbar:hover { width: 175px; }
   .left-side-navbar:hover a { padding-left: 15px; }
   .main { margin-left: 185px; }
