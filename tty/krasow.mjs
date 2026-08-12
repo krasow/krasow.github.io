@@ -291,7 +291,7 @@ class Host {
     this.ui = {
       log: logDims(),
       prompt: { textContent: '' },
-      input: { value: '', focus: () => this._snakeResolve?.() },
+      input: { value: '', focus: () => this._onSnakeEnd?.() },
       autocomplete: { hidden: true, replaceChildren() {} },
       terminal: {},
     };
@@ -300,8 +300,18 @@ class Host {
     this.history = [];
     this.historyCursor = 0;
     this.transcript = [];
-    this._snakeResolve = null;
+    this._onSnakeEnd = null;
     this._snakePre = null;
+  }
+
+  // reset re-runs `location.reload()` in the browser; here we clear in-memory
+  // state (cwd, history, and the rm trash) to the same fresh-start effect.
+  resetState() {
+    this.currentDirectory = '/home';
+    this.previousDirectory = null;
+    this.history = [];
+    this.historyCursor = 0;
+    this.trash.paths.clear();
   }
 
   async boot() {
@@ -468,44 +478,36 @@ class Host {
   runSnake(rl) {
     const input = process.stdin;
     const wasRaw = input.isRaw;
-    // Detach readline's (and our Tab/`]`) keypress handlers so arrow keys drive
-    // only the game, not readline history. Restored when the game ends.
-    const keypressListeners = input.listeners('keypress');
+    // Detach readline's key handling so keys drive only the game, then feed the
+    // game keys decoded by Node's own keypress decoder (no escape-sequence
+    // parsing here), translated to the names SnakeGame expects.
+    const savedKeypress = input.listeners('keypress');
     input.removeAllListeners('keypress');
     rl.pause();
     if (input.isTTY) input.setRawMode(true);
     input.resume();
     process.stdout.write('\x1b[?25l');
-    const onData = (buffer) => {
-      const seq = buffer.toString();
-      const key =
-        {
-          '\x1b[A': 'ArrowUp',
-          '\x1b[B': 'ArrowDown',
-          '\x1b[C': 'ArrowRight',
-          '\x1b[D': 'ArrowLeft',
-        }[seq] ??
-        (seq === '\r' || seq === '\n'
-          ? 'Enter'
-          : seq === '\x1b' || seq === '\x03'
-            ? 'Escape'
-            : seq === ' '
-              ? ' '
-              : seq);
-      this.commandSet.apps.snake.handleKey({ key, preventDefault() {} });
+
+    const KEY = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight', return: 'Enter', space: ' ', escape: 'Escape' };
+    const onKey = (str, key) => {
+      const name = key?.ctrl && key.name === 'c' ? 'escape' : key?.name;
+      this.commandSet.apps.snake.handleKey({ key: KEY[name] ?? str, preventDefault() {} });
     };
+    input.on('keypress', onKey);
+
     return new Promise((resolve) => {
-      this._snakeResolve = () => {
-        input.removeListener('data', onData);
+      // SnakeGame calls ui.input.focus() when it ends (quit or death) — our cue
+      // to hand input back to the shell.
+      this._onSnakeEnd = () => {
+        this._onSnakeEnd = null;
+        input.removeListener('keypress', onKey);
         if (input.isTTY) input.setRawMode(!!wasRaw);
         process.stdout.write('\x1b[?25h');
         if (this._snakePre) this._snakePre._onChange = null;
-        this._snakeResolve = null;
-        keypressListeners.forEach((listener) => input.on('keypress', listener));
+        savedKeypress.forEach((listener) => input.on('keypress', listener));
         rl.resume();
         resolve();
       };
-      input.on('data', onData);
     });
   }
 }
@@ -543,6 +545,15 @@ const main = async () => {
   };
   reprompt();
 
+  // `reset` (via the engine) calls location.reload(); redraw the prompt in place
+  // after the state has been cleared.
+  locationShim.reload = () => {
+    host.resetState();
+    rl.history = [];
+    setPrompt();
+    rl._refreshLine();
+  };
+
   // Keystroke behaviors the web has but readline doesn't, driven by the engine's
   // own logic: Tab runs autocomplete.complete() (prefix + cycling), and `]`
   // toggles chat's shell/question mode without Enter. readline still does the
@@ -554,7 +565,7 @@ const main = async () => {
       rl._refreshLine();
     };
     process.stdin.on('keypress', (str, key) => {
-      if (!key || host._snakeResolve) return;
+      if (!key || host._onSnakeEnd) return;
       if (key.name === 'tab') {
         host.ui.input.value = rl.line;
         host.autocomplete.complete();
