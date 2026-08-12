@@ -1,5 +1,5 @@
 {
-  "name": "krasow",
+  "name": "@krasow/tty",
   "version": "1.0.0",
   "description": "Connect to the krasow.dev terminal from your own terminal.",
   "type": "module",
