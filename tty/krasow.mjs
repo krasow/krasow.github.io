@@ -350,6 +350,7 @@ class Host {
   updatePrompt() {
     this.ui.prompt.textContent = this.promptText();
   }
+  persist() {} // no-op: state is in-memory
   displayFile(name) {
     return colorizeEntry(name);
   }
@@ -463,33 +464,14 @@ class Host {
     else this.write(`zsh: no such command, file, or directory: ${command}`, 'err');
   }
 
-  // Tab-completion via autocomplete's real accept rules.
-  complete(line) {
-    const typed = line.trimStart();
-    if (!typed.trim()) return [[], line];
-    const tokenStart = typed.lastIndexOf(' ') + 1;
-    const path = typed.slice(tokenStart);
-    const pathCommand = /^(cat|cd|copy|download|find|grep|ls|open|rm|show|wc)\b/.test(typed)
-      ? typed.split(/\s/)[0]
-      : !typed.includes(' ')
-        ? ''
-        : null;
-    const paths =
-      pathCommand === null
-        ? []
-        : this.autocomplete
-            .pathMatches(path, pathCommand)
-            .map((c) => `${typed.slice(0, tokenStart)}${c}`);
-    const matches = [...new Set([...this.autocomplete.commands, ...paths])]
-      .filter((c) => c.startsWith(typed))
-      .sort((a, b) => a.localeCompare(b));
-    return [matches, typed];
-  }
-
   // Raw-mode input; SnakeGame renders its own frames into the <pre>.
   runSnake(rl) {
     const input = process.stdin;
     const wasRaw = input.isRaw;
+    // Detach readline's (and our Tab/`]`) keypress handlers so arrow keys drive
+    // only the game, not readline history. Restored when the game ends.
+    const keypressListeners = input.listeners('keypress');
+    input.removeAllListeners('keypress');
     rl.pause();
     if (input.isTTY) input.setRawMode(true);
     input.resume();
@@ -519,6 +501,7 @@ class Host {
         process.stdout.write('\x1b[?25h');
         if (this._snakePre) this._snakePre._onChange = null;
         this._snakeResolve = null;
+        keypressListeners.forEach((listener) => input.on('keypress', listener));
         rl.resume();
         resolve();
       };
@@ -549,14 +532,46 @@ const main = async () => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
-    completer: (line) => host.complete(line),
+    completer: () => [[], ''], // Tab is handled below via the engine's autocomplete
     historySize: HISTORY_LIMIT,
   });
-  const reprompt = () => {
+  const setPrompt = () =>
     rl.setPrompt(`${color ? paint.accent(host.promptText()) : host.promptText()} `);
+  const reprompt = () => {
+    setPrompt();
     rl.prompt();
   };
   reprompt();
+
+  // Keystroke behaviors the web has but readline doesn't, driven by the engine's
+  // own logic: Tab runs autocomplete.complete() (prefix + cycling), and `]`
+  // toggles chat's shell/question mode without Enter. readline still does the
+  // line editing, history, and submit.
+  if (process.stdin.isTTY) {
+    const setLine = (value) => {
+      rl.line = value;
+      rl.cursor = value.length;
+      rl._refreshLine();
+    };
+    process.stdin.on('keypress', (str, key) => {
+      if (!key || host._snakeResolve) return;
+      if (key.name === 'tab') {
+        host.ui.input.value = rl.line;
+        host.autocomplete.complete();
+        setLine(host.ui.input.value);
+        return;
+      }
+      host.autocomplete.hide(); // any other key ends a completion cycle
+      const chat = host.commandSet.apps.chat;
+      if (str === ']' && chat.session && rl.line === ']') {
+        rl.line = '';
+        rl.cursor = 0;
+        chat.handleBracket();
+        setPrompt();
+        rl._refreshLine();
+      }
+    });
+  }
 
   // Serialize lines: for piped input readline emits every line (and `close`) up
   // front, so chain work to keep output ordered and let fetches finish first.
