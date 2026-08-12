@@ -290,10 +290,10 @@
       // the static help hint. A missing manifest or file leaves the hint in place.
       if (NOT_FOUND_PATH) return;
       try {
-        const text = (await this.fileText('/etc/motd')).trim();
+        const text = (await this.fileText('/etc/motd')).replace(/\s+$/, '');
         if (!text) return;
-        const lines = text.split('\n').map((line) => makeElement('p', 'hint', line));
-        this.ui.log.replaceChildren(...lines);
+        const banner = makeElement('pre', 'motd', text);
+        this.ui.log.replaceChildren(banner);
       } catch (error) {
         // Keep the default hint already present in the log.
       }
