@@ -4,7 +4,7 @@
   "description": "Connect to the krasow.dev terminal from your own terminal.",
   "type": "module",
   "bin": {
-    "krasow": "./krasow.mjs"
+    "krasow": "krasow.mjs"
   },
   "scripts": {
     "prepack": "npm test",
