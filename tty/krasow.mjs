@@ -116,20 +116,12 @@ class Element {
 }
 
 // In-memory only: each session starts fresh, not carrying state between runs.
+let store = {};
 const localStorage = {
-  _data: {},
-  getItem(key) {
-    return key in this._data ? this._data[key] : null;
-  },
-  setItem(key, value) {
-    this._data[key] = String(value);
-  },
-  removeItem(key) {
-    delete this._data[key];
-  },
-  clear() {
-    this._data = {};
-  },
+  getItem: (k) => store[k] ?? null,
+  setItem: (k, v) => (store[k] = String(v)),
+  removeItem: (k) => delete store[k],
+  clear: () => (store = {}),
 };
 
 const clipboardWrite = (text) => {
@@ -178,13 +170,7 @@ const navigatorShim = {
   },
 };
 
-const getComputedStyleShim = () => ({
-  fontSize: '14px',
-  lineHeight: '17px',
-  paddingTop: '0px',
-  paddingBottom: '0px',
-  getPropertyValue: (name) => ({ 'font-size': '14px', 'line-height': '17px' })[name] || '',
-});
+const getComputedStyleShim = () => ({ fontSize: '14px', lineHeight: '17px' });
 
 const locationShim = { href: '', reload() {}, assign() {}, replace() {} };
 
@@ -205,42 +191,23 @@ const openInBrowser = (url) => {
 
 const window = {};
 
-// Engine modules in dependency order; terminal.js/resize.js (the DOM host) excluded.
-const engineOrder = (names) => {
-  const core = ['app.js', 'commands.js', 'filesystem.js', 'autocomplete.js'];
-  const apps = names.filter((n) => n.startsWith('apps/') || n.startsWith('games/'));
-  return ['app.js', ...apps, 'commands.js', 'filesystem.js', 'autocomplete.js'].filter(
-    (n) => core.includes(n) || apps.includes(n),
-  );
-};
-
-// Local checkout when present, else fetch live so a shipped single file self-contains.
+// The engine modules (all except terminal.js/resize.js, the DOM host). Load order
+// is irrelevant — each just assigns window.X; they cross-reference only at boot.
+// Read from the local checkout if present, else fetch live so a shipped single
+// file works on its own.
 const readEngineSources = async () => {
   try {
-    const local = [
-      'app.js',
-      ...readdirSync(join(ENGINE, 'apps'))
-        .filter((f) => f.endsWith('.js'))
-        .sort()
-        .map((f) => `apps/${f}`),
-      ...readdirSync(join(ENGINE, 'games'))
-        .filter((f) => f.endsWith('.js'))
-        .sort()
-        .map((f) => `games/${f}`),
-      'commands.js',
-      'filesystem.js',
-      'autocomplete.js',
-    ];
-    return engineOrder(local).map((name) => readFileSync(join(ENGINE, name), 'utf8'));
+    const files = ['app.js', 'commands.js', 'filesystem.js', 'autocomplete.js'];
+    for (const dir of ['apps', 'games'])
+      for (const f of readdirSync(join(ENGINE, dir)))
+        if (f.endsWith('.js')) files.push(`${dir}/${f}`);
+    return files.map((name) => readFileSync(join(ENGINE, name), 'utf8'));
   } catch {
     const html = await (await fetchShim('/terminal/index.html')).text();
     const names = [...html.matchAll(/src="\/terminal\/js\/([^"]+\.js)"/g)]
       .map((m) => m[1])
       .filter((n) => n !== 'terminal.js' && n !== 'resize.js');
-    const ordered = engineOrder(names);
-    return Promise.all(
-      ordered.map((name) => fetchShim(`/terminal/js/${name}`).then((r) => r.text())),
-    );
+    return Promise.all(names.map((n) => fetchShim(`/terminal/js/${n}`).then((r) => r.text())));
   }
 };
 
@@ -278,18 +245,18 @@ const HISTORY_LIMIT = 100;
 
 class Host {
   constructor() {
-    const logDims = () => ({
-      get clientWidth() {
-        return (process.stdout.columns || 80) * 8.7;
-      },
-      get clientHeight() {
-        return (process.stdout.rows || 24) * 17;
-      },
-      scrollTop: 0,
-      scrollHeight: 0,
-    });
     this.ui = {
-      log: logDims(),
+      // cowsay/snake read these; snake also writes scrollTop.
+      log: {
+        get clientWidth() {
+          return (process.stdout.columns || 80) * 8.7;
+        },
+        get clientHeight() {
+          return (process.stdout.rows || 24) * 17;
+        },
+        scrollTop: 0,
+        scrollHeight: 0,
+      },
       prompt: { textContent: '' },
       input: {
         value: '',
@@ -302,13 +269,11 @@ class Host {
         },
       },
       autocomplete: { hidden: true, replaceChildren() {} },
-      terminal: {},
     };
     this.currentDirectory = '/home';
     this.previousDirectory = null;
     this.history = [];
     this.historyCursor = 0;
-    this.transcript = [];
     this.queue = [];
     this.running = false;
     this.exitRequested = false;
@@ -327,40 +292,22 @@ class Host {
   }
 
   async boot() {
-    const DIRECTORIES = { '/': [] };
-    const FILE_ROUTES = new Map();
-    const TEXT_PATHS = new Set();
-    const TEXT_ROUTES = new Map();
     const fs = window.KrasowTerminalFileSystem;
-    await fs.loadManifest('/terminal/fs/manifest.json', {
-      directories: DIRECTORIES,
-      fileRoutes: FILE_ROUTES,
-      textPaths: TEXT_PATHS,
-      textRoutes: TEXT_ROUTES,
-    });
-    this.trash = new fs.VirtualTrash({
-      directories: DIRECTORIES,
-      fileRoutes: FILE_ROUTES,
-      storageKey: 'krasow-terminal-removed-paths',
-    });
-    this.files = new fs.TerminalFiles(this, {
-      directories: DIRECTORIES,
-      fileRoutes: FILE_ROUTES,
-      shortcuts: SHORTCUTS,
-      textPaths: TEXT_PATHS,
-      textRoutes: TEXT_ROUTES,
-    });
+    const opts = {
+      directories: { '/': [] },
+      fileRoutes: new Map(),
+      textPaths: new Set(),
+      textRoutes: new Map(),
+    };
+    await fs.loadManifest('/terminal/fs/manifest.json', opts);
+    this.trash = new fs.VirtualTrash({ ...opts, storageKey: 'krasow-terminal-removed-paths' });
+    this.files = new fs.TerminalFiles(this, { ...opts, shortcuts: SHORTCUTS });
     this.commandSet = new window.KrasowTerminalCommands.TerminalCommands(this, {
+      ...opts,
       shortcuts: SHORTCUTS,
-      fileRoutes: FILE_ROUTES,
-      directories: DIRECTORIES,
     });
     this.commands = this.commandSet.commands();
-    this.autocomplete = new window.TerminalAutocomplete(this, {
-      directories: DIRECTORIES,
-      fileRoutes: FILE_ROUTES,
-      textPaths: TEXT_PATHS,
-    });
+    this.autocomplete = new window.TerminalAutocomplete(this, opts);
   }
 
   path() {
@@ -398,11 +345,11 @@ class Host {
   writeLink(url, text) {
     emit(paint.cyan(text));
   }
-  clearLog() {
-    process.stdout.write('\x1b[2J\x1b[H');
-  }
   clearScreen() {
     process.stdout.write('\x1b[2J\x1b[H');
+  }
+  clearLog() {
+    this.clearScreen();
   }
   navigate(url) {
     if (url.endsWith('.vcf')) return this.saveFile(url);
@@ -468,7 +415,7 @@ class Host {
     process.stdout.write(`\x1b[2J\x1b[H${painted}\n`);
   }
 
-  // Mirrors terminal.js execute (readline already echoed the typed line).
+  // Mirrors terminal.js execute; the typed line was already echoed on Enter.
   execute(raw) {
     const command = raw.trim();
     if (!command) return;
@@ -511,6 +458,12 @@ class Host {
     this.reprompt();
   }
 
+  // The input line as a string: return to column 0, clear it, draw prompt + value.
+  drawLine() {
+    const p = this.promptText();
+    return `\r\x1b[K${color ? paint.accent(p) : p} ${this.ui.input.value}`;
+  }
+
   reprompt() {
     this.ui.input.value = '';
     this.ui.input.cursor = 0;
@@ -519,10 +472,8 @@ class Host {
 
   renderInput() {
     if (this.running || !process.stdout.isTTY) return;
-    const prompt = this.promptText();
-    const shown = color ? paint.accent(prompt) : prompt;
-    process.stdout.write(`\x1b[?25h\r\x1b[K${shown} ${this.ui.input.value}`);
-    process.stdout.write(`\r\x1b[${prompt.length + 1 + this.ui.input.cursor}C`);
+    const col = this.promptText().length + 1 + this.ui.input.cursor;
+    process.stdout.write(`\x1b[?25h${this.drawLine()}\r\x1b[${col}C`);
   }
 
   submit(line) {
@@ -552,10 +503,12 @@ class Host {
   // the host only adds the line editing a browser <input> provides for free.
   handleKey(str, key) {
     const input = this.ui.input;
-    const chat = this.commandSet.apps.chat;
+    const { snake, chat } = this.commandSet.apps;
     const name = key?.name;
+    const ctrl = key?.ctrl;
 
-    if (this.commandSet.apps.snake.game) {
+    // A running game owns every key.
+    if (snake.game) {
       const named = {
         up: 'ArrowUp',
         down: 'ArrowDown',
@@ -565,79 +518,68 @@ class Host {
         space: ' ',
         escape: 'Escape',
       };
-      const gameKey = key?.ctrl && name === 'c' ? 'Escape' : (named[name] ?? str);
-      this.commandSet.apps.snake.handleKey({ key: gameKey, preventDefault() {} });
-      return;
+      return void snake.handleKey({
+        key: ctrl && name === 'c' ? 'Escape' : (named[name] ?? str),
+        preventDefault() {},
+      });
     }
 
-    if (key?.ctrl && name === 'c') {
-      const shown = color ? paint.accent(this.promptText()) : this.promptText();
-      process.stdout.write(`\r\x1b[K${shown} ${input.value}^C\n`);
-      input.value = '';
-      input.cursor = 0;
+    if (ctrl && name === 'c') {
+      process.stdout.write(`${this.drawLine()}^C\n`);
       this.autocomplete.hide();
       chat.cancel();
-      this.reprompt();
-      return;
+      return void this.reprompt();
     }
-    if (key?.ctrl && name === 'd' && !input.value) return void this.exit();
+    if (ctrl && name === 'd' && !input.value) return void this.exit();
+    if (str === ']' && !input.value && chat.session)
+      return void (chat.handleBracket(), this.reprompt());
 
-    if (str === ']' && !input.value && chat.session) {
-      chat.handleBracket();
-      this.reprompt();
-      return;
-    }
-
-    if (name === 'tab') {
-      this.autocomplete.complete();
-      input.cursor = input.value.length;
-      return void this.renderInput();
-    }
-    if (name === 'up' || name === 'down') {
-      this.autocomplete.recall(name === 'up' ? -1 : 1);
-      input.cursor = input.value.length;
-      return void this.renderInput();
-    }
-    if (name === 'escape') {
-      this.autocomplete.clear();
-      input.cursor = 0;
-      return void this.renderInput();
-    }
-
-    if (name === 'return' || name === 'enter' || str === '\r' || str === '\n') {
+    if (name === 'return' || str === '\r' || str === '\n') {
       if (this.autocomplete.accept()) return void this.renderInput();
       const line = input.value;
+      this.autocomplete.hide();
       input.value = '';
       input.cursor = 0;
-      this.autocomplete.hide();
       if (!this.running && process.stdout.isTTY) process.stdout.write('\n');
-      this.submit(line);
-      return;
+      return void this.submit(line);
     }
 
+    // Completion/history set input.value themselves; park the cursor at the end.
+    if (name === 'tab' || name === 'up' || name === 'down') {
+      name === 'tab'
+        ? this.autocomplete.complete()
+        : this.autocomplete.recall(name === 'up' ? -1 : 1);
+      input.cursor = input.value.length;
+      return void this.renderInput();
+    }
+    if (name === 'escape')
+      return void (this.autocomplete.clear(), (input.cursor = 0), this.renderInput());
+
+    // Cursor movement.
+    const move = {
+      left: -1,
+      right: 1,
+      home: -input.cursor,
+      end: input.value.length - input.cursor,
+    };
+    if (name in move) {
+      input.cursor = Math.max(0, Math.min(input.value.length, input.cursor + move[name]));
+      return void this.renderInput();
+    }
+
+    // Editing: backspace, or insert a printable character at the cursor.
     if (name === 'backspace') {
-      if (input.cursor > 0) {
-        input.value = input.value.slice(0, input.cursor - 1) + input.value.slice(input.cursor);
-        input.cursor -= 1;
-      }
-      this.autocomplete.hide();
-      return void this.renderInput();
-    }
-    if (name === 'left') return void (input.cursor && (input.cursor -= 1), this.renderInput());
-    if (name === 'right') {
-      if (input.cursor < input.value.length) input.cursor += 1;
-      return void this.renderInput();
-    }
-    if (name === 'home') return void ((input.cursor = 0), this.renderInput());
-    if (name === 'end') return void ((input.cursor = input.value.length), this.renderInput());
-
-    // Printable character.
-    if (str && !key?.ctrl && !key?.meta && str >= ' ') {
+      input.value =
+        input.value.slice(0, Math.max(0, input.cursor - 1)) + input.value.slice(input.cursor);
+      if (input.cursor) input.cursor -= 1;
+    } else if (str && !ctrl && !key?.meta && str >= ' ') {
       input.value = input.value.slice(0, input.cursor) + str + input.value.slice(input.cursor);
       input.cursor += str.length;
-      this.autocomplete.hide();
-      this.renderInput();
+    } else {
+      return;
     }
+    this.autocomplete.hide();
+    this.renderInput();
   }
 }
 
