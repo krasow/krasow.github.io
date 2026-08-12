@@ -2,9 +2,11 @@
   "private": true,
   "scripts": {
     "format": "prettier --write \"**/*.{js,html}\"",
-    "format:check": "prettier --check \"**/*.{js,html}\""
+    "format:check": "prettier --check \"**/*.{js,html}\"",
+    "generate": "node terminal/generate-fs-manifest.mjs"
   },
   "devDependencies": {
+    "linkedom": "^0.18.13",
     "prettier": "^3"
   }
 }

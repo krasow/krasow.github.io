@@ -1,0 +1,47 @@
+Experience
+
+Jun 2024 – Aug 2024
+
+Visiting Student
+
+Los Alamos National Laboratory
+
+Task based heterogeneous runtime research for UPMEM processing in memory (PIM). Adding
+backend support for UPMEM PIM into
+Legion runtime programming system (Github). Presented current state of the work at the
+Legion Retreat.
+
+Jun 2022 – Jun 2023
+
+Research Assistant
+
+Argonne National Laboratory
+
+Continuation of prior work at Clemson University to create black-box regression model with
+3D dataset capabilities. Led to multiple
+publications and
+awards. Contributed to
+Libpressio, an Argonne library for
+compression.
+
+Jun 2021 – Dec 2022
+
+High Performance Computing Creative Inquiry
+
+Clemson University
+
+Participant in the Student Cluster Competition (SCC) at SC '21 and INDY SCC at SC '22.
+Collaboration with Dell and Intel to build a cluster with greatest performance per watt.
+Set up a distributed cluster with package managers, applications, and benchmarks. Gained
+knowledge of parallel computing with MPI.
+
+May 2021 – May 2022
+
+Undergraduate Student Researcher
+
+Clemson University
+
+Lossy compression research with collaboration Argonne National Laboratory and Clemson
+University FTHPC using the Palmetto Cluster. Analyzing statistical correlations within
+datasets in comparison to compression performance. First ever publication:
+DRBSD-7.

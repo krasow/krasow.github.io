@@ -5,7 +5,7 @@
     github: 'https://github.com/krasow',
     zoom: 'https://northwestern.zoom.us/my/krasow',
   };
-  const PAGE_SOURCES = {};
+  const TEXT_ROUTES = new Map();
   const DIRECTORIES = {
     '/': [],
   };
@@ -63,9 +63,9 @@
       this.files = new window.KrasowTerminalFileSystem.TerminalFiles(this, {
         directories: DIRECTORIES,
         fileRoutes: FILE_ROUTES,
-        pageSources: PAGE_SOURCES,
         shortcuts: SHORTCUTS,
         textPaths: TEXT_PATHS,
+        textRoutes: TEXT_ROUTES,
       });
       this.history = [];
       this.historyCursor = 0;
@@ -387,8 +387,8 @@
       await window.KrasowTerminalFileSystem.loadManifest('/terminal/fs/manifest.json', {
         directories: DIRECTORIES,
         fileRoutes: FILE_ROUTES,
-        pageSources: PAGE_SOURCES,
         textPaths: TEXT_PATHS,
+        textRoutes: TEXT_ROUTES,
       });
     } catch (error) {
       // Start with an empty virtual filesystem if the generated manifest cannot be loaded.

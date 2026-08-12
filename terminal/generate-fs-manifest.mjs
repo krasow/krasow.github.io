@@ -1,33 +1,66 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { extractPageText } from './lib/page-text.mjs';
 
 const terminalDirectory = path.dirname(fileURLToPath(import.meta.url));
+const repoDirectory = path.dirname(terminalDirectory);
 const fileSystemDirectory = path.join(terminalDirectory, 'fs');
 const manifestPath = path.join(fileSystemDirectory, 'manifest.json');
+// Where committed, pre-parsed page text lives (served statically, read by the
+// browser terminal and the CLI so neither parses HTML at runtime).
+const pageTextDirectory = path.join(repoDirectory, 'assets', 'terminal', 'pages');
+const pageTextUrl = (name) => `/assets/terminal/pages/${name}.txt`;
+
+// Resolve a site-absolute URL (e.g. "/pages/about.html#experience") to a file
+// on disk, dropping any fragment.
+const sitePathToFile = (url) => path.join(repoDirectory, url.split('#')[0].replace(/^\//, ''));
+
+const writePageText = async (name, sourceUrl, selector) => {
+  const html = await fs.readFile(sitePathToFile(sourceUrl), 'utf8');
+  const text = extractPageText(html, selector);
+  await fs.mkdir(pageTextDirectory, { recursive: true });
+  await fs.writeFile(path.join(pageTextDirectory, `${name}.txt`), `${text}\n`);
+};
 const textExtensions = new Set([
-  '', '.css', '.html', '.js', '.json', '.md', '.pg', '.pub', '.sh', '.txt',
+  '',
+  '.css',
+  '.html',
+  '.js',
+  '.json',
+  '.md',
+  '.pg',
+  '.pub',
+  '.sh',
+  '.txt',
 ]);
 
 const walk = async (directory) => {
   const entries = await fs.readdir(directory, { withFileTypes: true });
-  const files = await Promise.all(entries
-    .filter(({ name }) => name !== 'manifest.json')
-    .map(async (entry) => {
-      const absolutePath = path.join(directory, entry.name);
-      return entry.isDirectory() ? walk(absolutePath) : [absolutePath];
-    }));
+  const files = await Promise.all(
+    entries
+      .filter(({ name }) => name !== 'manifest.json')
+      .map(async (entry) => {
+        const absolutePath = path.join(directory, entry.name);
+        return entry.isDirectory() ? walk(absolutePath) : [absolutePath];
+      }),
+  );
   return files.flat();
 };
 
 const discovered = await walk(fileSystemDirectory);
-const directoryMetadata = discovered.filter((absolutePath) => path.basename(absolutePath) === '.terminal.json');
+const directoryMetadata = discovered.filter(
+  (absolutePath) => path.basename(absolutePath) === '.terminal.json',
+);
 const directories = directoryMetadata
-  .map((absolutePath) => `/${path.relative(fileSystemDirectory, path.dirname(absolutePath)).split(path.sep).join('/')}`)
+  .map(
+    (absolutePath) =>
+      `/${path.relative(fileSystemDirectory, path.dirname(absolutePath)).split(path.sep).join('/')}`,
+  )
   .sort((left, right) => left.localeCompare(right));
 
-const records = await Promise.all(discovered
-  .map(async (absolutePath) => {
+const records = await Promise.all(
+  discovered.map(async (absolutePath) => {
     const relativePath = path.relative(fileSystemDirectory, absolutePath).split(path.sep).join('/');
     if (path.basename(absolutePath) === '.terminal.json') {
       const metadata = JSON.parse(await fs.readFile(absolutePath, 'utf8'));
@@ -64,16 +97,25 @@ const records = await Promise.all(discovered
         .split('\n')
         .map((line) => line.trim())
         .filter(Boolean);
-      file.target = target;
+      const options = {};
       metadata.forEach((line) => {
         const separator = line.indexOf('=');
-        if (separator > 0) file[line.slice(0, separator)] = line.slice(separator + 1);
+        if (separator > 0) options[line.slice(0, separator)] = line.slice(separator + 1);
       });
+      // Parse the page to text now; the manifest points `url` at the committed
+      // result (read by `cat`) and keeps `target` for `open`/navigation.
+      const name = path.basename(relativePath, '.pg');
+      await writePageText(name, options.source ?? target, options.selector ?? '.holder');
+      file.target = target;
+      file.url = pageTextUrl(name);
     }
     return [file];
-  }));
+  }),
+);
 const files = records.flat();
 files.sort((left, right) => left.path.localeCompare(right.path));
 
 await fs.writeFile(manifestPath, `${JSON.stringify({ directories, files }, null, 2)}\n`);
-console.log(`Included ${directories.length} directories and ${files.length} files in terminal/fs/manifest.json`);
+console.log(
+  `Included ${directories.length} directories and ${files.length} files in terminal/fs/manifest.json`,
+);

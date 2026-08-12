@@ -1,0 +1,143 @@
+Curriculum Vitae
+
+Download Resume
+
+Education
+
+2023 – Now
+
+Ph.D. Candidate & M.S. · Computer Science
+
+Northwestern University · Evanston, IL
+
+Advised by Dr. Peter Dinda · Prescience Lab
+
+2019 – 2022
+
+B.S. · Computer Engineering
+
+Clemson University · Clemson, SC
+
+Awards & Fellowships
+
+2023
+
+DOE Computational Science Graduate Fellowship
+
+Department of Energy
+
+2022
+
+First Place · ACM Undergraduate Student Research Competition
+
+Supercomputing 2022
+
+2022
+
+Best Poster · IndySCC22
+
+Supercomputing 2022
+
+Experience
+
+Jun 2024 – Aug 2024
+
+Visiting Student
+
+Los Alamos National Laboratory
+
+UPMEM PIM support on Legion runtime. Automated kernel mapping onto distributed
+heterogeneous systems.
+
+Jun 2022 – Jun 2023
+
+Research Aide
+
+Argonne National Laboratory
+
+3D dataset extension and black-box regression model (IJHPCA). Contributed to
+Libpressio.
+
+Jun 2021 – Dec 2022
+
+HPC Creative Inquiry
+
+Clemson University
+
+Student Cluster Competition SC '21 & IndySCC SC '22. Cluster build with Dell
+and Intel.
+
+May 2021 – May 2022
+
+Undergraduate Researcher
+
+Clemson University · FTHPC
+
+Advised by Dr. Jon Calhoun. Statistical modeling of scientific datasets to
+establish correlations with lossy compression ratios. First publication at
+DRBSD-7, SC '21.
+
+Teaching & Mentoring
+
+Winter 2025
+
+Teaching Assistant · CS 343: Operating Systems
+
+Northwestern University
+
+2024 – 2025
+
+Zhehao Zhu · Master's Research Mentor
+
+Northwestern University
+
+2025 – Now
+
+Nader Rahhal · Undergraduate Research Mentor
+
+Northwestern University
+
+Publications
+
+2025
+
+Village: From High Level Parallelism to High Performance
+
+Technical Report NU-CS-2025-33 · Northwestern University
+
+K. Nagaitsev, G. Dube, K. Hallsby, P. Liu, Q. Jiang, L. Myers,
+D. Krasowska, A. Butler, R. Xu, P. Dinda
+
+2023
+
+A Lightweight, Effective Compressibility Estimation Method for Error-bounded
+Lossy Compression
+
+IEEE CLUSTER 2023
+
+A. Ganguli, R. Underwood, J. Bessac, D. Krasowska, J. C. Calhoun, S. Di,
+F. Cappello
+
+2023
+
+Black-Box Statistical Prediction of Lossy Compression Ratios for Scientific
+Data
+
+IJHPCA 2023
+
+R. Underwood, J. Bessac, D. Krasowska, J. C. Calhoun, S. Di, F.
+Cappello
+
+2021
+
+Exploring Lossy Compressibility through Statistical Correlations of Scientific
+Datasets
+
+DRBSD-7 · Supercomputing 2021
+
+D. Krasowska, J. Bessac, R. Underwood, J. C. Calhoun, S. Di, F.
+Cappello
+
+Presentations
+
+See full list →

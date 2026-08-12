@@ -1,0 +1,15 @@
+{
+  "name": "krasow",
+  "version": "1.0.0",
+  "description": "Connect to the krasow.dev terminal from your own terminal.",
+  "type": "module",
+  "bin": {
+    "krasow": "./krasow.mjs"
+  },
+  "files": ["krasow.mjs"],
+  "engines": {
+    "node": ">=18"
+  },
+  "homepage": "https://krasow.dev",
+  "license": "MIT"
+}

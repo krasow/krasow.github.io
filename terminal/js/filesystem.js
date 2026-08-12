@@ -65,7 +65,6 @@
         'fileText',
         'textSource',
         'loadText',
-        'pageText',
       ].forEach((name) => {
         terminal[name] = this[name].bind(this);
       });
@@ -140,43 +139,16 @@
     textSource(path) {
       const absolutePath = this.resolvePath(path);
       if (this.terminal.trash.contains(absolutePath)) return null;
-      const homePath = absolutePath.replace(/^\/home\//, '');
-      if (this.pageSources[homePath]) return this.pageSources[homePath];
-      const url = this.textPaths.has(absolutePath) ? this.fileRoutes.get(absolutePath) : null;
+      // `.pg` pages resolve to committed, pre-parsed text (see
+      // terminal/lib/page-text.mjs); plain text files resolve to themselves.
+      const url = this.textPaths.has(absolutePath) ? this.textRoutes.get(absolutePath) : null;
       return url ? { url } : null;
     }
 
     async loadText(source) {
       const response = await fetch(source.url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const content = (await response.text()).trim();
-      if (!source.selector) return content;
-      const document = new DOMParser().parseFromString(content, 'text/html');
-      const text = [...document.querySelectorAll(source.selector)]
-        .map((section) => this.pageText(section))
-        .filter(Boolean)
-        .join('\n\n')
-        .replace(/\n{3,}/g, '\n\n');
-      if (!text) throw new Error('No readable content');
-      return text;
-    }
-
-    pageText(section) {
-      const copy = section.cloneNode(true);
-      copy.querySelectorAll('.cv-date span + span').forEach((span) => span.before(' – '));
-      copy.querySelectorAll('.pub-date br').forEach((br) => br.replaceWith(' – '));
-      copy
-        .querySelectorAll(
-          ['br', 'div', 'p', 'li', 'hr', 'h1', 'h2', 'h3', '.cv-title', '.cv-org', '.cv-desc'].join(
-            ',',
-          ),
-        )
-        .forEach((element) => element.after('\n'));
-      return copy.textContent
-        .replace(/[ \t]+/g, ' ')
-        .replace(/ *\n */g, '\n')
-        .replace(/\n{3,}/g, '\n\n')
-        .trim();
+      return (await response.text()).trim();
     }
   }
 
@@ -195,13 +167,9 @@
     });
   };
 
-  const hydrate = (
-    files,
-    { directories, fileRoutes, pageSources = {}, textPaths },
-    folders = [],
-  ) => {
+  const hydrate = (files, { directories, fileRoutes, textPaths, textRoutes }, folders = []) => {
     folders.forEach((folder) => addDirectory(directories, folder));
-    files.forEach(({ path, url, target, source, selector = '.holder', text = true }) => {
+    files.forEach(({ path, url, target, text = true }) => {
       const parts = path.split('/').filter(Boolean);
       let directory = '/';
       parts.slice(0, -1).forEach((part) => {
@@ -211,12 +179,12 @@
       });
 
       addEntry(directories, directory, parts.at(-1));
+      // `target` (if any) is where `open` navigates; `url` is the text content.
       fileRoutes.set(path, target ?? url);
-      if (target && path.endsWith('.pg')) {
-        const homePath = path.replace(/^\/home\//, '');
-        pageSources[homePath] = { url: source ?? target, selector };
+      if (text) {
+        textPaths.add(path);
+        textRoutes.set(path, url);
       }
-      if (text) textPaths.add(path);
     });
   };
 

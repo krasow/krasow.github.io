@@ -29,7 +29,7 @@
     },
     {
       "path": "/home/about.pg",
-      "url": "/terminal/fs/home/about.pg",
+      "url": "/assets/terminal/pages/about.txt",
       "text": true,
       "target": "/pages/about.html"
     },
@@ -50,7 +50,7 @@
     },
     {
       "path": "/home/cv.pg",
-      "url": "/terminal/fs/home/cv.pg",
+      "url": "/assets/terminal/pages/cv.txt",
       "text": true,
       "target": "/pages/cv.html"
     },
@@ -61,14 +61,13 @@
     },
     {
       "path": "/home/experience.pg",
-      "url": "/terminal/fs/home/experience.pg",
+      "url": "/assets/terminal/pages/experience.txt",
       "text": true,
-      "target": "/index.html#experience",
-      "source": "/homepage/experience.html"
+      "target": "/index.html#experience"
     },
     {
       "path": "/home/news.pg",
-      "url": "/terminal/fs/home/news.pg",
+      "url": "/assets/terminal/pages/news.txt",
       "text": true,
       "target": "/pages/news.html"
     },

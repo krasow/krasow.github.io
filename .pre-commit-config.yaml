@@ -1,6 +1,12 @@
 repos:
   - repo: local
     hooks:
+      - id: terminal-manifest
+        name: Regenerate terminal filesystem manifest and page text
+        entry: bash -c 'npm run --silent generate && git add terminal/fs/manifest.json assets/terminal/pages'
+        language: system
+        pass_filenames: false
+        files: ^(terminal/fs/.*|pages/.+\.html|homepage/.+\.html|terminal/generate-fs-manifest\.mjs|terminal/lib/page-text\.mjs)$
       - id: prettier
         name: Check JavaScript and HTML formatting
         entry: npm run format:check
