@@ -1,12 +1,17 @@
 {
   "name": "@krasow/tty",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Connect to the krasow.dev terminal from your own terminal.",
   "type": "module",
   "bin": {
     "krasow": "./krasow.mjs"
   },
-  "files": ["krasow.mjs"],
+  "scripts": {
+    "test": "node test/krasow.test.mjs"
+  },
+  "files": [
+    "krasow.mjs"
+  ],
   "engines": {
     "node": ">=18"
   },

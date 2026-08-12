@@ -10,7 +10,7 @@
 
 import readline from 'node:readline';
 import { spawnSync, spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, realpathSync } from 'node:fs';
 import { platform } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -611,4 +611,6 @@ const main = async () => {
   host.start();
 };
 
-main();
+export { Element, Host, TextNode, loadEngine };
+
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) main();
