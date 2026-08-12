@@ -2,6 +2,54 @@
   'use strict';
 
   const KNOWLEDGE_URL = '/terminal/data/chat.json';
+  const MAX_KNOWLEDGE_BYTES = 512 * 1024;
+  const DATA_COMMAND = /^(?:cat|download|ls|open) \/[A-Za-z0-9._/-]+$/;
+  const SIDE_EFFECTING_COMMANDS = new Set(['download', 'open']);
+  const validDataCommand = (command) => {
+    if (typeof command !== 'string' || !DATA_COMMAND.test(command)) return false;
+    const path = command.slice(command.indexOf(' ') + 1);
+    return path
+      .split('/')
+      .every((part, index) => index === 0 || (part && part !== '.' && part !== '..'));
+  };
+  const validLink = (value) => {
+    if (typeof value !== 'string' || value.includes('\\') || /[\u0000-\u001f\u007f]/.test(value))
+      return false;
+    if (value.startsWith('/') && !value.startsWith('//')) return true;
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' && !url.username && !url.password;
+    } catch {
+      return false;
+    }
+  };
+  const validEntry = (entry) =>
+    entry &&
+    typeof entry === 'object' &&
+    !Array.isArray(entry) &&
+    typeof entry.answer === 'string' &&
+    Array.isArray(entry.keywords) &&
+    entry.keywords.every((word) => typeof word === 'string') &&
+    (entry.phrases === undefined ||
+      (Array.isArray(entry.phrases) &&
+        entry.phrases.every((phrase) => typeof phrase === 'string'))) &&
+    (entry.hint === undefined || typeof entry.hint === 'string') &&
+    (entry.command === undefined || validDataCommand(entry.command)) &&
+    (entry.readMore === undefined ||
+      (entry.readMore &&
+        typeof entry.readMore === 'object' &&
+        validDataCommand(entry.readMore.command) &&
+        (entry.readMore.prompt === undefined || typeof entry.readMore.prompt === 'string'))) &&
+    !(entry.command && entry.readMore) &&
+    (entry.links === undefined ||
+      (Array.isArray(entry.links) &&
+        entry.links.every(
+          (link) =>
+            link &&
+            typeof link === 'object' &&
+            typeof link.label === 'string' &&
+            validLink(link.url),
+        )));
   // prettier-ignore
   const COMMON_WORDS = new Set([
     'a', 'about', 'an', 'and', 'area', 'at', 'came', 'can', 'david', 'did', 'do', 'does',
@@ -59,11 +107,20 @@
     async load() {
       if (!this.data)
         this.data = fetch(this.url, { cache: 'no-store' })
-          .then((response) => {
+          .then(async (response) => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
+            const text = await window.TerminalApp.responseText(response, MAX_KNOWLEDGE_BYTES);
+            return JSON.parse(text);
           })
           .then(({ entries, fallback }) => {
+            if (
+              !Array.isArray(entries) ||
+              !entries.length ||
+              entries.length > 1_000 ||
+              !entries.every(validEntry) ||
+              typeof fallback !== 'string'
+            )
+              throw new Error('invalid knowledge data');
             const indexed = entries.map((entry) => ({
               ...entry,
               words: [
@@ -138,7 +195,7 @@
           const text = url.startsWith('/') ? `→ ${label}` : `→ ${label}: ${url}`;
           this.terminal.writeLink(url, text);
         });
-        if (result.command) this.runTerminalCommand(result.command);
+        if (result.command) this.dispatchDataCommand(result.command);
         if (this.mode && result.readMore) {
           this.confirmation = result.readMore;
           this.updatePrompt();
@@ -225,9 +282,22 @@
     }
 
     runTerminalCommand(command) {
+      if (!validDataCommand(command)) throw new Error('invalid knowledge command');
       this.terminal.echo(command, 'david:~$');
       const [name, ...args] = command.split(/\s+/);
       this.terminal.commands.get(name)?.(args);
+    }
+
+    dispatchDataCommand(command) {
+      const name = command.split(/\s+/, 1)[0];
+      if (!SIDE_EFFECTING_COMMANDS.has(name)) return this.runTerminalCommand(command);
+      if (!this.mode) {
+        this.terminal.write(`run \`${command}\` to continue`, 'hint');
+        return;
+      }
+      this.confirmation = { command, prompt: `Run \`${command}\`? (y/n)` };
+      this.updatePrompt();
+      this.terminal.write(this.confirmation.prompt, 'hint');
     }
 
     showHelp() {

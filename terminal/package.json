@@ -1,0 +1,19 @@
+{
+  "name": "@krasow/terminal-engine",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./engine": "./js/engine.js"
+  },
+  "files": [
+    "js/app.js",
+    "js/apps",
+    "js/autocomplete.js",
+    "js/commands.js",
+    "js/engine.js",
+    "js/filesystem.js",
+    "js/games/snake.js"
+  ],
+  "license": "MIT"
+}

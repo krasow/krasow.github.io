@@ -1,14 +1,21 @@
 {
   "name": "@krasow/tty",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Connect to the krasow.dev terminal from your own terminal.",
   "type": "module",
   "bin": {
     "krasow": "./krasow.mjs"
   },
   "scripts": {
+    "prepack": "npm test",
     "test": "node test/krasow.test.mjs"
   },
+  "dependencies": {
+    "@krasow/terminal-engine": "file:../terminal"
+  },
+  "bundledDependencies": [
+    "@krasow/terminal-engine"
+  ],
   "files": [
     "krasow.mjs"
   ],

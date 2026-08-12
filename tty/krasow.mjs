@@ -3,21 +3,121 @@
 
 // krasow.dev — the website terminal, in your terminal.
 //
-// A host, not a reimplementation: it loads the real engine modules from
-// ../terminal/js, shims the browser globals they use, and renders to a TTY.
+// A host, not a reimplementation: it loads the bundled shared engine package,
+// shims the browser globals it uses, and renders to a TTY.
 //
 //   node tty/krasow.mjs  ·  npx krasow  ·  KRASOW_BASE=http://localhost:8000 …
 
 import readline from 'node:readline';
 import { spawnSync, spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, readdirSync, realpathSync } from 'node:fs';
+import { writeFileSync, realpathSync } from 'node:fs';
 import { platform } from 'node:os';
-import { join, dirname } from 'node:path';
+import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-const ENGINE = join(HERE, '..', 'terminal', 'js');
-const BASE = (process.env.KRASOW_BASE || 'https://krasow.dev').replace(/\/$/, '');
+const DEFAULT_BASE = 'https://krasow.dev';
+const MAX_DOWNLOAD_BYTES = 1024 * 1024;
+const MAX_MANIFEST_BYTES = 512 * 1024;
+const TRUSTED_NAVIGATION_ORIGINS = new Set([
+  'https://github.com',
+  'https://ieeexplore.ieee.org',
+  'https://journals.sagepub.com',
+  'https://julialegate.github.io',
+  'https://legion.stanford.edu',
+  'https://northwestern.zoom.us',
+  'https://www.computer.org',
+  'https://www.mccormick.northwestern.edu',
+]);
+
+const isLoopback = (hostname) =>
+  hostname === 'localhost' ||
+  hostname.endsWith('.localhost') ||
+  hostname === '127.0.0.1' ||
+  hostname === '[::1]';
+
+const parseBase = (value) => {
+  const url = new URL(value);
+  if (url.protocol !== 'https:' && !(url.protocol === 'http:' && isLoopback(url.hostname)))
+    throw new Error('KRASOW_BASE must use HTTPS (HTTP is allowed only for localhost)');
+  if (url.username || url.password) throw new Error('KRASOW_BASE must not contain credentials');
+  url.hash = '';
+  url.search = '';
+  return url.href.replace(/\/$/, '');
+};
+
+const BASE = parseBase(process.env.KRASOW_BASE || DEFAULT_BASE);
+const BASE_ORIGIN = new URL(BASE).origin;
+TRUSTED_NAVIGATION_ORIGINS.add(BASE_ORIGIN);
+
+const resolveUrl = (value) => {
+  if (typeof value !== 'string' || !value) throw new Error('URL must be a non-empty string');
+  if (/[\u0000-\u001f\u007f]/.test(value))
+    throw new Error(`control characters are not allowed in URLs: ${value}`);
+  if (value.includes('\\')) throw new Error(`backslashes are not allowed in URLs: ${value}`);
+  if (value.startsWith('//')) throw new Error(`scheme-relative URL is not allowed: ${value}`);
+  const url = /^[a-z][a-z\d+.-]*:/i.test(value)
+    ? new URL(value)
+    : new URL(`${BASE}/${value.replace(/^\//, '')}`);
+  if (!['http:', 'https:'].includes(url.protocol)) throw new Error(`unsupported URL: ${value}`);
+  if (url.username || url.password)
+    throw new Error(`credentials are not allowed in URLs: ${value}`);
+  return url;
+};
+
+const fetchUrl = (value) => {
+  const url = resolveUrl(value);
+  if (url.origin !== BASE_ORIGIN) throw new Error(`cross-origin fetch blocked: ${url.origin}`);
+  return url;
+};
+
+const navigationUrl = (value) => {
+  const url = resolveUrl(value);
+  if (!TRUSTED_NAVIGATION_ORIGINS.has(url.origin))
+    throw new Error(`navigation origin is not trusted: ${url.origin}`);
+  return url;
+};
+
+const responseBuffer = async (response, limit) => {
+  const length = Number(response.headers?.get('content-length'));
+  if (Number.isFinite(length) && length > limit) throw new Error('response is too large');
+  if (!response.body?.getReader) {
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (buffer.byteLength > limit) throw new Error('response is too large');
+    return buffer;
+  }
+
+  const reader = response.body.getReader();
+  const chunks = [];
+  let size = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > limit) {
+      await reader.cancel();
+      throw new Error('response is too large');
+    }
+    chunks.push(Buffer.from(value));
+  }
+  return Buffer.concat(chunks, size);
+};
+
+const manifestData = async (response, engine) => {
+  const manifest = JSON.parse(
+    (await responseBuffer(response, MAX_MANIFEST_BYTES)).toString('utf8'),
+  );
+  const validated = engine.validateManifest(manifest);
+  for (const file of validated.files) {
+    if (file.text ?? true) fetchUrl(file.url ?? file.target);
+    else if (file.url) fetchUrl(file.url);
+    if (file.target) {
+      const target = resolveUrl(file.target);
+      if (target.pathname.toLowerCase().endsWith('.vcf')) fetchUrl(file.target);
+      else navigationUrl(file.target);
+    }
+  }
+  return validated;
+};
 
 const color = process.stdout.isTTY && !process.env.NO_COLOR;
 const sgr = (code) => (text) => (color ? `\x1b[${code}m${text}\x1b[0m` : `${text}`);
@@ -31,6 +131,8 @@ const paint = {
   cyan: sgr('36'),
   accent: sgr('35'),
 };
+const sanitizeTerminalText = (text) =>
+  String(text).replace(/[\u0000-\u0008\u000b-\u001f\u007f-\u009f]/g, '\ufffd');
 const styleForClass = (className = '') =>
   className.includes('err')
     ? paint.red
@@ -38,11 +140,17 @@ const styleForClass = (className = '') =>
       ? paint.dim
       : className.includes('go')
         ? paint.cyan
-        : (t) => `${t}`;
+        : className.includes('bold')
+          ? paint.bold
+          : className.includes('accent')
+            ? paint.accent
+            : (t) => `${t}`;
 const emit = (text = '', className = '') =>
-  process.stdout.write(`${styleForClass(className)(String(text))}\n`);
+  process.stdout.write(`${styleForClass(className)(sanitizeTerminalText(text))}\n`);
+const emitStyled = (text = '') => process.stdout.write(`${text}\n`);
 
 const colorizeEntry = (name) => {
+  name = sanitizeTerminalText(name);
   if (name.endsWith('/')) return paint.blue(name);
   if (name.endsWith('.sh')) return paint.green(name);
   if (/\.(pdf|vcf)$/.test(name)) return paint.magenta(name);
@@ -53,14 +161,19 @@ const colorizeEntry = (name) => {
 // Resolve site-relative URLs against BASE; track in-flight requests so the REPL
 // can wait for a command's async output before reprompting.
 let pending = 0;
-const fetchShim = (url, options) => {
-  const full = /^https?:/.test(url) ? url : `${BASE}${url}`;
+let networkFetch;
+const fetchShim = (url, options = {}) => {
+  const full = fetchUrl(url);
+  const headers = new Headers(options.headers);
+  if (!headers.has('user-agent')) headers.set('user-agent', 'krasow-cli');
   pending += 1;
-  return globalThis
-    .fetch(full, { headers: { 'user-agent': 'krasow-cli' }, ...options })
-    .finally(() => {
-      pending -= 1;
-    });
+  return networkFetch(full, {
+    ...options,
+    headers,
+    redirect: 'error',
+  }).finally(() => {
+    pending -= 1;
+  });
 };
 const idle = () =>
   new Promise((resolve) => {
@@ -175,7 +288,13 @@ const getComputedStyleShim = () => ({ fontSize: '14px', lineHeight: '17px' });
 const locationShim = { href: '', reload() {}, assign() {}, replace() {} };
 
 const openInBrowser = (url) => {
-  const full = /^https?:/.test(url) ? url : `${BASE}${url}`;
+  let full;
+  try {
+    full = navigationUrl(url).href;
+  } catch (error) {
+    emit(`open: ${url}: ${error.message}`, 'err');
+    return;
+  }
   const command = platform() === 'darwin' ? 'open' : platform() === 'win32' ? 'start' : 'xdg-open';
   try {
     spawn(command, [full], {
@@ -186,33 +305,14 @@ const openInBrowser = (url) => {
   } catch {
     // no browser (headless); the printed link is the fallback
   }
-  emit(paint.cyan(`→ opened ${full}`));
+  emit(`→ opened ${full}`, 'go');
 };
 
 const window = {};
 
-// The engine modules (all except terminal.js/resize.js, the DOM host). Load order
-// is irrelevant — each just assigns window.X; they cross-reference only at boot.
-// Read from the local checkout if present, else fetch live so a shipped single
-// file works on its own.
-const readEngineSources = async () => {
-  try {
-    const files = ['app.js', 'commands.js', 'filesystem.js', 'autocomplete.js'];
-    for (const dir of ['apps', 'games'])
-      for (const f of readdirSync(join(ENGINE, dir)))
-        if (f.endsWith('.js')) files.push(`${dir}/${f}`);
-    return files.map((name) => readFileSync(join(ENGINE, name), 'utf8'));
-  } catch {
-    const html = await (await fetchShim('/terminal/index.html')).text();
-    const names = [...html.matchAll(/src="\/terminal\/js\/([^"]+\.js)"/g)]
-      .map((m) => m[1])
-      .filter((n) => n !== 'terminal.js' && n !== 'resize.js');
-    return Promise.all(names.map((n) => fetchShim(`/terminal/js/${n}`).then((r) => r.text())));
-  }
-};
-
 const loadEngine = async () => {
-  const sources = await readEngineSources();
+  if (!networkFetch || globalThis.fetch !== fetchShim)
+    networkFetch = globalThis.fetch.bind(globalThis);
   const shims = {
     window,
     document: documentShim,
@@ -228,12 +328,9 @@ const loadEngine = async () => {
     console,
     requestAnimationFrame: (fn) => setTimeout(() => fn(Date.now()), 16),
   };
-  const names = Object.keys(shims);
-  const values = Object.values(shims);
-  for (const code of sources) {
-    // eslint-disable-next-line no-new-func
-    new Function(...names, code)(...values);
-  }
+  for (const [name, value] of Object.entries(shims))
+    Object.defineProperty(globalThis, name, { configurable: true, value, writable: true });
+  await import('@krasow/terminal-engine/engine');
 };
 
 // The Node host: terminal.js's interface to the engine, rendered to a TTY.
@@ -299,7 +396,10 @@ class Host {
       textPaths: new Set(),
       textRoutes: new Map(),
     };
-    await fs.loadManifest('/terminal/fs/manifest.json', opts);
+    const response = await fetchShim('/terminal/fs/manifest.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const manifest = await manifestData(response, fs);
+    fs.hydrate(manifest.files, opts, manifest.directories);
     this.trash = new fs.VirtualTrash({ ...opts, storageKey: 'krasow-terminal-removed-paths' });
     this.files = new fs.TerminalFiles(this, { ...opts, shortcuts: SHORTCUTS });
     this.commandSet = new window.KrasowTerminalCommands.TerminalCommands(this, {
@@ -331,7 +431,7 @@ class Host {
     const columnWidth = Math.max(16, ...entries.map((n) => n.length + 3));
     const columns = Math.max(1, Math.floor(width / columnWidth));
     for (let i = 0; i < entries.length; i += columns) {
-      emit(
+      emitStyled(
         entries
           .slice(i, i + columns)
           .map((n) => colorizeEntry(n) + ' '.repeat(Math.max(1, columnWidth - n.length)))
@@ -340,10 +440,10 @@ class Host {
     }
   }
   echo(command, prompt = this.promptText()) {
-    emit(`${paint.accent(prompt)} ${command}`);
+    emitStyled(`${paint.accent(sanitizeTerminalText(prompt))} ${sanitizeTerminalText(command)}`);
   }
   writeLink(url, text) {
-    emit(paint.cyan(text));
+    emit(text, 'go');
   }
   clearScreen() {
     process.stdout.write('\x1b[2J\x1b[H');
@@ -352,24 +452,45 @@ class Host {
     this.clearScreen();
   }
   navigate(url) {
-    if (url.endsWith('.vcf')) return this.saveFile(url);
+    let target;
+    try {
+      target = resolveUrl(url);
+    } catch (error) {
+      return void this.write(`open: ${url}: ${error.message}`, 'err');
+    }
+    if (target.pathname.toLowerCase().endsWith('.vcf')) return this.saveFile(url);
     openInBrowser(url);
   }
   exit() {
     if (this.closed) return;
     this.closed = true;
-    emit(paint.cyan('→ exiting to krasow.dev'));
+    emit('→ exiting to krasow.dev', 'go');
     process.exit(0); // the 'exit' handler restores raw mode and the cursor
   }
   async saveFile(url) {
     try {
-      const response = await fetchShim(url);
+      const target = fetchUrl(url);
+      if (!target.pathname.toLowerCase().endsWith('.vcf'))
+        throw new Error('only contact cards can be saved');
+      const encodedName = basename(target.pathname);
+      const name = decodeURIComponent(encodedName);
+      if (
+        !name ||
+        name === '.' ||
+        name === '..' ||
+        basename(name) !== name ||
+        !name.toLowerCase().endsWith('.vcf')
+      )
+        throw new Error('unsafe download filename');
+      const response = await fetchShim(target.href);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const name = url.split('?')[0].split('/').pop();
-      writeFileSync(join(process.cwd(), name), Buffer.from(await response.arrayBuffer()));
-      emit(paint.green(`↓ saved ${name} to ${process.cwd()}`));
+      const contents = await responseBuffer(response, MAX_DOWNLOAD_BYTES);
+      writeFileSync(join(process.cwd(), name), contents, { flag: 'wx', mode: 0o600 });
+      this.write(`↓ saved ${name} to ${process.cwd()}`, 'go');
     } catch (error) {
-      emit(`download: ${url}: ${error.message}`, 'err');
+      const message =
+        error.code === 'EEXIST' ? 'file already exists (not overwritten)' : error.message;
+      this.write(`download: ${url}: ${message}`, 'err');
     }
   }
 
@@ -382,7 +503,7 @@ class Host {
       if (process.stdout.isTTY) process.stdout.write('\x1b[?25l');
       return;
     }
-    if (className.includes('motd')) return emit(paint.accent(node.textContent));
+    if (className.includes('motd')) return emit(node.textContent, 'accent');
     emit(node.textContent, className);
   }
   renderHelp(node) {
@@ -392,14 +513,16 @@ class Host {
       const text = child.textContent;
       if (cls.includes('help-section')) {
         emit('');
-        emit(paint.bold(text));
+        emit(text, 'bold');
       } else if (cls.includes('help-command')) command = text;
       else if (cls.includes('help-description')) {
-        emit(`  ${paint.cyan((command || '').padEnd(26))} ${paint.dim(text)}`);
+        emitStyled(
+          `  ${paint.cyan(sanitizeTerminalText(command || '').padEnd(26))} ${paint.dim(sanitizeTerminalText(text))}`,
+        );
         command = null;
       } else if (cls.includes('help-note')) {
         emit('');
-        emit(paint.dim(text));
+        emit(text, 'hint');
       }
     }
   }
@@ -590,7 +713,7 @@ const main = async () => {
     await host.boot();
   } catch (error) {
     emit(`could not reach ${BASE} — ${error.message}`, 'err');
-    emit(paint.dim('set KRASOW_BASE to a running copy, e.g. http://localhost:8000'), 'hint');
+    emit('set KRASOW_BASE to a running copy, e.g. http://localhost:8000', 'hint');
     process.exit(1);
   }
 
@@ -600,7 +723,7 @@ const main = async () => {
   } catch {
     // banner is optional
   }
-  emit(paint.dim('# use help for more details.'));
+  emit('# use help for more details.', 'hint');
 
   // reset (via the engine) calls location.reload(); re-render after clearing state.
   locationShim.reload = () => {

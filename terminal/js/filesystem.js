@@ -1,6 +1,59 @@
 (() => {
   'use strict';
 
+  const MAX_JSON_BYTES = 512 * 1024;
+  const MAX_TEXT_BYTES = 1024 * 1024;
+
+  const validPath = (path) =>
+    typeof path === 'string' &&
+    path.startsWith('/') &&
+    !path.includes('\\') &&
+    !/[\u0000-\u001f\u007f]/.test(path) &&
+    path.split('/').every((part, index) => index === 0 || (part && part !== '.' && part !== '..'));
+
+  const validSiteUrl = (value) =>
+    typeof value === 'string' &&
+    value.startsWith('/') &&
+    !value.startsWith('//') &&
+    !value.includes('\\') &&
+    !/[\u0000-\u001f\u007f]/.test(value);
+
+  const validTarget = (value) => {
+    if (validSiteUrl(value)) return true;
+    if (typeof value !== 'string' || value.includes('\\') || /[\u0000-\u001f\u007f]/.test(value))
+      return false;
+    try {
+      const url = new URL(value);
+      return url.protocol === 'https:' && !url.username && !url.password;
+    } catch {
+      return false;
+    }
+  };
+
+  const validateManifest = ({ directories = [], files } = {}) => {
+    if (!Array.isArray(directories) || !Array.isArray(files))
+      throw new Error('Invalid filesystem manifest');
+    if (directories.length > 1_000 || files.length > 5_000)
+      throw new Error('Filesystem manifest is too large');
+    if (!directories.every(validPath)) throw new Error('Invalid directory path in manifest');
+
+    const paths = new Set();
+    files.forEach((file) => {
+      if (!file || typeof file !== 'object' || Array.isArray(file) || !validPath(file.path))
+        throw new Error('Invalid file entry in manifest');
+      if (paths.has(file.path)) throw new Error(`Duplicate file path in manifest: ${file.path}`);
+      paths.add(file.path);
+      if (file.text !== undefined && typeof file.text !== 'boolean')
+        throw new Error(`Invalid text flag in manifest: ${file.path}`);
+      if (file.url !== undefined && !validSiteUrl(file.url))
+        throw new Error(`Invalid url in manifest: ${file.path}`);
+      if (file.target !== undefined && !validTarget(file.target))
+        throw new Error(`Invalid target in manifest: ${file.path}`);
+      if (!file.url && !file.target) throw new Error(`Missing file URL in manifest: ${file.path}`);
+    });
+    return { directories, files };
+  };
+
   class VirtualTrash {
     constructor({ directories, fileRoutes, storageKey }) {
       this.directories = directories;
@@ -148,7 +201,7 @@
     async loadText(source) {
       const response = await fetch(source.url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return (await response.text()).trim();
+      return (await window.TerminalApp.responseText(response, MAX_TEXT_BYTES)).trim();
     }
   }
 
@@ -183,7 +236,7 @@
       fileRoutes.set(path, target ?? url);
       if (text) {
         textPaths.add(path);
-        textRoutes.set(path, url);
+        textRoutes.set(path, url ?? target);
       }
     });
   };
@@ -191,10 +244,16 @@
   const loadManifest = async (url, fileSystem) => {
     const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const { directories = [], files } = await response.json();
-    if (!Array.isArray(files)) throw new Error('Invalid filesystem manifest');
+    const manifest = JSON.parse(await window.TerminalApp.responseText(response, MAX_JSON_BYTES));
+    const { directories, files } = validateManifest(manifest);
     hydrate(files, fileSystem, directories);
   };
 
-  window.KrasowTerminalFileSystem = { TerminalFiles, VirtualTrash, hydrate, loadManifest };
+  window.KrasowTerminalFileSystem = {
+    TerminalFiles,
+    VirtualTrash,
+    hydrate,
+    loadManifest,
+    validateManifest,
+  };
 })();
