@@ -1,13 +1,20 @@
 # krasow.dev — in your terminal
 
-The [krasow.dev](https://krasow.dev) website terminal, in a real TTY.
+The terminal from [krasow.dev](https://krasow.dev), running in your own terminal.
 
 ```sh
 curl -fsSL https://krasow.dev/tty/krasow.mjs -o /tmp/krasow.mjs && node /tmp/krasow.mjs
 ```
 
-Requires Node ≥ 18, no dependencies. Try `help`, `ls`, `cat about.pg`, `snake`.
+Needs Node 18 or newer, and nothing to install. Once it starts, try `help`,
+`ls`, `cat about.pg`, or `snake`.
 
-It's a host, not a reimplementation: it loads the site's real engine modules
-(`terminal/js/*`) and renders their output to the terminal instead of the DOM.
-Env: `KRASOW_BASE` (content source, default krasow.dev), `NO_COLOR`.
+## How it works
+
+The website's terminal and this one run the same code. Every command — the
+filesystem, chat, snake, all of it — lives in `terminal/js/` and is shared. This
+file just lets that code run in a real terminal instead of a browser tab, and it
+loads its content live from krasow.dev, so the site stays a plain static site.
+
+Set `KRASOW_BASE` to load content from somewhere other than `https://krasow.dev`
+— point it at a local copy while developing.
