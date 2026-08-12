@@ -5,7 +5,6 @@
   const easterEggs = new Map([
     ['sudo make me a sandwich', 'Okay. [sandwich delivered]'],
     ['make me a sandwich', 'What? Make it yourself.'],
-    ['exit', 'There is no escape. This is a website.'],
     ['42', 'The answer to life, the universe, and distributed computing.'],
     ['coffee', 'Error: coffee machine is not attached to this runtime.'],
     ['fortune', 'Parallelism is easy. Scheduling it is the research project.'],
@@ -44,6 +43,7 @@
     reset: 'reset',
     sudo: 'sudo <command>',
     whoami: 'whoami',
+    exit: 'exit',
   };
   const help = [
     [
@@ -135,6 +135,9 @@
       });
       this.handlers.set('whoami', (args) =>
         window.TerminalApp.exact(args, 0, () => terminal.write('David Krasowska', 'pth')),
+      );
+      this.handlers.set('exit', (args) =>
+        window.TerminalApp.exact(args, 0, () => terminal.exit()),
       );
     }
 

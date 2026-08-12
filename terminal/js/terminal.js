@@ -160,6 +160,13 @@
       return displayFile(name);
     }
 
+    exit() {
+      this.writeLink('/index.html', '→ exiting to krasow.dev');
+      setTimeout(() => {
+        location.href = '/index.html';
+      }, 120);
+    }
+
     navigate(url) {
       const download = url.endsWith('.vcf');
       this.writeLink(url, download ? '→ downloading contact.vcf' : `→ ${url}`);
@@ -310,6 +317,12 @@
         this.echo(`${this.ui.input.value}^C`);
         this.autocomplete.clear();
         this.commandSet.apps.chat.cancel();
+        return;
+      }
+
+      if (event.ctrlKey && event.key.toLowerCase() === 'd' && !this.ui.input.value) {
+        event.preventDefault();
+        this.exit();
         return;
       }
 
