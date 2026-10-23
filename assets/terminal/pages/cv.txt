@@ -99,6 +99,23 @@ Northwestern University
 
 Publications
 
+2026
+
+cuNumeric.jl: Automated Performant Multi-GPU Numerical Computing for Julia
+
+Submitted to IPDPS · Awaiting decision
+
+D. Krasowska, E. Meitz, W. Lee, P. Dinda
+
+2026
+
+Easy, Yet Performant PIM Through Deferred Execution That Enables Vertical and
+Horizontal Fusion
+
+Submitted to ASPLOS · Awaiting decision
+
+D. Krasowska, A. Crotty, P. Dinda
+
 2025
 
 Village: From High Level Parallelism to High Performance
