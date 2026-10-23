@@ -9,6 +9,7 @@
 
 ---
 
+**Note:** this page is outdated. Our PIM work continues in a new project, **[PolymerPIM](https://github.com/krasow/PolymerPIM/)**. The paper on PolymerPIM, *Easy, Yet Performant PIM Through Deferred Execution That Enables Vertical and Horizontal Fusion*, has been submitted to ASPLOS. Since that paper, PolymerPIM has been redesigned around a backend-agnostic architecture, so it can use the Legion UPMEM PIM backend described below (in progress).
 
 ### Processing in Memory (PIM)
 PIM provides a novel approach of energy efficiency to computing. It attempts to lower the critical path for loading/storing data to/from memory by placing compute close to memory. As large cloud centers and HPC systems require an increasing amount of energy, the reduction of energy usage within our clusters is important. 
