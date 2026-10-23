@@ -136,9 +136,7 @@
       this.handlers.set('whoami', (args) =>
         window.TerminalApp.exact(args, 0, () => terminal.write('David Krasowska', 'pth')),
       );
-      this.handlers.set('exit', (args) =>
-        window.TerminalApp.exact(args, 0, () => terminal.exit()),
-      );
+      this.handlers.set('exit', (args) => window.TerminalApp.exact(args, 0, () => terminal.exit()));
     }
 
     commands() {

@@ -16,6 +16,17 @@
   </li>
 </ul>
 <hr />
+<p>
+  <strong>Note:</strong> this page is outdated. Our PIM work continues in a new project,
+  <strong><a href="https://github.com/krasow/PolymerPIM/">PolymerPIM</a></strong
+  >. The paper on PolymerPIM,
+  <em
+    >Easy, Yet Performant PIM Through Deferred Execution That Enables Vertical and Horizontal
+    Fusion</em
+  >, has been submitted to ASPLOS. Since that paper, PolymerPIM has been redesigned around a
+  backend-agnostic architecture, so it can use the Legion UPMEM PIM backend described below (in
+  progress).
+</p>
 <h3 id="processing-in-memory-pim">Processing in Memory (PIM)</h3>
 <p>
   PIM provides a novel approach of energy efficiency to computing. It attempts to lower the critical
@@ -86,10 +97,10 @@
   access. DPU kernels use Legion notions of the index space abstraction. This includes access to
   iterators, read operators, and write operators.
 </p>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<section class="footnotes" role="doc-endnotes">
   <hr />
   <ol>
-    <li id="fn1">
+    <li id="fn1" role="doc-endnote">
       <p>
         Image from <a href="https://safari.ethz.ch/">ETH SAFARI Lab</a
         ><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a>

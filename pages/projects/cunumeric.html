@@ -22,6 +22,15 @@
 <hr />
 <p><a href="/pages/presentations.html#juliacon">JuliaCon 2025</a></p>
 <p>
+  <strong>Note:</strong> this page is outdated. The benchmarks and implementation details below
+  reflect an early version of cuNumeric.jl. A paper,
+  <em>cuNumeric.jl: Automated Performant Multi-GPU Numerical Computing for Julia</em>, has been
+  submitted to IPDPS. For current performance results, see the
+  <a href="https://julialegate.github.io/cuNumeric.jl/stable/benchmarks/results"
+    >up-to-date benchmark results</a
+  >.
+</p>
+<p>
   cuNumeric.jl enables heterogenous distributed code execution with minimal effort. The core type is
   the NDArray- a drop-in replacement for the Base.Array within Julia. Some of the key differences
   include:
@@ -50,6 +59,14 @@
 <h2 id="our-contributions">Our contributions</h2>
 <p><img src="/assets/images/projects/cunumeric/stack.png" class="wide" /></p>
 <h2 id="benchmarks">Benchmarks</h2>
+<p>
+  <em
+    >These results are outdated. See the
+    <a href="https://julialegate.github.io/cuNumeric.jl/stable/benchmarks/results"
+      >current benchmark results</a
+    >.</em
+  >
+</p>
 <pre class="julia"><code>N = 1000
 A = cuNumeric.rand(Float32, N, N)
 B = cuNumeric.rand(Float32, N, N)
@@ -196,17 +213,17 @@ c = cuNumeric.ones(Float32, N)
 task = cuNumeric.@cuda_task kernel_add(a, b, c, UInt32(1))
 
 cuNumeric.@launch task=task threads=threads blocks=blocks inputs=(a, b) outputs=c scalars=UInt32(N)</code></pre>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<section class="footnotes" role="doc-endnotes">
   <hr />
   <ol>
-    <li id="fn1">
+    <li id="fn1" role="doc-endnote">
       <p>
         <a href="https://github.com/eth-cscs/ImplicitGlobalGrid.jl"
           >Räss, L., Omlin, S., &amp; Podladchikov, Y. Y. JuliaCon 2019.</a
         ><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a>
       </p>
     </li>
-    <li id="fn2">
+    <li id="fn2" role="doc-endnote">
       <p>
         <a href="https://doi.org/10.1145/3669940.3707216"
           >Rohan Yadav, https://doi.org/10.1145/3669940.3707216, ASPLOS 2025</a
