@@ -1,12 +1,19 @@
 repos:
   - repo: local
     hooks:
+      # Runs before terminal-manifest, which reads the rendered HTML.
+      - id: render-projects
+        name: Render project pages from Markdown
+        entry: bash -c 'bash pages/projects/render.sh && npx prettier --write pages/projects/*.html >/dev/null && git add pages/projects/*.html'
+        language: system
+        pass_filenames: false
+        files: ^pages/projects/(.+\.md|render\.sh)$
       - id: terminal-manifest
         name: Regenerate terminal filesystem manifest and page text
         entry: bash -c 'npm run --silent generate && git add terminal/fs/manifest.json assets/terminal/pages'
         language: system
         pass_filenames: false
-        files: ^(terminal/fs/.*|pages/.+\.html|homepage/.+\.html|terminal/generate-fs-manifest\.mjs|terminal/lib/page-text\.mjs)$
+        files: ^(terminal/fs/.*|pages/.+\.(html|md)|homepage/.+\.html|terminal/generate-fs-manifest\.mjs|terminal/lib/page-text\.mjs)$
       - id: prettier
         name: Check JavaScript and HTML formatting
         entry: npm run format:check
