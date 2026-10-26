@@ -17,8 +17,9 @@ const byId = (items, id) => {
   if (!item) throw new Error(`chat.11ty.js: no entry with id ${id}`);
   return item;
 };
+// Slug without the date prefix, which Eleventy only strips from full dates.
 const bySlug = (items, slug) => {
-  const item = items.find((entry) => entry.fileSlug === slug);
+  const item = items.find((entry) => entry.fileSlug.replace(/^\d{4}(?:-\d{2})?-/, '') === slug);
   if (!item) throw new Error(`chat.11ty.js: no entry named ${slug}`);
   return item;
 };

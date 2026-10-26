@@ -11,6 +11,8 @@ import { generateManifest } from './terminal/generate-fs-manifest.mjs';
 const PASSTHROUGH = [
   '404.html',
   'CNAME',
+  'favicon.ico',
+  'favicon.svg',
   'assets',
   'common/css',
   'common/js',
@@ -35,6 +37,16 @@ export default function (eleventyConfig) {
 
   PASSTHROUGH.forEach((path) => eleventyConfig.addPassthroughCopy({ [path]: path }));
   eleventyConfig.addGlobalData('buildYear', new Date().getFullYear());
+
+  // Dated filenames carry only what is known: 2026-slug.md, 2025-07-slug.md or
+  // 2025-07-14-slug.md. Missing parts sort as the start of the year or month;
+  // Eleventy itself only understands the full YYYY-MM-DD form.
+  eleventyConfig.addDateParsing(function (date) {
+    if (date) return;
+    const [, year, month = 1, day = 1] =
+      this.page.inputPath.match(/\/(\d{4})(?:-(\d{2}))?(?:-(\d{2}))?-[^/]+$/) ?? [];
+    if (year) return new Date(Date.UTC(year, month - 1, day));
+  });
 
   // Inline Markdown for front matter fields (authors, venues, links).
   eleventyConfig.addFilter('md', (text) => (text ? markdown.renderInline(String(text)) : ''));
@@ -71,7 +83,10 @@ export default function (eleventyConfig) {
     if (!talk.data.poster) return Object.fromEntries(links);
     const poster = posters.find((item) => item.data.id === talk.data.poster);
     if (!poster) throw new Error(`${talk.inputPath}: no poster with id ${talk.data.poster}`);
-    links.splice(links.findIndex(([label]) => label === 'Slides') + 1, 0, ['Poster', poster.data.file]);
+    links.splice(links.findIndex(([label]) => label === 'Slides') + 1, 0, [
+      'Poster',
+      poster.data.file,
+    ]);
     return Object.fromEntries(links);
   });
   eleventyConfig.addFilter('json', (value) => JSON.stringify(value));
