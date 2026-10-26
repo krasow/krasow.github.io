@@ -1,0 +1,19 @@
+---
+# The "Download Contact" card, built from content/_data/site.json.
+permalink: /assets/documents/Krasowska_David_contact.vcf
+eleventyExcludeFromCollections: true
+---
+BEGIN:VCARD
+VERSION:3.0
+N:Krasowska;David;
+FN:{{ site.name }}
+TITLE:Northwestern PhD Candidate on the job market
+EMAIL;TYPE=INTERNET,HOME,PREF:{{ site.email }}
+EMAIL;TYPE=INTERNET,WORK:{{ site.universityEmail }}
+TEL;TYPE=work:{{ site.phone | replace("+1", "") | replace(" ", "") | replace("(", "") | replace(")", "") | replace("-", "") }}
+ADR;:;;Chicago;Illinois;United States
+URL;TYPE=website:{{ site.url }}
+X-SOCIALPROFILE;type=linkedin;x-user=davidkrasowska:{{ site.linkedin | replace(r/\/$/, "") }}
+X-SOCIALPROFILE;type=github;x-user=krasow:{{ site.github }}
+URL;TYPE=google-scholar:{{ site.scholar }}
+END:VCARD

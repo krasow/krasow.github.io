@@ -4,5 +4,6 @@ export default {
   layout: 'layouts/project.njk',
   eleventyComputed: {
     permalink: (data) => `/projects/${data.page.fileSlug}/`,
+    title: (data) => data.card?.name ?? data.title,
   },
 };

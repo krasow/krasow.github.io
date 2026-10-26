@@ -1,3 +1,10 @@
+---
+lang: pl
+title: Polish
+# Practice writing; not linked from the site, so kept out of search.
+sitemap: false
+---
+
 # Installment 1
 
 Jestem David Krasowska. Mam 25 lat i teraz mieszkam w Chicago. Jesterm dokorantem w Evanston.  

@@ -8,7 +8,7 @@ card:
 
 # Correlation Compressibility
 
-Scientific research increasingly uses error-bounded lossy compressors to achieve greater compression ratios in relation to lossless compressors. This improved performance allows applications to run with larger and more frequently produced datasets due to faster I/O times and smaller I/O volumes. The theoretical limit on compressibilty of data using lossless compression is given by the entropy. The entropy quantifies the information content present in a symbol from a source sequence based upon its probability of occurrence. Thus, for a given sequence of symbols the entropy enables computing the minimum number of bits, on average, needed to represent the data.
+Scientific research increasingly uses error-bounded lossy compressors to achieve greater compression ratios in relation to lossless compressors. This improved performance allows applications to run with larger and more frequently produced datasets due to faster I/O times and smaller I/O volumes. The theoretical limit on compressibility of data using lossless compression is given by the entropy. The entropy quantifies the information content present in a symbol from a source sequence based upon its probability of occurrence. Thus, for a given sequence of symbols the entropy enables computing the minimum number of bits, on average, needed to represent the data.
 
 ## Papers
 

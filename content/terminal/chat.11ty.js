@@ -154,7 +154,7 @@ export function render({ site, collections }) {
       topic: 'experience and background',
       keywords: ['experience', 'background', 'career', 'professionally', 'employment', 'employer', 'workplace', 'history'],
       phrases: ['where has he worked', 'where did he work', 'places he worked', 'where was he a researcher', 'national laboratories', 'both argonne and los alamos', 'internship before', 'previous internships', 'past internships', 'prior internships', 'industry experience', 'years of experience', 'national lab', 'national labs', 'doe labs', 'interned at'],
-      answer: `David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University and collaborates with Los Alamos National Laboratory on distributed heterogeneous computing.\n\nRoles:\n${bullets(experience.map((job) => `${job.data.title}, ${job.data.org} (${monthYear(job.date)} – ${job.data.end})`))}`,
+      answer: `David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University, and in 2024 was a visiting student at Los Alamos National Laboratory.\n\nRoles:\n${bullets(experience.map((job) => `${job.data.title}, ${job.data.org} (${monthYear(job.date)} – ${job.data.end})`))}`,
       readMore: { command: 'cat /home/experience.pg' },
     },
     {
@@ -181,7 +181,7 @@ export function render({ site, collections }) {
       topic: 'scheduling research',
       keywords: ['scheduling', 'scheduler', 'schedulers', 'resource scheduling', 'task scheduling'],
       phrases: ['scheduling work', 'scheduling research'],
-      answer: 'David studies scheduling across distributed heterogeneous systems. His broader systems work includes cuNumeric.jl for distributed Julia and GPU applications and PolymerPIM and Legion-based support for PIM accelerators.',
+      answer: 'Scheduling across distributed heterogeneous systems runs through David\'s work: cuNumeric.jl relies on the Legion-based Legate runtime to schedule Julia array operations across multiple GPUs, and his PIM work uses Legion to schedule tasks and data movement on UPMEM Processing-in-Memory accelerators.',
       readMore: {
         prompt: 'Would you like to see his related projects? (y/n)',
         command: 'ls /home/projects',
@@ -218,7 +218,7 @@ export function render({ site, collections }) {
       topic: 'teamwork and leadership',
       keywords: ['team', 'teams', 'teamwork', 'leadership', 'lead', 'led', 'collaborate', 'collaboration', 'collaborative', 'collaborator', 'collaborators', 'managed', 'manage', 'management', 'mentorship'],
       phrases: ['worked on a team', 'leadership experience', 'work well with others', 'works well with others', 'team player', 'managed a project', 'led a project'],
-      answer: `David has competed on Clemson's Student Cluster Competition teams (SC '21 and IndySCC at SC '22), collaborates across Northwestern, Argonne, and Los Alamos National Laboratory, and teaches and mentors students:\n${bullets(cv.teaching.map((item) => `${item.title} — ${item.org} (${item.date})`))}`,
+      answer: `David has competed on Clemson's Student Cluster Competition teams (SC '21 and IndySCC at SC '22), has collaborated with researchers at Argonne, Los Alamos National Laboratory, and NVIDIA, and teaches and mentors students:\n${bullets(cv.teaching.map((item) => `${item.title} — ${item.org} (${item.date})`))}`,
     },
     {
       topic: 'AI and machine learning',
@@ -231,7 +231,7 @@ export function render({ site, collections }) {
       topic: 'research interests',
       keywords: ['work', 'research', 'hpc', 'high performance computing', 'distributed', 'heterogeneous', 'accelerators', 'domain scientists', 'thesis', 'dissertation', 'passionate', 'passion', 'interested', 'interests', 'excited'],
       phrases: ['phd thesis', 'distributed systems', 'he passionate about', 'he excited about', 'what interests him', 'what does he do', 'what does he study', 'area of cs', 'scientific workloads', 'emerging accelerators', 'intended users', 'accelerator research'],
-      answer: 'David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads and the domain scientists who run them. His current work explores scheduling across distributed heterogeneous systems.',
+      answer: 'David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads and the domain scientists who run them. His current work explores raising the level of abstraction for programming them, from multi-GPU systems to Processing-in-Memory (PIM).',
     },
     {
       topic: 'compression GitHub repository',
@@ -319,14 +319,14 @@ export function render({ site, collections }) {
       topic: 'Prescience Lab',
       keywords: ['prescience', 'prescience lab', 'lab', 'group', 'research group'],
       phrases: ['what lab', 'which lab'],
-      answer: 'David is a member of the Prescience Lab at Northwestern University, advised by Peter Dinda. He also collaborates with Los Alamos National Laboratory.',
+      answer: 'David is a member of the Prescience Lab at Northwestern University, advised by Peter Dinda.',
       links: [{ label: 'PrescienceLab on GitHub', url: 'https://github.com/PrescienceLab' }],
     },
     {
       topic: 'Los Alamos National Laboratory',
       keywords: ['lanl', 'los alamos', 'pat mccormick', 'laboratory', 'lab'],
       phrases: ['at lanl', 'lanl collaboration'],
-      answer: 'David collaborates with Pat McCormick at Los Alamos National Laboratory on scheduling for distributed heterogeneous systems. In summer 2024 he was a visiting student there, adding UPMEM PIM support to the Legion runtime.',
+      answer: 'In summer 2024, David was a visiting student at Los Alamos National Laboratory, adding UPMEM PIM support to the Legion runtime and researching automated mapping of application kernels onto distributed heterogeneous systems.',
     },
     {
       topic: 'Department of Energy fellowship',
