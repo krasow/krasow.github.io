@@ -1,6 +1,7 @@
 ---
 title: Processing in Memory Execution Targets for Higher Level Languages
-venue: "[Constellation Workshop](https://constellation-project.net/)"
+venue: Constellation Workshop
+venueUrl: https://constellation-project.net/
 kind: invited
 id: CONSTELLATION23
 links:

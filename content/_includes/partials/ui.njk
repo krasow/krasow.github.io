@@ -1,0 +1,16 @@
+{#- Small pieces shared by several pages. -#}
+
+{%- macro divider() %}
+<div class="holder"><div class="section-divider"></div></div>
+{%- endmacro %}
+
+{#- Buttons for a `links:` map in front matter; .bib files download. #}
+{%- macro links(links) %}
+{%- if links %}
+<div class="pub-links">
+  {%- for label, href in links %}
+  <a href="{{ href }}"{% if href.endsWith(".bib") %} download{% endif %}>{{ label }}</a>
+  {%- endfor %}
+</div>
+{%- endif %}
+{%- endmacro %}

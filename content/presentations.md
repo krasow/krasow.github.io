@@ -1,11 +1,14 @@
 ---
-# Talks live in content/presentations/, one file per talk; `kind` picks the section.
-layout: layouts/presentations.njk
+layout: layouts/base.njk
 title: Presentations
 permalink: /pages/presentations.html
-sections:
-  - kind: conference
-    title: Conference Talks
-  - kind: invited
-    title: Invited Talks
+# The body is a page outline (Nunjucks), not Markdown prose.
+templateEngineOverride: njk
 ---
+{% import "partials/presentations.njk" as talks %}
+{% import "partials/ui.njk" as ui %}
+
+{# content/presentations/, split by each talk's `kind` #}
+{{ talks.list("Conference Talks", collections.presentations, "conference") }}
+{{ ui.divider() }}
+{{ talks.list("Invited Talks", collections.presentations, "invited") }}

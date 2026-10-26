@@ -1,4 +1,4 @@
 ---
 permalink: /terminal/fs/home/education.md
 ---
-{% include "partials/education.txt.njk" %}
+{% import "partials/education.njk" as education %}{{ education.text((collections.cv | first).data.education) }}

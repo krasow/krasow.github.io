@@ -4,6 +4,7 @@ import markdownIt from 'markdown-it';
 import markdownItAttrs from 'markdown-it-attrs';
 import markdownItFootnote from 'markdown-it-footnote';
 import { tex } from '@mdit/plugin-tex';
+import site from './content/_data/site.json' with { type: 'json' };
 import { generateManifest } from './terminal/generate-fs-manifest.mjs';
 
 // Static files served as-is, at the same paths as their source.
@@ -45,6 +46,12 @@ export default function (eleventyConfig) {
       .replace(/^<p>|<\/p>$/g, '')
       .replace(/<\/p>\s*<p>/g, '<br /><br />'),
   );
+  // Author list with the site owner's name wrapped in <strong class="author-me">.
+  eleventyConfig.addFilter('authors', (authors) => {
+    const escaped = markdown.utils.escapeHtml(authors);
+    const me = markdown.utils.escapeHtml(site.authorName);
+    return escaped.replaceAll(me, `<strong class="author-me">${me}</strong>`);
+  });
   eleventyConfig.addFilter('year', (date) => date.getUTCFullYear());
   eleventyConfig.addFilter('month', (date) =>
     date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' }),

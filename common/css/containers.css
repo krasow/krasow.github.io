@@ -58,6 +58,12 @@
 .pub-content .title-sm { margin-bottom: 4px; }
 .pub-content .description { font-size: 12px; }
 
+/* The site owner's name in author lists (homepage publications and CV). */
+.author-me {
+  font-weight: 800;
+  color: var(--text-heading);
+}
+
 /* typography */
 .pub-year {
   font-family: 'JetBrains Mono', monospace;

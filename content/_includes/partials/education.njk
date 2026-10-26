@@ -1,0 +1,7 @@
+{#- Education as plain text, for the homepage terminal and the CLI's ~/education.md. -#}
+{%- macro text(education) -%}
+{%- for school in education -%}
+{{ school.org | safe }} ({{ school.date | safe }})
+  {{ school.title | safe }}
+{% endfor -%}
+{%- endmacro %}

@@ -1,0 +1,60 @@
+{#- CV sections, used from the body of content/cv.md. -#}
+
+{%- macro entry(date, title, org, desc) %}
+<div class="cv-entry">
+  <div class="cv-date">{{ date | safe }}</div>
+  <div class="cv-body">
+    <span class="cv-title">{{ title | safe }}</span>
+    <span class="cv-org">{{ org | safe }}</span>
+    {%- if desc %}
+    <span class="cv-desc">{{ desc | safe }}</span>
+    {%- endif %}
+  </div>
+</div>
+{%- endmacro %}
+
+{%- macro section(name) %}
+<div class="cv-section">
+  <div class="cv-section-title">{{ name }}</div>
+  <hr />
+  {{- caller() }}
+</div>
+{%- endmacro %}
+
+{#- Entries written in cv.md's front matter (title, date, org, location, desc). #}
+{%- macro list(name, items) %}
+  {%- call section(name) %}
+    {%- for item in items %}
+      {%- set org = item.org + (" · " + item.location if item.location else "") %}
+      {{- entry(item.date, item.title | md, org | md, item.desc | md) }}
+    {%- endfor %}
+  {%- endcall %}
+{%- endmacro %}
+
+{#- Roles from content/experience/, using each one's short `summary`. #}
+{%- macro experience(name, jobs) %}
+  {%- call section(name) %}
+    {%- for job in jobs | newestFirst %}
+      {%- set dates = "<span>" + (job.date | monthYear) + "</span><span>" + job.data.end + "</span>" %}
+      {{- entry(dates, job.data.title | md, job.data.org | md, job.data.summary | md) }}
+    {%- endfor %}
+  {%- endcall %}
+{%- endmacro %}
+
+{#- Papers from content/publications/, using the `short` venue when set. #}
+{%- macro publications(name, pubs) %}
+  {%- call section(name) %}
+    {%- for pub in pubs | newestFirst %}
+      {%- set title = pub.data.title | md %}
+      {%- if pub.data.url %}{% set title = '<a href="' + pub.data.url + '">' + title + '</a>' %}{% endif %}
+      {{- entry(pub.date | year, title, (pub.data.short or pub.data.venue) | md, pub.data.authors | authors) }}
+    {%- endfor %}
+  {%- endcall %}
+{%- endmacro %}
+
+{#- A section that just links elsewhere. #}
+{%- macro link(name, text, href) %}
+  {%- call section(name) %}
+    {{- entry("", "", '<a href="' + href + '">' + text + ' &rarr;</a>') }}
+  {%- endcall %}
+{%- endmacro %}

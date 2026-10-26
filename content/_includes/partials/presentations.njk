@@ -1,0 +1,26 @@
+{#- Talk lists, used from the body of content/presentations.md. -#}
+{%- import "partials/ui.njk" as ui %}
+
+{#- Talks whose `kind` matches, newest first, with month and year. #}
+{%- macro list(title, talks, kind) %}
+<div class="holder">
+  <div class="title-lg">{{ title }}</div>
+  {%- for talk in talks | newestFirst | where("kind", kind) %}
+
+  <div class="event pub-event">
+    <div class="pub-left">
+      <div class="pub-year"><span class="pub-month">{{ talk.date | month }}</span><br />{{ talk.date | year }}</div>
+    </div>
+    <div class="pub-content">
+      <div class="title-sm">{{ talk.data.title }}</div>
+      <div class="venue">
+        {%- if talk.data.venueUrl %}<a href="{{ talk.data.venueUrl }}">{{ talk.data.venue }}</a>
+        {%- else %}{{ talk.data.venue }}{% endif -%}
+      </div>
+      {{- ui.links(talk.data.links) }}
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro %}
+

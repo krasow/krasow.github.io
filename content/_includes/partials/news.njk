@@ -1,9 +1,10 @@
----
-layout: layouts/base.njk
----
+{#- News list, used from the body of content/news.md. -#}
+
+{#- Each article: front matter for title/venue/url/image, body for the blurb. #}
+{%- macro list(title, articles) %}
 <div class="holder">
   <div class="title-lg">{{ title }}</div>
-  {%- for item in collections.news | newestFirst %}
+  {%- for item in articles | newestFirst %}
 
   <div class="article pub-event">
     <div class="pub-left">
@@ -26,3 +27,4 @@ layout: layouts/base.njk
   </div>
   {%- endfor %}
 </div>
+{%- endmacro %}

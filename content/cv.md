@@ -1,11 +1,12 @@
 ---
-# Experience and Publications come from content/experience/ and
-# content/publications/. Education also feeds the homepage terminal and the
-# CLI's ~/education.md (via `terminal`).
+# The data below is listed on the page by the outline after the front matter.
+# Education also feeds the homepage terminal and the CLI's ~/education.md.
 layout: layouts/cv.njk
 title: CV
 permalink: /pages/cv.html
 tags: cv
+# The body is a page outline (Nunjucks), not Markdown prose.
+templateEngineOverride: njk
 
 education:
   - title: Ph.D. Candidate & M.S. · Computer Science
@@ -13,14 +14,10 @@ education:
     org: Northwestern University
     location: Evanston, IL
     desc: Advised by Dr. Peter Dinda · Prescience Lab
-    terminal: Computer Science Ph.D. Candidate
-    terminalDate: 2023–Current
   - title: B.S. · Computer Engineering
     date: 2019 – 2022
     org: Clemson University
     location: Clemson, SC
-    terminal: Computer Engineering B.S.
-    terminalDate: 2019–2022
 
 awards:
   - title: DOE Computational Science Graduate Fellowship
@@ -44,3 +41,11 @@ teaching:
     date: 2025 – 2026
     org: Northwestern University
 ---
+{% import "partials/cv.njk" as cv %}
+
+{{ cv.list("Education", education) }}
+{{ cv.list("Awards & Fellowships", awards) }}
+{{ cv.experience("Experience", collections.experience) }}
+{{ cv.list("Teaching & Mentoring", teaching) }}
+{{ cv.publications("Publications", collections.publications) }}
+{{ cv.link("Presentations", "See full list", "/pages/presentations.html") }}

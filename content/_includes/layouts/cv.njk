@@ -3,36 +3,7 @@ layout: layouts/base.njk
 styles:
   - /common/css/cv.css
 ---
-{%- macro entry(date, title, org, desc) %}
-            <div class="cv-entry">
-              <div class="cv-date">{{ date | safe }}</div>
-              <div class="cv-body">
-                <span class="cv-title">{{ title | safe }}</span>
-                <span class="cv-org">{{ org | safe }}</span>
-                {%- if desc %}
-                <span class="cv-desc">{{ desc | safe }}</span>
-                {%- endif %}
-              </div>
-            </div>
-{%- endmacro %}
-
-{%- macro section(name) %}
-          <div class="cv-section">
-            <div class="cv-section-title">{{ name }}</div>
-            <hr />
-            {{- caller() }}
-          </div>
-{%- endmacro %}
-
-{%- macro listSection(name, items) %}
-  {%- call section(name) %}
-    {%- for item in items %}
-      {%- set org = item.org + (" · " + item.location if item.location else "") %}
-      {{- entry(item.date, item.title | md, org | md, item.desc | md) }}
-    {%- endfor %}
-  {%- endcall %}
-{%- endmacro %}
-
+{#- The CV's sections and their order are in the body of content/cv.md. #}
 <div class="holder">
   <div class="cv-wrap">
     <div class="cv-top">
@@ -41,29 +12,6 @@ styles:
         <a href="{{ site.resume }}" download>Download Resume</a>
       </div>
     </div>
-
-    {{- listSection("Education", education) }}
-    {{- listSection("Awards & Fellowships", awards) }}
-
-    {%- call section("Experience") %}
-      {%- for job in collections.experience | newestFirst %}
-        {%- set dates = "<span>" + (job.date | monthYear) + "</span><span>" + job.data.end + "</span>" %}
-        {{- entry(dates, job.data.title | md, job.data.org | md, job.data.summary | md) }}
-      {%- endfor %}
-    {%- endcall %}
-
-    {{- listSection("Teaching & Mentoring", teaching) }}
-
-    {%- call section("Publications") %}
-      {%- for pub in collections.publications | newestFirst %}
-        {%- set title = pub.data.title | md %}
-        {%- if pub.data.url %}{% set title = '<a href="' + pub.data.url + '">' + title + '</a>' %}{% endif %}
-        {{- entry(pub.date | year, title, (pub.data.short or pub.data.venue) | md, pub.data.authors | md) }}
-      {%- endfor %}
-    {%- endcall %}
-
-    {%- call section("Presentations") %}
-      {{- entry("", "", '<a href="/pages/presentations.html">See full list &rarr;</a>') }}
-    {%- endcall %}
+    {{ content | safe }}
   </div>
 </div>
