@@ -14,8 +14,6 @@ const PASSTHROUGH = [
   'common/css',
   'common/js',
   'common/gtag.js',
-  'homepage/css',
-  'pages/css',
   'scripts',
   'terminal',
 ];
