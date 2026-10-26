@@ -1,11 +1,8 @@
 ---
-# The data below is listed on the page by the outline after the front matter.
-# Education also feeds the homepage terminal and the CLI's ~/education.md.
 layout: layouts/cv.njk
 title: "CV"
 permalink: /pages/cv.html
 tags: cv
-# The body is a page outline (Nunjucks), not Markdown prose.
 templateEngineOverride: njk
 
 education:

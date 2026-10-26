@@ -1,7 +1,6 @@
 ---
 layout: layouts/home.njk
 permalink: /index.html
-# The body is a page outline (Nunjucks), not Markdown prose.
 templateEngineOverride: njk
 greeting: Hello World! I'm David Krasowska.
 skills: [MPI, CUDA, C, C++, Python, Julia, LLVM, HPC]

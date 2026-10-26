@@ -4,7 +4,6 @@ org: Clemson University, FTHPC
 end: May 2022
 logo: /assets/images/logos/clemson.png
 summary: Advised by Dr. Jon Calhoun. Statistical modeling of scientific datasets to establish correlations with lossy compression ratios. First publication at DRBSD-7, SC '21.
-# Bullets for the resume PDF (resume/); the site shows `summary` and the body.
 resume:
   - Lossy compression research with Argonne National Laboratory and Clemson University FTHPC.
   - Analyzed statistical correlations within scientific 2D datasets in relation to compression performance.

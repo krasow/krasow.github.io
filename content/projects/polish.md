@@ -1,7 +1,6 @@
 ---
 lang: pl
 title: Polish
-# Practice writing; not linked from the site, so kept out of search.
 sitemap: false
 ---
 

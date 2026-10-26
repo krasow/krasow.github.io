@@ -1,5 +1,4 @@
 ---
-# Plain text: shown on the homepage terminal and as ~/summary.md in the CLI.
 permalink: /terminal/fs/home/summary.md
 templateEngineOverride: njk
 tags: snippets

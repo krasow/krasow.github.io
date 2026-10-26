@@ -4,7 +4,6 @@ org: Argonne National Laboratory
 end: Jun 2023
 logo: /assets/images/logos/argonne.png
 summary: 3D dataset extension and black-box regression model (IJHPCA). Contributed to Libpressio.
-# Bullets for the resume PDF (resume/); the site shows `summary` and the body.
 resume:
   - Expanded DRBSD-7 work to 3D datasets and a black-box regression model (IJHPCA).
   - First Place, ACM Undergraduate Student Research Competition poster at SC '22.

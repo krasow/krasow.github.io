@@ -4,7 +4,6 @@ org: Clemson University
 end: Dec 2022
 logo: /assets/images/logos/clemson.png
 summary: Student Cluster Competition SC '21 & IndySCC SC '22. Cluster build with Dell and Intel.
-# Bullets for the resume PDF (resume/); the site shows `summary` and the body.
 resume:
   - Best Poster (team) at the Indy Student Cluster Competition at SC '22.
   - Student Cluster Competition at SC '21.
