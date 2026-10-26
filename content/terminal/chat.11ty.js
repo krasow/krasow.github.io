@@ -272,11 +272,11 @@ export function render({ site, collections }) {
       topic: 'cuNumeric.jl',
       keywords: ['cunumeric', 'julia', 'gpu', 'gpus', 'arrays', 'ndarray', 'legate', 'constellation', 'nvidia', 'ipdps', 'documentation', 'docs', 'adoption'],
       phrases: ['what is cunumeric', 'cunumeric relate', 'julia work', 'julia project', 'julia array project', 'gpu work', 'used by', 'use his work', 'uses his work', 'nvidia use', 'industry collaboration'],
-      answer: `cuNumeric.jl, developed with collaborators at Carnegie Mellon University, Los Alamos National Laboratory, and NVIDIA, is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nIt grew into an industry collaboration with NVIDIA, now in beta ("${nvidiaArticle.data.title}", ${nvidiaArticle.data.venue}, ${nvidiaArticle.date.getUTCFullYear()}).\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
+      answer: `cuNumeric.jl, developed with collaborators at Carnegie Mellon University, Los Alamos National Laboratory, and NVIDIA, is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nThe project grew out of an industry collaboration with NVIDIA, which the ${nvidiaArticle.data.venue} podcast covered in ${nvidiaArticle.date.getUTCFullYear()}.\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
       links: [
         { label: 'GitHub', url: 'https://github.com/JuliaLegate/cuNumeric.jl/' },
         { label: 'Documentation', url: 'https://julialegate.github.io/cuNumeric.jl/dev/' },
-        { label: nvidiaArticle.data.venue, url: nvidiaArticle.data.url },
+        { label: `${nvidiaArticle.data.venue} podcast episode`, url: nvidiaArticle.data.url },
       ],
       readMore: { command: 'open /home/projects/cunumeric' },
     },
