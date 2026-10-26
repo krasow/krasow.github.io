@@ -100,7 +100,7 @@ export function render({ site, collections }) {
     {
       topic: 'summary',
       keywords: ['summary', 'overview', 'pitch', 'strengths', 'strength', 'yourself', 'fit', 'qualified', 'qualifications'],
-      phrases: ['why should we hire', 'why hire', 'good fit', 'tell me about yourself', 'elevator pitch', 'what makes him', 'qualified for', 'what is he good at', 'good at'],
+      phrases: ['why should we hire', 'why hire', 'good fit', 'tell me about yourself', 'elevator pitch', 'what makes him', 'qualified for', 'what is he good at', 'good candidate', 'strong candidate'],
       answer: summary,
       hint: 'Ask about his research, skills, or availability.',
       readMore: {
@@ -118,7 +118,7 @@ export function render({ site, collections }) {
     {
       topic: 'Clemson experience',
       keywords: ['fthpc', 'jon calhoun'],
-      phrases: ['at clemson', 'at argonne', 'clemson experience', 'clemson research', 'clemson work', 'undergraduate research', 'group undergraduate', 'cluster competition', 'student cluster', 'undergrad research', 'get into research', 'got into research', 'start doing research', 'first research', 'start research', 'started research', 'start his research', 'begin research', 'began research', 'research start', 'research career', 'first research experience', 'where did he start', 'how did he start', 'when did he start research'],
+      phrases: ['at clemson', 'at argonne', 'clemson experience', 'clemson research', 'clemson work', 'undergraduate research', 'group undergraduate', 'cluster competition', 'student cluster', 'undergrad research', 'undergrad advisor', 'undergraduate advisor', 'advisor at clemson', 'clemson advisor', 'get into research', 'got into research', 'start doing research', 'first research', 'start research', 'started research', 'start his research', 'begin research', 'began research', 'research start', 'research career', 'first research experience', 'where did he start', 'how did he start', 'when did he start research'],
       answer: `At Clemson University, David earned a ${bachelors.title} and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data. He also competed in the Student Cluster Competition at SC '21 and IndySCC at SC '22, building a cluster with Dell and Intel.`,
       readMore: {
         prompt: 'Would you like to read more about the compression project? (y/n)',
@@ -169,7 +169,7 @@ export function render({ site, collections }) {
     {
       topic: 'experience and background',
       keywords: ['experience', 'background', 'career', 'professionally', 'employment', 'employer', 'workplace', 'history'],
-      phrases: ['where has he worked', 'where did he work', 'places he worked', 'where was he a researcher', 'national laboratories', 'both argonne and los alamos', 'internship before', 'previous internships', 'past internships', 'prior internships', 'industry experience', 'years of experience', 'national lab', 'national labs', 'doe labs', 'interned at'],
+      phrases: ['where has he worked', 'where did he work', 'places he worked', 'where was he a researcher', 'national laboratories', 'both argonne and los alamos', 'internship before', 'previous internships', 'past internships', 'prior internships', 'industry experience', 'years of experience', 'national lab', 'national labs', 'doe labs', 'interned at', 'how long was he', 'when was he at', 'worked in industry', 'worked at a startup', 'worked at a company'],
       answer: `David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University, and in 2024 was a visiting student at Los Alamos National Laboratory.\n\nRoles:\n${bullets(experience.map((job) => `${job.data.title}, ${job.data.org} (${monthYear(job.date)} – ${job.data.end})`))}`,
       readMore: { command: 'cat /home/experience.pg' },
     },
@@ -413,7 +413,7 @@ export function render({ site, collections }) {
     },
     {
       topic: 'awards',
-      keywords: ['award', 'awards', 'honor', 'honors', 'prize', 'won', 'win', 'competition', 'first place', 'best poster', 'accomplishment', 'accomplishments', 'achievement', 'achievements', 'proud', 'recognition'],
+      keywords: ['award', 'awards', 'honor', 'honors', 'prize', 'won', 'win', 'competition', 'accomplishment', 'accomplishments', 'achievement', 'achievements', 'proud', 'recognition'],
       answer: `David's awards and fellowships:\n${bullets(cv.awards.map((award) => `${award.title} — ${award.org} (${award.date})`))}`,
     },
     {
@@ -436,6 +436,7 @@ export function render({ site, collections }) {
     {
       topic: 'teaching and mentoring',
       keywords: ['teaching', 'teach', 'taught', 'ta', 'teaching assistant', 'mentor', 'mentoring', 'mentored', 'course', 'class', 'operating systems'],
+      phrases: ['who has he mentored', 'has he mentored', 'who did he mentor', 'classes has he taught'],
       answer: `David's teaching and mentoring:\n${bullets(cv.teaching.map((item) => `${item.title} — ${item.org} (${item.date})`))}`,
     },
     {
@@ -496,16 +497,26 @@ export function render({ site, collections }) {
       keywords: ['scholar', 'google scholar', 'citations', 'citation', 'h-index', 'hindex', 'index'],
       phrases: ['most cited', 'how many citations'],
       answer: "David's Google Scholar profile:",
-      links: [{ label: 'Google Scholar', url: site.scholar }],
+      links: [
+        { label: 'Google Scholar', url: site.scholar },
+        { label: 'ORCID', url: site.orcid },
+      ],
+    },
+    {
+      topic: 'ORCID',
+      keywords: ['orcid'],
+      answer: `David's ORCID iD is ${site.orcid.split('/').at(-1)}.`,
+      links: [{ label: 'ORCID', url: site.orcid }],
     },
     {
       topic: 'social media',
       keywords: ['twitter', 'bluesky', 'mastodon', 'instagram', 'social', 'socials', 'social media', 'blog', 'blogs', 'substack', 'medium'],
-      answer: "David's site doesn't list Twitter/X or other social accounts. You can find him on LinkedIn, GitHub, and Google Scholar.",
+      answer: "David's site doesn't list Twitter/X or other social accounts. You can find him on LinkedIn, GitHub, Google Scholar, and ORCID.",
       links: [
         { label: 'LinkedIn', url: site.linkedin },
         { label: 'GitHub', url: site.github },
         { label: 'Google Scholar', url: site.scholar },
+        { label: 'ORCID', url: site.orcid },
       ],
     },
     {
@@ -547,7 +558,7 @@ export function render({ site, collections }) {
     {
       topic: 'what to ask',
       keywords: [],
-      phrases: ['what can i ask', 'what can you do', 'what do you know', 'what should i ask', 'how does this work'],
+      phrases: ['what can i ask', 'what can you do', 'what do you know', 'what should i ask', 'how does this work', 'tell me more', 'what else', 'anything else', 'more info', 'more details'],
       answer: 'Try asking about his research, skills, projects, publications, availability, or how to contact him. For example: "is he looking for an internship", "what languages does he know", or "how do I reach him".',
     },
     {
@@ -577,6 +588,13 @@ export function render({ site, collections }) {
       command: 'ls /home/publications',
     },
     {
+      topic: 'latest talk',
+      keywords: [],
+      phrases: ['latest talk', 'most recent talk', 'recent talk', 'newest talk', 'last talk', 'latest presentation', 'most recent presentation'],
+      answer: `David's most recent talk was "${talks[0].data.title}" at ${talks[0].data.venue} (${monthYear(talks[0].date)}).`,
+      links: Object.entries(talks[0].data.links ?? {}).map(([label, url]) => ({ label, url })),
+    },
+    {
       topic: 'presentations and talks',
       keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures', 'presented', 'present', 'presenting', 'conference', 'conferences', 'spoke', 'speaker', 'speaking', 'supercomputing', 'sc', 'sc21', 'sc22'],
       phrases: ['research talks', 'conference slides', 'what conferences', 'conferences has he', 'conferences attended'],
@@ -586,6 +604,7 @@ export function render({ site, collections }) {
     {
       topic: 'posters',
       keywords: ['poster', 'posters', 'conference poster', 'research poster'],
+      phrases: ['newest poster', 'latest poster', 'most recent poster', 'recent poster'],
       answer: `David's posters:\n${bullets(posters.map((poster) => `${poster.data.title} — ${poster.data.venue} (${monthYear(poster.date)})`))}\n\nPDFs are in ~/posters:`,
       command: 'ls /home/posters',
     },

@@ -58,6 +58,11 @@
     'they', 'this', 'to', 'was', 'what', 'when', 'where', 'which', 'with', 'you', 'your',
   ]);
 
+  // "tell me more" and the like continue the previous answer instead of
+  // starting a new topic.
+  const FOLLOW_UP =
+    /^(?:tell me more|more|more info|more details|go on|continue|read more|elaborate)\W*$/i;
+
   const wordsIn = (text) => text.toLowerCase().match(/[a-z0-9]+/g) ?? [];
   const normalizePhrase = (text) => wordsIn(text).join('');
   const normalizeReference = (word) => (['he', 'him'].includes(word) ? 'david' : word);
@@ -116,11 +121,18 @@
     }
 
     match(question, { entries, vocabulary }) {
-      const query = new Set(
+      const terms = new Set(
         wordsIn(question)
           .map(normalizeReference)
           .map((word) => this.correct(word, vocabulary)),
       );
+      // A plural also matches its singular ("internships" → "internship"), but
+      // each question word still counts once.
+      const forms = (word) =>
+        word.length > 3 && word.endsWith('s') && !COMMON_WORDS.has(word)
+          ? [word, word.slice(0, -1)]
+          : [word];
+      const query = new Set([...terms].flatMap(forms));
       const normalized = normalizePhrase(question);
       const matchedPhrases = (entry) =>
         entry.phrases.filter(
@@ -128,7 +140,7 @@
             normalized.includes(phrase.compact) || phrase.words.every((word) => query.has(word)),
         );
       const score = (entry) =>
-        entry.words.filter((word) => query.has(word)).length +
+        [...terms].filter((term) => forms(term).some((form) => entry.words.includes(form))).length +
         Math.max(0, ...matchedPhrases(entry).map((phrase) => 10 + 2 * phrase.words.length));
       const entry = entries.reduce((a, b) => (score(b) > score(a) ? b : a));
       return {
@@ -206,6 +218,7 @@
       this.session = false;
       this.mode = false;
       this.confirmation = null;
+      this.last = null;
     }
 
     run(args) {
@@ -215,6 +228,13 @@
     }
 
     async ask(question) {
+      // Asking for more is the same as answering yes to the last answer's offer.
+      const more = this.last?.readMore;
+      if (more && FOLLOW_UP.test(question.trim())) {
+        this.last = null;
+        return this.runTerminalCommand(more.command);
+      }
+
       const thinking = document.createElement('p');
       thinking.className = 'ln hint';
       thinking.textContent = 'local model: thinking…';
@@ -226,6 +246,7 @@
         // Only one y/n follow-up can be pending, so with several answers it
         // comes from the last one that offers one.
         const followUp = results.findLast((result) => result.readMore || result.command);
+        this.last = results.length === 1 ? results[0] : null;
         for (const result of results) {
           this.terminal.write(result.answer, 'pth');
           if (result.hint && results.length === 1) this.terminal.write(result.hint, 'hint');

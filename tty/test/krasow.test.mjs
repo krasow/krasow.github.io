@@ -173,6 +173,15 @@ test('remote chat data cannot dispatch arbitrary or unconfirmed side effects', a
   chat.confirm('yes');
   assert.deepEqual(commands, [['/home/about.pg']]);
 
+  // "tell me more" accepts the last answer's offer without asking again.
+  chat.model.askAll = async () => [{ answer: 'bio', readMore: { command: 'cat /home/about.pg' } }];
+  host.commands.set('cat', (args) => commands.push(['cat', ...args]));
+  await chat.ask('who is he');
+  chat.confirm('n');
+  await chat.ask('tell me more');
+  assert.deepEqual(commands.pop(), ['cat', '/home/about.pg']);
+  chat.model.askAll = async () => [{ answer: 'page', command: 'open /home/about.pg' }];
+
   // Anything but y/n drops the question and is handled as a new one.
   await chat.ask('about');
   chat.ask = async (question) => output.push(['asked', question]);
