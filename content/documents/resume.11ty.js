@@ -119,7 +119,7 @@ export function render({ site, collections }) {
   // Two right-aligned lines in the header's top-right corner.
   const separator = '\\hspace{0.7em}\\textbar\\hspace{0.7em}';
   const contact = [
-    [tex(site.personalPhone), link(`mailto:${site.universityEmail}`, site.universityEmail)],
+    [tex(site.personalPhone), link(`mailto:${site.workEmail}`, site.workEmail)],
     [
       link(site.linkedin, bareUrl(site.linkedin)),
       link(site.github, bareUrl(site.github)),
