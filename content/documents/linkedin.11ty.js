@@ -42,7 +42,7 @@ export function render({ site, collections }) {
   return `${[
     section('Intro', [
       fields([
-        ['Headline', checked('Headline', site.headline, LIMITS.headline)],
+        ['Headline', checked('Headline', site.linkedinHeadline, LIMITS.headline)],
         ['Location', site.location],
         ['Website', site.url],
       ]),

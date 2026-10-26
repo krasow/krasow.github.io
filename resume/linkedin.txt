@@ -2,7 +2,7 @@
 INTRO
 ========================================================================
 
-Headline: Ph.D. Candidate at Northwestern
+Headline: HPC Research | Northwestern Ph.D. Candidate
 Location: Chicago, IL
 Website: https://krasow.dev
 
