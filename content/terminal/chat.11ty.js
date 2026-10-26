@@ -75,6 +75,28 @@ export function render({ site, collections }) {
     return { label: `${id} — ${paper.data.title}`, url: paper.data.links?.PDF ?? paper.data.url };
   };
 
+  // One answer per co-author, matched by surname ("what does he do with Lee").
+  // His advisors have their own answers; two-letter surnames are too ambiguous.
+  const advisors = ['P. Dinda', 'J. C. Calhoun'];
+  const coauthorEntries = coauthors
+    .filter((name) => !advisors.includes(name))
+    .map((name) => [name, name.split(' ').at(-1)])
+    .filter(([, surname]) => surname.length > 2)
+    .map(([name, surname]) => {
+      const papers = publications.filter((paper) => paper.data.authors.split(', ').includes(name));
+      return {
+        topic: `co-author ${name}`,
+        keywords: [surname.toLowerCase()],
+        phrases: [
+          `with ${surname}`,
+          `who is ${surname}`,
+          `what does he do with ${surname}`,
+          `work with ${surname}`,
+        ],
+        answer: `${name} is a co-author with David on:\n${bullets(papers.map(paperLine))}`,
+      };
+    });
+
   // prettier-ignore
   const entries = [
     {
@@ -329,7 +351,7 @@ export function render({ site, collections }) {
     {
       topic: 'cuNumeric.jl',
       keywords: ['cunumeric', 'julia', 'gpu', 'gpus', 'arrays', 'ndarray', 'legate', 'nvidia', 'ipdps', 'documentation', 'docs', 'adoption'],
-      phrases: ['what is cunumeric', 'cunumeric relate', 'julia work', 'julia project', 'julia array project', 'gpu work', 'used by', 'use his work', 'uses his work', 'nvidia use', 'industry collaboration'],
+      phrases: ['what is cunumeric', 'cunumeric relate', 'julia work', 'julia project', 'julia array project', 'gpu work', 'used by', 'use his work', 'uses his work', 'nvidia use', 'industry collaboration', 'with nvidia', 'what does he do with nvidia', 'at nvidia'],
       answer: `cuNumeric.jl, developed with collaborators at Carnegie Mellon University, Los Alamos National Laboratory, and NVIDIA, is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nThe project grew out of an industry collaboration with NVIDIA, which the ${nvidiaArticle.data.venue} podcast covered in ${nvidiaArticle.date.getUTCFullYear()}.\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
       links: [
         { label: 'GitHub', url: 'https://github.com/JuliaLegate/cuNumeric.jl/' },
@@ -608,6 +630,7 @@ export function render({ site, collections }) {
       answer: `David's posters:\n${bullets(posters.map((poster) => `${poster.data.title} — ${poster.data.venue} (${monthYear(poster.date)})`))}\n\nPDFs are in ~/posters:`,
       command: 'ls /home/posters',
     },
+    ...coauthorEntries,
     // Last, so ties go to the more specific topics above.
     {
       topic: 'unlisted technologies',

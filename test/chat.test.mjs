@@ -176,6 +176,10 @@ const EXPECTED = [
   ['what is his orcid id', 'ORCID'],
   ['what was his best poster', 'ACM Student Research Competition'],
   ['tell me more', 'what to ask'],
+  ['what does he do with wonchan lee', 'co-author W. Lee'],
+  ['has he worked with crotty', 'co-author A. Crotty'],
+  ['who is robert underwood', 'co-author R. Underwood'],
+  ['what does he do with nvidia', 'cuNumeric.jl'],
   // the chat and terminal themselves
   ['are you an ai', 'about this chat'],
   ['is this chatgpt', 'about this chat'],
