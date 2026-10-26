@@ -26,7 +26,7 @@ awards:
   - title: "First Place · ACM Undergraduate Student Research Competition"
     date: 2022
     org: Supercomputing 2022
-  - title: "Best Poster · IndySCC22"
+  - title: "Best Poster (Team) · IndySCC22"
     date: 2022
     org: Supercomputing 2022
 

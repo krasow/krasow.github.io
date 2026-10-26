@@ -47,6 +47,12 @@ export function render({ site, collections }) {
     award.title.includes('Computational Science Graduate Fellowship'),
   );
   const csgfNews = bySlug(collections.news, 'northwestern-csgf');
+  const argonneNews = bySlug(collections.news, 'argonne-posters');
+  const juliaconTalk = byId(collections.presentations, 'JULIACON25');
+  const constellationTalk = byId(collections.presentations, 'CONSTELLATION23');
+  const gradSchoolTalk = byId(collections.presentations, 'GRADSCHOOL22');
+  const srcPoster = byId(collections.posters, 'SC22');
+  const village = byId(publications, 'VILLAGE25');
   const firstPlace = cv.awards.find((award) => award.title.startsWith('First Place'));
   const summary = collections.snippets[0].templateContent.trim();
   const projects = collections.projects
@@ -235,6 +241,30 @@ export function render({ site, collections }) {
       answer: 'David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads and the domain scientists who run them. His current work explores raising the level of abstraction for programming them, from multi-GPU systems to Processing-in-Memory (PIM).',
     },
     {
+      topic: 'research motivation',
+      keywords: ['motivation', 'motivated', 'motivates', 'moore'],
+      phrases: ['why does he work', 'why does he study', 'why pim', 'why julia', 'why processing in memory', 'why heterogeneous', 'what motivates him', 'what motivates', 'what drives him', 'why does he care', 'what problem', 'trying to solve', 'moores law', 'research question', 'big picture', 'long term goal', 'research vision'],
+      answer: "The end of Moore's law has led to new specialized architectures, and AI companies are driving today's accelerator boom. David's guiding question is how those emerging AI-focused heterogeneous accelerators can support the workloads of HPC domain scientists. Today, scientists often have to rewrite their code with specialized directives for each new device, so he builds higher-level abstractions that hide that work: Julia arrays that run across distributed GPUs (cuNumeric.jl) and runtime support that makes Processing-in-Memory easier to program (Legion PIM and PolymerPIM).",
+      readMore: { command: 'cat /home/about.pg' },
+    },
+    {
+      topic: 'Constellation Project',
+      keywords: ['constellation', 'frictionless', 'database', 'databases', 'queries', 'sql'],
+      phrases: ['constellation project', 'constellation workshop', 'tpc h', 'decision support', 'database queries'],
+      answer: `David's research is part of the Constellation Project, which aims to enable frictionless heterogeneous parallelism. At the ${constellationTalk.data.venue} (${monthYear(constellationTalk.date)}) he presented "${constellationTalk.data.title}", which explored running decision-support queries (e.g., TPC-H) on UPMEM PIM and, as future work, targeting UPMEM through the Village toolchain.`,
+      links: [
+        { label: 'Constellation Project', url: 'https://constellation-project.net/' },
+        { label: 'Slides', url: constellationTalk.data.links.Slides },
+      ],
+    },
+    {
+      topic: 'Village',
+      keywords: ['village'],
+      phrases: ['what is village', 'village toolchain', 'village report', 'village paper', 'village technical report'],
+      answer: `"${village.data.title}" (${village.data.venue.replace(' · ', ', ')}, ${village.date.getUTCFullYear()}) comes from Peter Dinda's group; David is a co-author. His ${constellationTalk.data.venue} talk proposed targeting UPMEM PIM through the Village toolchain.`,
+      links: [paperLink('VILLAGE25')],
+    },
+    {
       topic: 'compression GitHub repository',
       keywords: [],
       phrases: ['compression github', 'compression repo', 'compression repository', 'github compression work'],
@@ -271,7 +301,7 @@ export function render({ site, collections }) {
     },
     {
       topic: 'cuNumeric.jl',
-      keywords: ['cunumeric', 'julia', 'gpu', 'gpus', 'arrays', 'ndarray', 'legate', 'constellation', 'nvidia', 'ipdps', 'documentation', 'docs', 'adoption'],
+      keywords: ['cunumeric', 'julia', 'gpu', 'gpus', 'arrays', 'ndarray', 'legate', 'nvidia', 'ipdps', 'documentation', 'docs', 'adoption'],
       phrases: ['what is cunumeric', 'cunumeric relate', 'julia work', 'julia project', 'julia array project', 'gpu work', 'used by', 'use his work', 'uses his work', 'nvidia use', 'industry collaboration'],
       answer: `cuNumeric.jl, developed with collaborators at Carnegie Mellon University, Los Alamos National Laboratory, and NVIDIA, is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nThe project grew out of an industry collaboration with NVIDIA, which the ${nvidiaArticle.data.venue} podcast covered in ${nvidiaArticle.date.getUTCFullYear()}.\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
       links: [
@@ -280,6 +310,24 @@ export function render({ site, collections }) {
         { label: `${nvidiaArticle.data.venue} podcast episode`, url: nvidiaArticle.data.url },
       ],
       readMore: { command: 'open /home/projects/cunumeric' },
+    },
+    {
+      topic: 'cuNumeric.jl features',
+      keywords: ['cunumeric', 'stencil', 'stencils', 'pde', 'pdes', 'einsum', 'linear algebra', 'matrix multiplication', 'monte carlo', 'features', 'api', 'supported', 'operations'],
+      phrases: ['what can cunumeric do', 'cunumeric features', 'cunumeric api', 'what is the cunumeric api', 'what operations', 'how does cunumeric work', 'how does it work', 'partial differential equations'],
+      answer: "cuNumeric.jl's NDArray behaves like a Julia Array but can be split across the GPUs and nodes of a distributed system. Operations on NDArrays aren't run immediately: its C++ layer turns them into asynchronous tasks that Legion schedules and load-balances across the hardware, reusing distributed kernels from cuPyNumeric. The API covers common linear algebra (matrix multiplication, einsum), many unary and binary operations, and stencil operations for solving partial differential equations; demos include a stencil PDE solver, Monte Carlo integration, and SGEMM.",
+      links: [{ label: 'Documentation', url: 'https://julialegate.github.io/cuNumeric.jl/stable/' }],
+      readMore: { command: 'open /home/projects/cunumeric' },
+    },
+    {
+      topic: 'JuliaCon talk',
+      keywords: ['juliacon'],
+      phrases: ['juliacon talk', 'juliacon 2025', 'talk at juliacon', 'julia conference'],
+      answer: `At ${juliaconTalk.data.venue} (${monthYear(juliaconTalk.date)}), David presented "${juliaconTalk.data.title}", covering the technology behind cuNumeric.jl, an overview of its API, and scaling results for a stencil PDE solver, Monte Carlo integration, and SGEMM.`,
+      links: [
+        { label: 'Slides', url: juliaconTalk.data.links.Slides },
+        { label: 'Abstract', url: juliaconTalk.data.links.Abstract },
+      ],
     },
     {
       topic: 'Legion runtime',
@@ -342,8 +390,25 @@ export function render({ site, collections }) {
       answer: `David's awards and fellowships:\n${bullets(cv.awards.map((award) => `${award.title} — ${award.org} (${award.date})`))}`,
     },
     {
+      topic: 'ACM Student Research Competition',
+      keywords: ['src', 'acm', 'indyscc'],
+      phrases: ['student research competition', 'acm src', 'sc22 award', 'won at sc22', 'win at sc22', 'best poster', 'first place'],
+      answer: `At SC22, David won ${firstPlace.title.replace(' · ', ' in the ')} with "${srcPoster.data.title}", which extended his statistical methods for predicting lossy compression ratios from 2D to 3D scientific data. His Clemson team also won Best Poster at IndySCC22.`,
+      links: [
+        { label: 'Poster', url: srcPoster.data.file },
+        { label: argonneNews.data.title, url: argonneNews.data.url },
+      ],
+    },
+    {
+      topic: 'grad school advice',
+      keywords: [],
+      phrases: ['grad school', 'graduate school', 'apply to phd', 'applying to phd', 'phd application', 'phd applications', 'should i do a phd', 'choosing an advisor', 'grad school advice', 'talk about grad school', 'grad school talk'],
+      answer: `David co-presented "${gradSchoolTalk.data.title}" at ${gradSchoolTalk.data.venue} (${monthYear(gradSchoolTalk.date)}), a talk and Q&A for undergraduates on the application process, choosing an advisor, and what graduate school can offer. Students considering a Ph.D. are welcome to reach out at ${site.email}.`,
+      links: [{ label: 'Slides', url: gradSchoolTalk.data.links.Slides }],
+    },
+    {
       topic: 'teaching and mentoring',
-      keywords: ['teaching', 'teach', 'taught', 'ta', 'teaching assistant', 'mentor', 'mentoring', 'mentored', 'course', 'class'],
+      keywords: ['teaching', 'teach', 'taught', 'ta', 'teaching assistant', 'mentor', 'mentoring', 'mentored', 'course', 'class', 'operating systems'],
       answer: `David's teaching and mentoring:\n${bullets(cv.teaching.map((item) => `${item.title} — ${item.org} (${item.date})`))}`,
     },
     {
@@ -440,6 +505,18 @@ export function render({ site, collections }) {
       answer: `You're welcome! You can reach David at ${site.email}.`,
     },
     {
+      topic: 'about this chat',
+      keywords: ['chatgpt', 'gpt', 'bot', 'chatbot', 'model', 'llm'],
+      phrases: ['are you an ai', 'are you a bot', 'are you real', 'who are you', 'what are you', 'how do you work', 'what model', 'is this chatgpt', 'is this an llm', 'are you david'],
+      answer: "I'm a small local model running in your browser, not an LLM: I match your question against answers written from the content of David's site. Your questions aren't sent anywhere. If I don't know something, email David at " + site.email + '.',
+    },
+    {
+      topic: 'terminal help',
+      keywords: ['commands', 'terminal', 'shell', 'game', 'games', 'snake', 'play', 'exit', 'quit', 'leave'],
+      phrases: ['what commands', 'how do i use', 'how do i navigate', 'how do i exit', 'how do i leave', 'how do i quit', 'play a game', 'is there a game', 'easter egg', 'easter eggs'],
+      answer: "This terminal is a small shell over David's site. Leave chat with `exit`, then try `ls` and `cd` to browse, `cat` or `open` to read pages, `grep` and pipes (`cat cv.pg | grep Argonne`) to search, `download contact.vcf` for his contact card, and `help` for everything else. There's also `snake`.",
+    },
+    {
       topic: 'what to ask',
       keywords: [],
       phrases: ['what can i ask', 'what can you do', 'what do you know', 'what should i ask', 'how does this work'],
@@ -460,7 +537,7 @@ export function render({ site, collections }) {
     },
     {
       topic: 'presentations and talks',
-      keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures', 'presented', 'present', 'presenting', 'conference', 'conferences', 'spoke', 'speaker', 'speaking', 'supercomputing', 'juliacon', 'sc', 'sc21', 'sc22'],
+      keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures', 'presented', 'present', 'presenting', 'conference', 'conferences', 'spoke', 'speaker', 'speaking', 'supercomputing', 'sc', 'sc21', 'sc22'],
       phrases: ['research talks', 'conference slides'],
       answer: `David's talks:\n${bullets(talks.map((talk) => `${talk.data.title} — ${talk.data.venue} (${monthYear(talk.date)})`))}\n\nSlides are in ~/presentations:`,
       command: 'ls /home/presentations',
