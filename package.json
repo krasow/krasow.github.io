@@ -5,7 +5,8 @@
     "format:check": "prettier --check \"**/*.{js,html}\"",
     "build": "eleventy",
     "serve": "eleventy --serve",
-    "test": "npm run --silent build -- --quiet && node --test test/*.test.mjs"
+    "test": "npm run --silent build -- --quiet && node --test test/*.test.mjs",
+    "resume": "node resume/build.mjs"
   },
   "devDependencies": {
     "@11ty/eleventy": "3.1.6",

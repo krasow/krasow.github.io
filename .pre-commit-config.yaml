@@ -9,6 +9,14 @@ repos:
         language: system
         pass_filenames: false
         files: ^(content/|terminal/|common/|assets/|test/|eleventy\.config\.mjs$|package(-lock)?\.json$)
+      # Rebuilds the resume PDF from content/ with the local pdflatex. If the PDF
+      # changes, the commit stops so the new PDF can be added to it.
+      - id: resume
+        name: Rebuild the resume PDF
+        entry: npm run --silent resume
+        language: system
+        pass_filenames: false
+        files: ^(content/|resume/|eleventy\.config\.mjs$)
       # Only the files being committed, so unrelated work in progress can't block a commit.
       - id: prettier
         name: Check JavaScript and HTML formatting

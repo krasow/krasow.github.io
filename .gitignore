@@ -27,3 +27,4 @@ coverage/
 
 # Eleventy build output
 _site/
+resume/build/

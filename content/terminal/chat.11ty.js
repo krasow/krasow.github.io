@@ -486,7 +486,7 @@ export function render({ site, collections }) {
       topic: 'GitHub profile',
       keywords: ['github', 'github profile', 'github account', 'repositories', 'repos'],
       phrases: ['davids github', 'david github', 'his github', 'github profile', 'github account'],
-      answer: "David's GitHub profile is @Krasow, where you can find his public repositories and contributions.",
+      answer: "David's GitHub profile is @krasow, where you can find his public repositories and contributions.",
       links: [{ label: 'GitHub', url: site.github }],
     },
     {

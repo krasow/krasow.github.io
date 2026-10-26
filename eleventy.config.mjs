@@ -92,8 +92,11 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter('json', (value) => JSON.stringify(value));
 
   // The terminal's filesystem manifest and page text are built from the
-  // finished site, so they always match what's deployed.
-  eleventyConfig.on('eleventy.after', ({ dir }) => generateManifest(dir.output));
+  // finished site, so they always match what's deployed. Skipped when nothing
+  // is written (resume/build.mjs renders to JSON).
+  eleventyConfig.on('eleventy.after', ({ dir, outputMode }) =>
+    outputMode === 'fs' ? generateManifest(dir.output) : undefined,
+  );
 
   return {
     dir: { input: 'content', output: '_site' },
