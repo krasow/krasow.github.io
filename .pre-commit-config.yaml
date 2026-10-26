@@ -9,9 +9,9 @@ repos:
         language: system
         pass_filenames: false
         files: ^(content/|terminal/|common/|assets/|eleventy\.config\.mjs$|package(-lock)?\.json$)
+      # Only the files being committed, so unrelated work in progress can't block a commit.
       - id: prettier
         name: Check JavaScript and HTML formatting
-        entry: npm run format:check
+        entry: npx prettier --check
         language: system
-        pass_filenames: false
         files: \.(js|html)$

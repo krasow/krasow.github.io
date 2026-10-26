@@ -82,7 +82,7 @@ export default function (eleventyConfig) {
 
   return {
     dir: { input: 'content', output: '_site' },
-    templateFormats: ['md', 'njk'],
+    templateFormats: ['md', 'njk', '11ty.js'],
     // Content is plain Markdown; don't run it through a template language.
     markdownTemplateEngine: false,
     htmlTemplateEngine: 'njk',
