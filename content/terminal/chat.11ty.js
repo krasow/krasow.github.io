@@ -62,6 +62,18 @@ export function render({ site, collections }) {
     paper.data.authors.startsWith(site.authorName),
   ).length;
   const skillWords = skills.map((skill) => skill.toLowerCase());
+  const coauthors = [
+    ...new Set(
+      publications
+        .flatMap((paper) => paper.data.authors.split(', '))
+        .filter((name) => name !== site.authorName),
+    ),
+  ];
+  const paperLine = (paper) =>
+    `"${paper.data.title}" (${paper.data.venue}, ${paper.date.getUTCFullYear()})`;
+  const firstPaper = publications.at(-1);
+  const newestYear = publications[0].date.getUTCFullYear();
+  const latestPapers = publications.filter((paper) => paper.date.getUTCFullYear() === newestYear);
   const paperLink = (id) => {
     const paper = byId(publications, id);
     return { label: `${id} — ${paper.data.title}`, url: paper.data.links?.PDF ?? paper.data.url };
@@ -77,14 +89,14 @@ export function render({ site, collections }) {
     },
     {
       topic: 'name',
-      keywords: ['name', 'named', 'called', 'full name'],
+      keywords: ['name', 'named', 'called', 'full name', 'krasow', 'pronounce', 'pronunciation'],
       phrases: ['what should i call'],
       answer: `His name is ${site.name}.`,
     },
     {
       topic: 'current role and university',
-      keywords: ['who', 'identity', 'bio', 'biography', 'introduce', 'phd candidate', 'northwestern', 'student', 'current', 'school', 'university', 'advisor', 'peter dinda'],
-      phrases: ['about david', 'tell me about david', 'quick bio'],
+      keywords: ['who', 'identity', 'bio', 'biography', 'introduce', 'phd candidate', 'northwestern', 'student', 'current', 'school', 'university', 'advisor', 'peter dinda', 'department'],
+      phrases: ['about david', 'tell me about david', 'quick bio', 'learn more about him', 'find more', 'current position'],
       answer: 'David is a Computer Science Ph.D. candidate at Northwestern University, advised by Peter Dinda.',
       hint: 'Try asking about his work in Julia, lossy compression, or PIM.',
       readMore: { command: 'cat /home/about.pg' },
@@ -92,7 +104,7 @@ export function render({ site, collections }) {
     {
       topic: 'summary',
       keywords: ['summary', 'overview', 'pitch', 'strengths', 'strength', 'yourself', 'fit', 'qualified', 'qualifications'],
-      phrases: ['why should we hire', 'why hire', 'good fit', 'tell me about yourself', 'elevator pitch', 'what makes him', 'qualified for'],
+      phrases: ['why should we hire', 'why hire', 'good fit', 'tell me about yourself', 'elevator pitch', 'what makes him', 'qualified for', 'what is he good at', 'good at'],
       answer: summary,
       hint: 'Ask about his research, skills, or availability.',
       readMore: {
@@ -103,14 +115,14 @@ export function render({ site, collections }) {
     {
       topic: 'Northwestern experience',
       keywords: ['peter dinda'],
-      phrases: ['at northwestern', 'northwestern research', 'northwestern work', 'doing for phd', 'phd research', 'research is he doing', 'doctoral work', 'current project', 'current work', 'currently working', 'working on now', 'he working on', 'recent work', 'latest work', 'latest research'],
+      phrases: ['at northwestern', 'northwestern research', 'northwestern work', 'doing for phd', 'phd research', 'research is he doing', 'doctoral work', 'current project', 'current work', 'currently working', 'working on now', 'he working on', 'doing right now', 'doing now', 'up to these days', 'recent work', 'latest work', 'latest research'],
       answer: 'At Northwestern University, David is a Computer Science Ph.D. candidate advised by Peter Dinda. His work there includes cuNumeric.jl, for running Julia array programs across distributed GPU systems, and PolymerPIM, which uses deferred execution to make Processing-in-Memory systems both easy to program and fast.',
       hint: 'Try asking about cuNumeric.jl or PolymerPIM.',
     },
     {
       topic: 'Clemson experience',
       keywords: ['fthpc', 'jon calhoun'],
-      phrases: ['at clemson', 'at argonne', 'clemson experience', 'clemson research', 'clemson work', 'undergraduate research', 'group undergraduate', 'cluster competition', 'student cluster'],
+      phrases: ['at clemson', 'at argonne', 'clemson experience', 'clemson research', 'clemson work', 'undergraduate research', 'group undergraduate', 'cluster competition', 'student cluster', 'undergrad research', 'get into research', 'got into research', 'start doing research', 'first research'],
       answer: `At Clemson University, David earned a ${bachelors.title.replace(' · ', ' in ')} and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data. He also competed in the Student Cluster Competition at SC '21 and IndySCC at SC '22, building a cluster with Dell and Intel.`,
       readMore: {
         prompt: 'Would you like to read more about the compression project? (y/n)',
@@ -120,7 +132,7 @@ export function render({ site, collections }) {
     {
       topic: 'graduation',
       keywords: ['graduation'],
-      phrases: ['when does he graduate', 'when will he graduate', 'when is he graduating', 'expect to graduate', 'expected graduation', 'graduation date', 'when does he finish', 'when will he finish', 'when is he done', 'what year of his phd', 'how far along', 'when did he start his phd', 'how long has he been'],
+      phrases: ['when does he graduate', 'when will he graduate', 'when is he graduating', 'expect to graduate', 'expected graduation', 'graduation date', 'when does he finish', 'when will he finish', 'when is he done', 'what year of his phd', 'what year is he', 'how far along', 'when did he start his phd', 'how long has he been'],
       answer: `David started his Ph.D. in Computer Science at Northwestern University in ${phdStart} and expects to graduate in ${EXPECTED_GRADUATION}.`,
       hint: 'Ask whether he is looking for a job or internship.',
     },
@@ -151,6 +163,7 @@ export function render({ site, collections }) {
     {
       topic: 'programming background',
       keywords: ['programming', 'language', 'languages', 'skills', 'technical skills', 'technology', 'technologies', 'tools', 'compiler', 'compilers', 'cgra', 'cgras', 'fpga', 'fpgas', ...skillWords, 'software', 'engineer', 'developer', 'coding', 'code', 'systems programming'],
+      phrases: ['technical strengths', 'software engineering', 'favorite language'],
       answer: `David's site lists these skills: ${skills.join(', ')}. Beyond GPUs, he has also worked with Processing-in-Memory (UPMEM PIM), CGRAs, and FPGAs.`,
       readMore: {
         prompt: 'Would you like to open his CV? (y/n)',
@@ -228,6 +241,23 @@ export function render({ site, collections }) {
       answer: `David has competed on Clemson's Student Cluster Competition teams (SC '21 and IndySCC at SC '22), has collaborated with researchers at Argonne, Los Alamos National Laboratory, and NVIDIA, and teaches and mentors students:\n${bullets(cv.teaching.map((item) => `${item.title} — ${item.org} (${item.date})`))}`,
     },
     {
+      topic: 'collaborators and co-authors',
+      keywords: ['coauthor', 'coauthors', 'co-author', 'co-authors', 'collaborates'],
+      phrases: ['who does he work with', 'who does he collaborate with', 'who has he worked with', 'collaborate with', 'co authors', 'co author'],
+      answer: `David is advised by Peter Dinda at Northwestern and has collaborated with researchers at Argonne National Laboratory, Los Alamos National Laboratory, Carnegie Mellon University, and NVIDIA. His co-authors include ${andList(coauthors)}.`,
+      command: 'ls /home/publications',
+    },
+    {
+      topic: 'working with David',
+      keywords: ['students', 'collaboration', 'collaborate'],
+      phrases: ['work with him', 'work with david', 'taking students', 'mentor me', 'join his', 'collaborate with him', 'collaborate with david', 'research with him', 'research opportunities', 'can i work'],
+      answer: `David is happy to hear from students and researchers interested in his work on programming distributed, heterogeneous systems. He has mentored master's and undergraduate researchers at Northwestern. Reach out at ${site.email} with a short note about what you'd like to work on.`,
+      readMore: {
+        prompt: 'Would you like to see his contact info? (y/n)',
+        command: 'cat /home/contact.md',
+      },
+    },
+    {
       topic: 'AI and machine learning',
       keywords: ['machine learning', 'ml', 'ai', 'deep learning', 'pytorch', 'tensorflow', 'llm', 'llms', 'neural'],
       phrases: ['machine learning experience', 'ai experience'],
@@ -236,7 +266,7 @@ export function render({ site, collections }) {
     },
     {
       topic: 'research interests',
-      keywords: ['work', 'research', 'hpc', 'high performance computing', 'distributed', 'heterogeneous', 'accelerators', 'domain scientists', 'thesis', 'dissertation', 'passionate', 'passion', 'interested', 'interests', 'excited'],
+      keywords: ['work', 'research', 'hpc', 'high performance computing', 'distributed', 'heterogeneous', 'accelerators', 'domain scientists', 'thesis', 'dissertation', 'passionate', 'passion', 'interested', 'interests', 'excited', 'specialize', 'specializes', 'specialty', 'specialization', 'expertise', 'expert', 'focus'],
       phrases: ['phd thesis', 'distributed systems', 'he passionate about', 'he excited about', 'what interests him', 'what does he do', 'what does he study', 'area of cs', 'scientific workloads', 'emerging accelerators', 'intended users', 'accelerator research'],
       answer: 'David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads and the domain scientists who run them. His current work explores raising the level of abstraction for programming them, from multi-GPU systems to Processing-in-Memory (PIM).',
     },
@@ -273,8 +303,8 @@ export function render({ site, collections }) {
     },
     {
       topic: 'lossy compression research',
-      keywords: ['compression', 'lossy', 'prediction', 'scientific data', 'argonne', 'clemson', 'compressibility'],
-      phrases: ['lossy compression', 'compression work', 'compression papers', 'compressibility work', 'compression ratios'],
+      keywords: ['compression', 'lossy', 'prediction', 'scientific data', 'argonne', 'clemson', 'compressibility', 'drbsd', 'ijhpca', 'libpressio', 'sz', 'error bounded'],
+      phrases: ['cluster paper', 'cluster 2023', 'lossy compression', 'compression work', 'compression papers', 'compressibility work', 'compression ratios'],
       answer: 'David began his research at Clemson in collaboration with Argonne National Laboratory, developing statistical methods to predict error-bounded lossy compression ratios for scientific data.\n\nRelated papers:',
       links: ['CLUSTER23', 'IJHPCA23', 'DRBSD21'].map(paperLink),
       readMore: { command: 'open /home/projects/compression' },
@@ -289,6 +319,7 @@ export function render({ site, collections }) {
     {
       topic: 'performance results',
       keywords: ['performance', 'fast', 'faster', 'speed', 'speedup', 'benchmark', 'benchmarks', 'benchmarking', 'results', 'scaling', 'scales', 'efficiency', 'optimization', 'compare', 'compares', 'comparison', 'cupynumeric', 'gemm', 'flops'],
+      phrases: ['performance engineering', 'scaled to', 'how many gpus'],
       answer: "Early cuNumeric.jl results on the project page: GEMM weak-scales to 8×A100 GPUs and matches cuPyNumeric, and Monte Carlo integration matches cuPyNumeric's parallel efficiency while achieving higher FLOPS, since cuNumeric.jl calls into C++ from a thin Julia front end instead of several layers of Python. Those results reflect an early version; current numbers are in the cuNumeric.jl benchmark results.",
       links: [{ label: 'Current benchmark results', url: 'https://julialegate.github.io/cuNumeric.jl/stable/benchmarks/results' }],
       readMore: { command: 'open /home/projects/cunumeric' },
@@ -296,7 +327,7 @@ export function render({ site, collections }) {
     {
       topic: 'hardware',
       keywords: ['hardware', 'supercomputer', 'supercomputers', 'cluster', 'clusters', 'architecture', 'architectures', 'palmetto', 'a100', 'dimm', 'dimms', 'amd', 'intel', 'dell'],
-      phrases: ['hardware has he worked with'],
+      phrases: ['hardware has he worked with', 'what gpus', 'gpus has he used', 'which gpus'],
       answer: "David has worked with NVIDIA GPUs (cuNumeric.jl, up to 8×A100), UPMEM Processing-in-Memory DIMMs (Legion PIM and PolymerPIM), CGRAs, and FPGAs. At Clemson he ran research on the Palmetto Cluster and helped build a competition cluster with Dell and Intel for the Student Cluster Competition.",
     },
     {
@@ -436,9 +467,9 @@ export function render({ site, collections }) {
     },
     {
       topic: 'contact',
-      keywords: ['contact', 'card', 'vcard', 'vcf', 'download', 'save', 'reach', 'location', 'located', 'live', 'lives', 'based', 'chicago'],
-      phrases: ['contact card', 'download contact', 'save contact', 'recruiter reach', 'recruiter contact', 'best way to reach', 'reach him', 'get in touch', 'email and phone', 'phone and email'],
-      answer: `David is based in ${site.location}. You can reach him at ${site.email} or ${site.phone}, or run \`download contact.vcf\` to save his contact card.`,
+      keywords: ['contact', 'card', 'vcard', 'vcf', 'download', 'save', 'reach', 'location', 'located', 'live', 'lives', 'based', 'chicago', 'evanston', 'timezone'],
+      phrases: ['contact card', 'download contact', 'save contact', 'recruiter reach', 'recruiter contact', 'best way to reach', 'reach him', 'get in touch', 'email and phone', 'phone and email', 'time zone', 'what timezone'],
+      answer: `David is based in ${site.location} (US Central Time). You can reach him at ${site.email} or ${site.phone}, or run \`download contact.vcf\` to save his contact card.`,
       readMore: {
         prompt: 'Would you like to download his contact card? (y/n)',
         command: 'download /home/contact.vcf',
@@ -467,12 +498,13 @@ export function render({ site, collections }) {
     {
       topic: 'Google Scholar',
       keywords: ['scholar', 'google scholar', 'citations', 'citation', 'h-index', 'hindex', 'index'],
+      phrases: ['most cited', 'how many citations'],
       answer: "David's Google Scholar profile:",
       links: [{ label: 'Google Scholar', url: site.scholar }],
     },
     {
       topic: 'social media',
-      keywords: ['twitter', 'bluesky', 'mastodon', 'instagram', 'social', 'socials', 'social media'],
+      keywords: ['twitter', 'bluesky', 'mastodon', 'instagram', 'social', 'socials', 'social media', 'blog', 'blogs', 'substack', 'medium'],
       answer: "David's site doesn't list Twitter/X or other social accounts. You can find him on LinkedIn, GitHub, and Google Scholar.",
       links: [
         { label: 'LinkedIn', url: site.linkedin },
@@ -490,7 +522,7 @@ export function render({ site, collections }) {
     },
     {
       topic: 'personal',
-      keywords: ['hobby', 'hobbies', 'fun', 'free time', 'personal', 'hometown', 'age', 'old', 'speak', 'spoken'],
+      keywords: ['hobby', 'hobbies', 'fun', 'free time', 'personal', 'hometown', 'age', 'old', 'speak', 'spoken', 'pronouns'],
       phrases: ['where is he from', 'what does he do for fun', 'how old', 'languages does he speak', 'outside of work'],
       answer: `David's site focuses on his research and work, so it doesn't cover that. Feel free to ask him directly at ${site.email}.`,
     },
@@ -529,16 +561,29 @@ export function render({ site, collections }) {
       command: 'cat /home/news.pg',
     },
     {
+      topic: 'first paper',
+      keywords: [],
+      phrases: ['first paper', 'first publication', 'earliest paper', 'oldest paper', 'first published'],
+      answer: `David's first paper was ${paperLine(firstPaper)}, from his undergraduate research at Clemson with Argonne National Laboratory.`,
+      links: [paperLink(firstPaper.data.id)],
+    },
+    {
+      topic: 'latest papers',
+      keywords: [],
+      phrases: ['latest paper', 'latest papers', 'newest paper', 'most recent paper', 'recent papers', 'latest publication', 'recent publications', 'paper status', 'status of his papers', 'under review', 'papers accepted', 'paper accepted'],
+      answer: `David's most recent papers:\n${bullets(latestPapers.map(paperLine))}`,
+    },
+    {
       topic: 'publications and papers',
       keywords: ['publication', 'publications', 'paper', 'papers', 'published', 'writing', 'list', 'submitted', 'review', 'read', 'pdf', 'pdfs', 'bibtex', 'bib', 'cite'],
-      phrases: ['research papers', 'first author', 'first authored', 'read his papers', 'technical report', 'tech report'],
+      phrases: ['research papers', 'first author', 'first authored', 'read his papers', 'technical report', 'tech report', 'download his papers', 'his papers', 'where has he published', 'published at'],
       answer: `David's publications and technical reports:\n${bullets(publications.map((paper) => `${paper.data.title} — ${paper.data.venue} (${paper.date.getUTCFullYear()})`))}\n\nHe is first author on ${firstAuthored} of ${publications.length}. The published ones are in ~/publications:`,
       command: 'ls /home/publications',
     },
     {
       topic: 'presentations and talks',
       keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures', 'presented', 'present', 'presenting', 'conference', 'conferences', 'spoke', 'speaker', 'speaking', 'supercomputing', 'sc', 'sc21', 'sc22'],
-      phrases: ['research talks', 'conference slides'],
+      phrases: ['research talks', 'conference slides', 'what conferences', 'conferences has he', 'conferences attended'],
       answer: `David's talks:\n${bullets(talks.map((talk) => `${talk.data.title} — ${talk.data.venue} (${monthYear(talk.date)})`))}\n\nSlides are in ~/presentations:`,
       command: 'ls /home/presentations',
     },
@@ -547,6 +592,13 @@ export function render({ site, collections }) {
       keywords: ['poster', 'posters', 'conference poster', 'research poster'],
       answer: `David's posters:\n${bullets(posters.map((poster) => `${poster.data.title} — ${poster.data.venue} (${monthYear(poster.date)})`))}\n\nPDFs are in ~/posters:`,
       command: 'ls /home/posters',
+    },
+    // Last, so ties go to the more specific topics above.
+    {
+      topic: 'unlisted technologies',
+      keywords: ['git', 'linux', 'unix', 'docker', 'kubernetes', 'k8s', 'cloud', 'aws', 'azure', 'gcp', 'slurm', 'openmp', 'openacc', 'java', 'javascript', 'typescript', 'rust', 'go', 'golang', 'fortran', 'numpy', 'cupy', 'hip', 'rocm', 'sycl', 'kokkos', 'raja', 'mlir', 'profiling', 'profiler', 'nsight', 'testing', 'tests', 'ci', 'sql', 'production'],
+      phrases: ['production code', 'write tests', 'unit tests', 'cloud experience', 'cloud computing', 'experience with kubernetes', 'kubernetes experience', 'experience with docker'],
+      answer: `David's site doesn't say whether he uses that specifically. The skills it lists are ${andList(skills)}, plus GPUs, Processing-in-Memory, CGRAs, and FPGAs. For anything else, ask him at ${site.email}.`,
     },
   ];
 
