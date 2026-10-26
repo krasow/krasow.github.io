@@ -3,10 +3,6 @@
 // skills) are pulled from content/ so the chat can't drift from the site.
 // terminal/js/apps/chat.js validates the shape on load.
 
-// Not shown elsewhere on the site, so it lives here; used by the graduation and
-// hiring answers.
-const EXPECTED_GRADUATION = 'December 2027';
-
 const monthYear = (date) =>
   date.toLocaleString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const bullets = (lines) => lines.map((line) => `• ${line}`).join('\n');
@@ -133,7 +129,7 @@ export function render({ site, collections }) {
       topic: 'graduation',
       keywords: ['graduation'],
       phrases: ['when does he graduate', 'when will he graduate', 'when is he graduating', 'expect to graduate', 'expected graduation', 'graduation date', 'when does he finish', 'when will he finish', 'when is he done', 'what year of his phd', 'what year is he', 'how far along', 'when did he start his phd', 'how long has he been'],
-      answer: `David started his Ph.D. in Computer Science at Northwestern University in ${phdStart} and expects to graduate in ${EXPECTED_GRADUATION}.`,
+      answer: `David started his Ph.D. in Computer Science at Northwestern University in ${phdStart} and expects to graduate in ${site.expectedGraduation}.`,
       hint: 'Ask whether he is looking for a job or internship.',
     },
     {
@@ -181,7 +177,7 @@ export function render({ site, collections }) {
       topic: 'hiring availability',
       keywords: ['hire', 'hiring', 'available', 'availability', 'recruit', 'recruiting', 'job', 'jobs', 'internship', 'intern', 'full time', 'full-time', 'role', 'roles', 'position', 'positions', 'opportunity', 'opportunities', 'start', 'recruiter', 'recruiters', 'startup', 'opening', 'openings'],
       phrases: ['open to work', 'available to work', 'looking for work', 'looking for a job', 'when can he start', 'start date', 'what kind of roles', 'type of position', 'would he be interested', 'would you be interested', 'are you interested', 'interested in joining', 'interested in working', 'want to work', 'like to work', 'recruiter at', 'i am a recruiter', 'we are hiring'],
-      answer: `David is looking for an internship for 2027. He expects to graduate in ${EXPECTED_GRADUATION} and plans to begin looking for full-time positions around that time.`,
+      answer: `David is looking for an internship for 2027. He expects to graduate in ${site.expectedGraduation} and plans to begin looking for full-time positions around that time.`,
       readMore: {
         prompt: 'Would you like to download his contact card? (y/n)',
         command: 'download /home/contact.vcf',

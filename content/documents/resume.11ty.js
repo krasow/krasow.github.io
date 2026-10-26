@@ -2,7 +2,7 @@
 // summary.md, experience/ (each job's `resume:` bullets), publications/, and
 // cv.md's education, awards, and teaching. Layout lives in resume/resume.sty.
 //
-// Only written when RESUME_TEX is set (by `npm run resume`), since it carries
+// Only written when BUILD_DOCUMENTS is set (by `npm run resume`), since it carries
 // site.personalPhone, which stays off the website.
 
 const escapes = {
@@ -28,7 +28,7 @@ const link = (url, label) => `\\href{${url.replace(/[%#]/g, '\\$&')}}{${tex(labe
 const bareUrl = (url) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 
 export const data = {
-  permalink: () => (process.env.RESUME_TEX ? '/resume/resume.tex' : false),
+  permalink: () => (process.env.BUILD_DOCUMENTS ? '/resume/resume.tex' : false),
   eleventyExcludeFromCollections: true,
 };
 

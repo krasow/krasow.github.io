@@ -1,0 +1,130 @@
+========================================================================
+INTRO
+========================================================================
+
+Headline: Ph.D. Candidate at Northwestern
+Location: Chicago, IL
+Website: https://krasow.dev
+
+========================================================================
+ABOUT
+========================================================================
+
+David Krasowska is a Ph.D. candidate at Northwestern University, advised by Dr. Peter Dinda. His research began at Clemson University collaborating with Argonne National Laboratory on lossy compression for HPC scientific applications. He received the DOE Computational Science Graduate Fellowship for his graduate studies. Currently he explores raising the level of abstraction for programming emerging accelerators, such as multi-GPU systems and Processing-in-Memory (PIM).
+
+Publications, talks, and projects: https://krasow.dev
+
+========================================================================
+EXPERIENCE
+========================================================================
+
+Title: Visiting Student
+Company or organization: Los Alamos National Laboratory
+Start date: Jun 2024
+End date: Aug 2024
+Description:
+• Added support for UPMEM processing in memory (PIM) to the Legion runtime system.
+• Evaluated Legion task-based programming models on PIM distributed clusters.
+• Researched automated mapping of application kernels onto distributed heterogeneous systems.
+
+Title: Research Aide
+Company or organization: Argonne National Laboratory
+Start date: Jun 2022
+End date: Jun 2023
+Description:
+• Expanded DRBSD-7 work to 3D datasets and a black-box regression model (IJHPCA).
+• First Place, ACM Undergraduate Student Research Competition poster at SC '22.
+• Contributed to Libpressio, an Argonne library for compression.
+
+Title: High Performance Computing Creative Inquiry
+Company or organization: Clemson University
+Start date: Jun 2021
+End date: Dec 2022
+Description:
+• Best Poster (team) at the Indy Student Cluster Competition at SC '22.
+• Student Cluster Competition at SC '21.
+• Collaborated with Dell and Intel to configure a Pareto-optimal performance-per-watt cluster.
+• Set up a distributed cluster with package managers, applications, and benchmarks.
+
+Title: Undergraduate Student Researcher
+Company or organization: Clemson University, FTHPC
+Start date: May 2021
+End date: May 2022
+Description:
+• Lossy compression research with Argonne National Laboratory and Clemson University FTHPC.
+• Analyzed statistical correlations within scientific 2D datasets in relation to compression performance.
+• Publication at DRBSD-7, held during SC '21.
+
+========================================================================
+EDUCATION
+========================================================================
+
+School: Northwestern University
+Degree: Ph.D. Candidate & M.S.
+Field of study: Computer Science
+Start date: 2023
+End date (or expected): December 2027 (expected)
+Description: Advised by Dr. Peter Dinda, Prescience Lab
+
+School: Clemson University
+Degree: B.S.
+Field of study: Computer Engineering
+Start date: 2019
+End date (or expected): 2022
+
+========================================================================
+PUBLICATIONS
+========================================================================
+
+Title: Village: From High Level Parallelism to High Performance
+Publication or publisher: Technical Report NU-CS-2025-33, Northwestern University
+Publication date: 2025
+Authors: K. Nagaitsev, G. Dube, K. Hallsby, P. Liu, Q. Jiang, L. Myers, D. Krasowska, A. Butler, R. Xu, P. Dinda
+Publication URL: https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf
+
+Title: Black-Box Statistical Prediction of Lossy Compression Ratios for Scientific Data
+Publication or publisher: International Journal of High Performance Computing Applications (IJHPCA)
+Publication date: 2023
+Authors: R. Underwood, J. Bessac, D. Krasowska, J. C. Calhoun, S. Di, F. Cappello
+Publication URL: https://doi.org/10.1177/10943420231179417
+
+Title: A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression
+Publication or publisher: IEEE International Conference on Cluster Computing (CLUSTER)
+Publication date: 2023
+Authors: A. Ganguli, R. Underwood, J. Bessac, D. Krasowska, J. C. Calhoun, S. Di, F. Cappello
+Publication URL: https://doi.org/10.1109/CLUSTER52292.2023.00028
+
+Title: Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets
+Publication or publisher: 7th Workshop on Data Analysis and Reduction for Big Scientific Data (DRBSD-7)
+Publication date: 2021
+Authors: D. Krasowska, J. Bessac, R. Underwood, J. C. Calhoun, S. Di, F. Cappello
+Publication URL: https://doi.org/10.1109/DRBSD754563.2021.00011
+
+========================================================================
+HONORS & AWARDS
+========================================================================
+
+Title: DOE Computational Science Graduate Fellowship
+Issuer: Department of Energy
+Issue date: 2023
+
+Title: First Place, ACM Undergraduate Student Research Competition
+Issuer: Supercomputing 2022
+Issue date: 2022
+
+Title: Best Poster (Team), IndySCC22
+Issuer: Supercomputing 2022
+Issue date: 2022
+
+========================================================================
+SKILLS
+========================================================================
+
+MPI
+CUDA
+C
+C++
+Python
+Julia
+LLVM
+HPC
