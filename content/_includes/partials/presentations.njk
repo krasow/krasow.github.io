@@ -2,7 +2,7 @@
 {%- import "partials/ui.njk" as ui %}
 
 {#- Talks whose `kind` matches, newest first, with month and year. #}
-{%- macro list(title, talks, kind) %}
+{%- macro list(title, talks, kind, posters) %}
 <div class="holder">
   <div class="title-lg">{{ title }}</div>
   {%- for talk in talks | newestFirst | where("kind", kind) %}
@@ -17,10 +17,29 @@
         {%- if talk.data.venueUrl %}<a href="{{ talk.data.venueUrl }}">{{ talk.data.venue }}</a>
         {%- else %}{{ talk.data.venue }}{% endif -%}
       </div>
-      {{- ui.links(talk.data.links) }}
+      {{- ui.links(talk | talkLinks(posters)) }}
     </div>
   </div>
   {%- endfor %}
 </div>
 {%- endmacro %}
 
+{#- Posters from content/posters/, newest first. #}
+{%- macro posters(title, items) %}
+<div class="holder">
+  <div class="title-lg">{{ title }}</div>
+  {%- for poster in items | newestFirst %}
+
+  <div class="event pub-event">
+    <div class="pub-left">
+      <div class="pub-year"><span class="pub-month">{{ poster.date | month }}</span><br />{{ poster.date | year }}</div>
+    </div>
+    <div class="pub-content">
+      <div class="title-sm">{{ poster.data.title }}</div>
+      <div class="venue">{{ poster.data.venue }}</div>
+      {{- ui.links({ Poster: poster.data.file }) }}
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro %}

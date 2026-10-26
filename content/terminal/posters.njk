@@ -1,0 +1,10 @@
+---
+permalink: /terminal/fs/home/posters/.terminal.json
+---
+{
+  "entries": [
+{%- for poster in collections.posters | newestFirst %}
+    { "name": {{ poster.data.id | json | safe }}, "target": {{ poster.data.file | json | safe }} }{% if not loop.last %},{% endif %}
+{%- endfor %}
+  ]
+}

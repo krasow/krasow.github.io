@@ -64,6 +64,16 @@ export default function (eleventyConfig) {
   eleventyConfig.addFilter('where', (items, key, value) =>
     items.filter((item) => (value === undefined ? item.data[key] : item.data[key] === value)),
   );
+  // A talk's `links`, with a Poster button (after Slides) for its `poster:` id
+  // from content/posters/. Unknown ids fail the build rather than drop the link.
+  eleventyConfig.addFilter('talkLinks', (talk, posters) => {
+    const links = Object.entries(talk.data.links ?? {});
+    if (!talk.data.poster) return Object.fromEntries(links);
+    const poster = posters.find((item) => item.data.id === talk.data.poster);
+    if (!poster) throw new Error(`${talk.inputPath}: no poster with id ${talk.data.poster}`);
+    links.splice(links.findIndex(([label]) => label === 'Slides') + 1, 0, ['Poster', poster.data.file]);
+    return Object.fromEntries(links);
+  });
   eleventyConfig.addFilter('json', (value) => JSON.stringify(value));
 
   // The terminal's filesystem manifest and page text are built from the
