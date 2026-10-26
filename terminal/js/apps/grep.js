@@ -9,21 +9,29 @@
     run(args) {
       const ignoreCase = args[0] === '-i';
       const offset = ignoreCase ? 1 : 0;
-      if (args.length < offset + 2) return false;
+      const piped = this.terminal.stdin !== undefined && args.length === offset + 1;
+      if (args.length < offset + 2 && !piped) return false;
 
-      this.search(args[offset], args.slice(offset + 1), ignoreCase);
-      return true;
+      const expression = this.expression(args[offset], ignoreCase);
+      if (!expression) return true;
+      if (piped) {
+        const matches = this.terminal.stdin.split('\n').filter((line) => expression.test(line));
+        if (matches.length) this.terminal.write(matches.join('\n'), 'pth');
+        return true;
+      }
+      return this.search(expression, args.slice(offset + 1)).then(() => true);
     }
 
-    async search(pattern, paths, ignoreCase = false) {
-      let expression;
+    expression(pattern, ignoreCase) {
       try {
-        expression = new RegExp(pattern, ignoreCase ? 'i' : '');
+        return new RegExp(pattern, ignoreCase ? 'i' : '');
       } catch (error) {
         this.terminal.write(`grep: invalid pattern: ${pattern}`, 'err');
-        return;
+        return null;
       }
+    }
 
+    async search(expression, paths) {
       const files = paths.flatMap((path) => this.terminal.expandPath(path));
       if (!files.length) {
         this.terminal.write('grep: no files matched', 'err');

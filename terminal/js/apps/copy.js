@@ -5,11 +5,14 @@
       this.terminal = terminal;
     }
     run(args) {
-      return window.TerminalApp.exact(args, 1, () => this.copy(args[0]));
+      if (!args.length && this.terminal.stdin !== undefined)
+        return this.copy('piped input', async () => this.terminal.stdin).then(() => true);
+      if (args.length !== 1) return false;
+      return this.copy(args[0], () => this.terminal.fileText(args[0])).then(() => true);
     }
-    async copy(path) {
+    async copy(path, read) {
       try {
-        const text = await this.terminal.fileText(path);
+        const text = await read();
         try {
           await navigator.clipboard.writeText(text);
         } catch (error) {

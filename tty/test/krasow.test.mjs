@@ -81,6 +81,45 @@ test('host boots and runs commands from the bundled shared engine', async (t) =>
   assert.deepEqual(requests, [['https://krasow.dev/terminal/fs/manifest.json', 'error']]);
 });
 
+test('pipes feed each command output into the next command', async (t) => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) =>
+    url.pathname.endsWith('/manifest.json')
+      ? manifestResponse({
+          files: [{ path: '/home/notes.md', url: '/terminal/fs/home/notes.md', text: true }],
+        })
+      : new Response('alpha\nBeta\ngamma beta\n');
+  t.after(() => (globalThis.fetch = originalFetch));
+
+  await loadEngine();
+  const host = new Host();
+  const output = [];
+  host.write = (text, className = '') => output.push(className === 'err' ? `!${text}` : text);
+  host.renderInput = () => {};
+  await host.boot();
+  host.queue.push(
+    'cat notes.md | grep -i beta',
+    'cat notes.md | grep -i beta | grep gamma',
+    'echo one two | wc',
+    'ls | grep notes',
+    'cat notes.md |',
+    'nope | wc',
+    'grep beta',
+  );
+  await host.drain();
+
+  assert.deepEqual(output, [
+    'Beta\ngamma beta',
+    'gamma beta',
+    '1 2 7',
+    'notes.md',
+    "!zsh: parse error near `|'",
+    '!zsh: command not found: nope',
+    '!grep: usage: grep [-i] <pattern> <file|pattern> [...]  (or read piped input)',
+  ]);
+  assert.equal(Object.hasOwn(host, 'stdin'), false);
+});
+
 test('manifest data cannot introduce cross-origin fetches or navigation', async (t) => {
   const originalFetch = globalThis.fetch;
   t.after(() => (globalThis.fetch = originalFetch));

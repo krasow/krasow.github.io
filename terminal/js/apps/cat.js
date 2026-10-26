@@ -5,9 +5,12 @@
       this.terminal = terminal;
     }
     run(args) {
-      if (!args.length) return false;
-      this.read(args);
-      return true;
+      if (!args.length) {
+        if (this.terminal.stdin === undefined) return false;
+        this.terminal.write(this.terminal.stdin, 'pth');
+        return true;
+      }
+      return this.read(args).then(() => true);
     }
     async read(paths) {
       for (const path of paths) {

@@ -27,15 +27,15 @@
     pwd: 'pwd',
     tree: 'tree',
     theme: 'theme [light|dark]',
-    cat: 'cat <file|pattern> [...]',
+    cat: 'cat <file|pattern> [...]  (or read piped input)',
     ls: 'ls [folder|pattern]',
     cd: 'cd [folder|..|-]',
     show: 'show <script>',
     echo: 'echo [text]',
     cowsay: 'cowsay [text]',
-    grep: 'grep <pattern> <file|pattern> [...]',
-    copy: 'copy <file>',
-    wc: 'wc <file|pattern> [...]',
+    grep: 'grep [-i] <pattern> <file|pattern> [...]  (or read piped input)',
+    copy: 'copy <file>  (or copy piped input)',
+    wc: 'wc <file|pattern> [...]  (or count piped input)',
     rm: 'rm [-rf] <file|folder> [...]',
     open: 'open <file|page>',
     download: 'download <file>',
@@ -57,6 +57,7 @@
         ['download file', 'download a file'],
         ['cat file|pattern', 'read one or more text files'],
         ['grep pattern file', 'search one or more text files'],
+        ['cmd | grep pattern', 'pipe output into grep, wc, cat, or copy'],
         ['copy file', 'copy a text file'],
         ['wc file|pattern', 'count lines, words, and characters'],
         ['rm [-rf] file|folder', 'hide entries from the virtual filesystem'],
@@ -159,6 +160,10 @@
     }
 
     execute(command) {
+      if (command.includes('|')) {
+        this.pipeline(command);
+        return true;
+      }
       const easterEgg = easterEggs.get(command.toLowerCase());
       if (easterEgg) {
         this.terminal.write(easterEgg, 'pth');
@@ -176,6 +181,59 @@
         return true;
       }
       return false;
+    }
+
+    // `a | b | c`: each stage's output becomes the next stage's input
+    // (`terminal.stdin`). Errors from any stage still print immediately.
+    pipeline(command) {
+      const stages = command.split('|').map((stage) => stage.trim());
+      if (stages.some((stage) => !stage)) {
+        this.terminal.write("zsh: parse error near `|'", 'err');
+        return;
+      }
+      this.running = this.runPipeline(stages).finally(() => (this.running = null));
+    }
+
+    async runPipeline(stages) {
+      let input;
+      for (const [index, stage] of stages.entries()) {
+        const [name, ...args] = stage.split(/\s+/);
+        const handler = this.handlers.get(name);
+        if (!handler) {
+          this.terminal.write(`zsh: command not found: ${name}`, 'err');
+          return;
+        }
+        const output = index === stages.length - 1 ? null : [];
+        const restore = this.redirect(output, input);
+        try {
+          if (!(await handler(args))) this.terminal.write(`${name}: usage: ${usage[name]}`, 'err');
+        } finally {
+          restore();
+        }
+        input = output?.join('\n');
+      }
+    }
+
+    // Route the terminal's output into `output` (unless null) and expose
+    // `stdin` to apps; returns a function that undoes both.
+    redirect(output, stdin) {
+      const terminal = this.terminal;
+      const keys = ['write', 'writeListing', 'writeLink'];
+      const saved = keys.map((key) => Object.getOwnPropertyDescriptor(terminal, key));
+      const write = terminal.write.bind(terminal);
+      terminal.stdin = stdin;
+      if (output) {
+        terminal.write = (text, className = '') =>
+          className === 'err' ? write(text, className) : output.push(String(text));
+        terminal.writeListing = (entries) => output.push(...entries);
+        terminal.writeLink = (url, text) => output.push(text);
+      }
+      return () => {
+        delete terminal.stdin;
+        keys.forEach((key, index) =>
+          saved[index] ? Object.defineProperty(terminal, key, saved[index]) : delete terminal[key],
+        );
+      };
     }
   }
 

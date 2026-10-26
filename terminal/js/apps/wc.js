@@ -1,15 +1,25 @@
 (() => {
   'use strict';
 
+  // "lines words characters"
+  const counts = (text) => {
+    const lines = text ? text.split('\n').length : 0;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    return `${lines} ${words} ${[...text].length}`;
+  };
+
   class WcApp {
     constructor(terminal) {
       this.terminal = terminal;
     }
 
     run(args) {
-      if (!args.length) return false;
-      this.count(args);
-      return true;
+      if (!args.length) {
+        if (this.terminal.stdin === undefined) return false;
+        this.terminal.write(counts(this.terminal.stdin), 'pth');
+        return true;
+      }
+      return this.count(args).then(() => true);
     }
 
     async count(paths) {
@@ -22,10 +32,7 @@
       for (const path of files) {
         try {
           const text = await this.terminal.fileText(path);
-          const lines = text ? text.split('\n').length : 0;
-          const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-          const characters = [...text].length;
-          this.terminal.write(`${lines} ${words} ${characters} ${path}`, 'pth');
+          this.terminal.write(`${counts(text)} ${path}`, 'pth');
         } catch (error) {
           const reason =
             error.message === 'EISDIR'

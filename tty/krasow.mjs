@@ -610,6 +610,8 @@ class Host {
       const line = this.queue.shift();
       try {
         this.execute(line);
+        // A pipeline (`a | b`) finishes asynchronously, stage by stage.
+        if (this.commandSet.running) await this.commandSet.running;
         // A game runs itself; wait for SnakeGame to signal end via ui.input.focus().
         if (this.commandSet.apps.snake.game) await new Promise((r) => (this._onSnakeEnd = r));
         else await idle();
