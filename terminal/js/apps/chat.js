@@ -278,23 +278,25 @@
       else this.ask(command);
     }
 
+    // Anything other than y/n dismisses the pending question and is handled
+    // as new input, so a follow-up question doesn't have to answer it first.
     confirm(answer) {
       if (!this.confirmation) return false;
-      if (!['y', 'yes', 'n', 'no'].includes(answer)) {
-        this.terminal.write('Please answer y or n.', 'hint');
-        return true;
-      }
       const command = this.confirmation.command;
       this.confirmation = null;
       this.updatePrompt();
+      if (!['y', 'yes', 'n', 'no'].includes(answer)) return false;
       if (['y', 'yes'].includes(answer)) this.runTerminalCommand(command);
       return true;
     }
 
     handleBracket() {
       if (!this.session) return false;
-      if (this.confirmation) this.terminal.write('Please answer y or n.', 'hint');
-      else this.toggle();
+      if (this.confirmation) {
+        this.confirmation = null;
+        this.terminal.write('Cancelled.', 'hint');
+      }
+      this.toggle();
       return true;
     }
 

@@ -122,7 +122,7 @@ export function render({ site, collections }) {
     {
       topic: 'Clemson experience',
       keywords: ['fthpc', 'jon calhoun'],
-      phrases: ['at clemson', 'at argonne', 'clemson experience', 'clemson research', 'clemson work', 'undergraduate research', 'group undergraduate', 'cluster competition', 'student cluster', 'undergrad research', 'get into research', 'got into research', 'start doing research', 'first research'],
+      phrases: ['at clemson', 'at argonne', 'clemson experience', 'clemson research', 'clemson work', 'undergraduate research', 'group undergraduate', 'cluster competition', 'student cluster', 'undergrad research', 'get into research', 'got into research', 'start doing research', 'first research', 'start research', 'started research', 'start his research', 'begin research', 'began research', 'research start', 'research career', 'first research experience', 'where did he start', 'how did he start', 'when did he start research'],
       answer: `At Clemson University, David earned a ${bachelors.title.replace(' · ', ' in ')} and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data. He also competed in the Student Cluster Competition at SC '21 and IndySCC at SC '22, building a cluster with Dell and Intel.`,
       readMore: {
         prompt: 'Would you like to read more about the compression project? (y/n)',

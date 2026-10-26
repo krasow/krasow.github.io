@@ -172,6 +172,14 @@ test('remote chat data cannot dispatch arbitrary or unconfirmed side effects', a
   assert.equal(chat.confirmation.command, 'open /home/about.pg');
   chat.confirm('yes');
   assert.deepEqual(commands, [['/home/about.pg']]);
+
+  // Anything but y/n drops the question and is handled as a new one.
+  await chat.ask('about');
+  chat.ask = async (question) => output.push(['asked', question]);
+  chat.handle('what about lanl');
+  assert.equal(chat.confirmation, null);
+  assert.deepEqual(output.at(-1), ['asked', 'what about lanl']);
+  assert.deepEqual(commands, [['/home/about.pg']]);
 });
 
 test('contact-card downloads are bounded and never overwrite files', async (t) => {
