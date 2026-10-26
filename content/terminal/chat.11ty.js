@@ -137,7 +137,7 @@ export function render({ site, collections }) {
     {
       topic: 'programming background',
       keywords: ['programming', 'language', 'languages', 'skills', 'technical skills', 'technology', 'technologies', 'tools', 'compiler', 'compilers', 'cgra', 'cgras', 'fpga', 'fpgas', ...skillWords],
-      answer: `David's site lists these skills: ${skills.join(', ')}. Beyond GPUs, he has also worked with CGRAs and FPGAs.`,
+      answer: `David's site lists these skills: ${skills.join(', ')}. Beyond GPUs, he has also worked with Processing-in-Memory (UPMEM PIM), CGRAs, and FPGAs.`,
       readMore: {
         prompt: 'Would you like to open his CV? (y/n)',
         command: 'open /home/cv.pg',
