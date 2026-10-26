@@ -38,14 +38,9 @@
 % \resumeheader{name}{contact lines separated by \\}: name on the left,
 % contact details stacked on the right.
 \newcommand{\resumeheader}[2]{%
-  \begin{minipage}[b]{0.55\linewidth}
-    {\fontsize{24}{28}\selectfont\bfseries #1}
-  \end{minipage}%
-  \hfill
-  \begin{minipage}[b]{0.45\linewidth}
-    \raggedleft\small\renewcommand{\arraystretch}{1.1}%
-    \begin{tabular}[b]{@{}r@{}}#2\end{tabular}
-  \end{minipage}\par}
+  {\fontsize{24}{28}\selectfont\bfseries #1}\hfill
+  {\small\renewcommand{\arraystretch}{1.1}%
+    \begin{tabular}[b]{@{}r@{}}#2\end{tabular}}\par}
 
 % \role{title}{organization}{dates}
 \newcommand{\role}[3]{%
