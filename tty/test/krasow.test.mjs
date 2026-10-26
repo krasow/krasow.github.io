@@ -160,7 +160,7 @@ test('remote chat data cannot dispatch arbitrary or unconfirmed side effects', a
   host.echo = () => {};
   host.write = (message, className) => output.push([message, className]);
   host.commands = new Map([['open', (args) => commands.push(args)]]);
-  chat.model.ask = async () => ({ answer: 'page', command: 'open /home/about.pg' });
+  chat.model.askAll = async () => [{ answer: 'page', command: 'open /home/about.pg' }];
 
   await chat.ask('about');
   assert.deepEqual(commands, []);

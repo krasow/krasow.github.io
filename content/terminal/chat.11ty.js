@@ -10,6 +10,8 @@ const EXPECTED_GRADUATION = 'December 2027';
 const monthYear = (date) =>
   date.toLocaleString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const bullets = (lines) => lines.map((line) => `• ${line}`).join('\n');
+const andList = (items) =>
+  items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
 const byId = (items, id) => {
   const item = items.find((entry) => entry.data.id === id);
   if (!item) throw new Error(`chat.11ty.js: no entry with id ${id}`);
@@ -40,6 +42,11 @@ export function render({ site, collections }) {
   const talks = [...collections.presentations].reverse();
   const posters = [...collections.posters].reverse();
   const phdStart = cv.education[0].date.split(' ')[0];
+  const csgf = cv.awards.find((award) =>
+    award.title.includes('Computational Science Graduate Fellowship'),
+  );
+  const csgfNews = bySlug(collections.news, 'northwestern-csgf');
+  const firstPlace = cv.awards.find((award) => award.title.startsWith('First Place'));
   const summary = collections.snippets[0].templateContent.trim();
   const projects = collections.projects
     .filter((project) => project.data.card)
@@ -77,8 +84,8 @@ export function render({ site, collections }) {
     },
     {
       topic: 'summary',
-      keywords: ['summary', 'overview', 'pitch', 'strengths', 'strength', 'yourself', 'fit'],
-      phrases: ['why should we hire', 'why hire', 'good fit', 'tell me about yourself', 'elevator pitch', 'what makes him'],
+      keywords: ['summary', 'overview', 'pitch', 'strengths', 'strength', 'yourself', 'fit', 'qualified', 'qualifications'],
+      phrases: ['why should we hire', 'why hire', 'good fit', 'tell me about yourself', 'elevator pitch', 'what makes him', 'qualified for'],
       answer: summary,
       hint: 'Ask about his research, skills, or availability.',
       readMore: {
@@ -136,7 +143,7 @@ export function render({ site, collections }) {
     },
     {
       topic: 'programming background',
-      keywords: ['programming', 'language', 'languages', 'skills', 'technical skills', 'technology', 'technologies', 'tools', 'compiler', 'compilers', 'cgra', 'cgras', 'fpga', 'fpgas', ...skillWords],
+      keywords: ['programming', 'language', 'languages', 'skills', 'technical skills', 'technology', 'technologies', 'tools', 'compiler', 'compilers', 'cgra', 'cgras', 'fpga', 'fpgas', ...skillWords, 'software', 'engineer', 'developer', 'coding', 'code', 'systems programming'],
       answer: `David's site lists these skills: ${skills.join(', ')}. Beyond GPUs, he has also worked with Processing-in-Memory (UPMEM PIM), CGRAs, and FPGAs.`,
       readMore: {
         prompt: 'Would you like to open his CV? (y/n)',
@@ -146,14 +153,14 @@ export function render({ site, collections }) {
     {
       topic: 'experience and background',
       keywords: ['experience', 'background', 'career', 'professionally', 'employment', 'employer', 'workplace', 'history'],
-      phrases: ['where has he worked', 'where did he work', 'places he worked', 'where was he a researcher', 'national laboratories', 'both argonne and los alamos', 'internship before', 'previous internships', 'past internships', 'prior internships', 'industry experience', 'years of experience'],
+      phrases: ['where has he worked', 'where did he work', 'places he worked', 'where was he a researcher', 'national laboratories', 'both argonne and los alamos', 'internship before', 'previous internships', 'past internships', 'prior internships', 'industry experience', 'years of experience', 'national lab', 'national labs', 'doe labs', 'interned at'],
       answer: `David began his research career at Clemson University and worked with Argonne National Laboratory on lossy compression for scientific data. He is now a Computer Science Ph.D. candidate at Northwestern University and collaborates with Los Alamos National Laboratory on distributed heterogeneous computing.\n\nRoles:\n${bullets(experience.map((job) => `${job.data.title}, ${job.data.org} (${monthYear(job.date)} – ${job.data.end})`))}`,
       readMore: { command: 'cat /home/experience.pg' },
     },
     {
       topic: 'hiring availability',
-      keywords: ['hire', 'hiring', 'available', 'availability', 'recruit', 'recruiting', 'job', 'jobs', 'internship', 'intern', 'full time', 'full-time', 'role', 'roles', 'position', 'positions', 'opportunity', 'opportunities', 'start'],
-      phrases: ['open to work', 'available to work', 'looking for work', 'looking for a job', 'when can he start', 'start date', 'what kind of roles', 'type of position'],
+      keywords: ['hire', 'hiring', 'available', 'availability', 'recruit', 'recruiting', 'job', 'jobs', 'internship', 'intern', 'full time', 'full-time', 'role', 'roles', 'position', 'positions', 'opportunity', 'opportunities', 'start', 'recruiter', 'recruiters', 'startup', 'opening', 'openings'],
+      phrases: ['open to work', 'available to work', 'looking for work', 'looking for a job', 'when can he start', 'start date', 'what kind of roles', 'type of position', 'would he be interested', 'would you be interested', 'are you interested', 'interested in joining', 'interested in working', 'want to work', 'like to work', 'recruiter at', 'i am a recruiter', 'we are hiring'],
       answer: `David is looking for an internship for 2027. He expects to graduate in ${EXPECTED_GRADUATION} and plans to begin looking for full-time positions around that time.`,
       readMore: {
         prompt: 'Would you like to download his contact card? (y/n)',
@@ -162,8 +169,8 @@ export function render({ site, collections }) {
     },
     {
       topic: 'logistics',
-      keywords: ['relocate', 'relocation', 'relocating', 'move', 'remote', 'remotely', 'hybrid', 'onsite', 'visa', 'sponsorship', 'sponsor', 'citizen', 'citizenship', 'clearance', 'authorization', 'authorized', 'salary', 'compensation', 'pay', 'references', 'reference', 'gpa', 'grades', 'academia', 'industry', 'postdoc'],
-      phrases: ['work authorization', 'security clearance', 'salary expectations', 'open to hybrid work', 'open to remote work', 'hybrid work', 'remote work', 'industry or academia', 'academia or industry', 'consider a postdoc'],
+      keywords: ['relocate', 'relocation', 'relocating', 'move', 'remote', 'remotely', 'hybrid', 'onsite', 'visa', 'sponsorship', 'sponsor', 'citizen', 'citizenship', 'clearance', 'authorization', 'authorized', 'salary', 'compensation', 'pay', 'references', 'reference', 'gpa', 'grades', 'academia', 'industry', 'postdoc', 'independently', 'independent', 'approach', 'strengths and weaknesses', 'weakness', 'weaknesses'],
+      phrases: ['work authorization', 'security clearance', 'salary expectations', 'open to hybrid work', 'open to remote work', 'hybrid work', 'remote work', 'industry or academia', 'academia or industry', 'consider a postdoc', 'approach problems', 'work independently', 'problem solving'],
       answer: `David's site doesn't cover that. He's happy to discuss it directly at ${site.email}.`,
       readMore: {
         prompt: 'Would you like to see his contact info? (y/n)',
@@ -201,9 +208,16 @@ export function render({ site, collections }) {
       ],
     },
     {
+      topic: 'communication',
+      keywords: ['communicator', 'communication', 'communicate', 'communicates', 'presenter', 'writer', 'writing'],
+      phrases: ['good communicator', 'communication skills', 'public speaking'],
+      answer: `David has given ${talks.length} talks (including ${andList(talks.slice(0, 3).map((talk) => talk.data.venue))}), won ${firstPlace.title.replace(' · ', ' in the ')} at ${firstPlace.org}, and has written ${publications.length} papers and reports. He also teaches and mentors students.`,
+      readMore: { command: 'ls /home/presentations' },
+    },
+    {
       topic: 'teamwork and leadership',
-      keywords: ['team', 'teams', 'teamwork', 'leadership', 'lead', 'led', 'collaborate', 'collaboration', 'collaborative', 'collaborator', 'collaborators'],
-      phrases: ['worked on a team', 'leadership experience'],
+      keywords: ['team', 'teams', 'teamwork', 'leadership', 'lead', 'led', 'collaborate', 'collaboration', 'collaborative', 'collaborator', 'collaborators', 'managed', 'manage', 'management', 'mentorship'],
+      phrases: ['worked on a team', 'leadership experience', 'work well with others', 'works well with others', 'team player', 'managed a project', 'led a project'],
       answer: `David has competed on Clemson's Student Cluster Competition teams (SC '21 and IndySCC at SC '22), collaborates across Northwestern, Argonne, and Los Alamos National Laboratory, and teaches and mentors students:\n${bullets(cv.teaching.map((item) => `${item.title} — ${item.org} (${item.date})`))}`,
     },
     {
@@ -216,7 +230,7 @@ export function render({ site, collections }) {
     {
       topic: 'research interests',
       keywords: ['work', 'research', 'hpc', 'high performance computing', 'distributed', 'heterogeneous', 'accelerators', 'domain scientists', 'thesis', 'dissertation', 'passionate', 'passion', 'interested', 'interests', 'excited'],
-      phrases: ['phd thesis', 'distributed systems', 'he passionate about', 'he excited about', 'he interested in', 'what interests him', 'what does he do', 'what does he study', 'area of cs', 'scientific workloads', 'emerging accelerators', 'intended users', 'accelerator research'],
+      phrases: ['phd thesis', 'distributed systems', 'he passionate about', 'he excited about', 'what interests him', 'what does he do', 'what does he study', 'area of cs', 'scientific workloads', 'emerging accelerators', 'intended users', 'accelerator research'],
       answer: 'David studies distributed heterogeneous computing, especially ways to make emerging accelerators practical for scientific workloads and the domain scientists who run them. His current work explores scheduling across distributed heterogeneous systems.',
     },
     {
@@ -250,14 +264,14 @@ export function render({ site, collections }) {
     },
     {
       topic: 'hardware',
-      keywords: ['hardware', 'supercomputer', 'supercomputers', 'cluster', 'clusters', 'architecture', 'architectures', 'palmetto', 'a100', 'dimm', 'dimms'],
+      keywords: ['hardware', 'supercomputer', 'supercomputers', 'cluster', 'clusters', 'architecture', 'architectures', 'palmetto', 'a100', 'dimm', 'dimms', 'amd', 'intel', 'dell'],
       phrases: ['hardware has he worked with'],
       answer: "David has worked with NVIDIA GPUs (cuNumeric.jl, up to 8×A100), UPMEM Processing-in-Memory DIMMs (Legion PIM and PolymerPIM), CGRAs, and FPGAs. At Clemson he ran research on the Palmetto Cluster and helped build a competition cluster with Dell and Intel for the Student Cluster Competition.",
     },
     {
       topic: 'cuNumeric.jl',
-      keywords: ['cunumeric', 'julia', 'gpu', 'gpus', 'arrays', 'ndarray', 'legate', 'constellation', 'nvidia', 'ipdps'],
-      phrases: ['what is cunumeric', 'cunumeric relate', 'julia work', 'julia project', 'julia array project', 'gpu work'],
+      keywords: ['cunumeric', 'julia', 'gpu', 'gpus', 'arrays', 'ndarray', 'legate', 'constellation', 'nvidia', 'ipdps', 'documentation', 'docs', 'adoption'],
+      phrases: ['what is cunumeric', 'cunumeric relate', 'julia work', 'julia project', 'julia array project', 'gpu work', 'used by', 'use his work', 'uses his work', 'nvidia use', 'industry collaboration'],
       answer: `cuNumeric.jl, developed with collaborators at Carnegie Mellon University, Los Alamos National Laboratory, and NVIDIA, is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nIt grew into an industry collaboration with NVIDIA, now in beta ("${nvidiaArticle.data.title}", ${nvidiaArticle.data.venue}, ${nvidiaArticle.date.getUTCFullYear()}).\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
       links: [
         { label: 'GitHub', url: 'https://github.com/JuliaLegate/cuNumeric.jl/' },
@@ -318,7 +332,8 @@ export function render({ site, collections }) {
       topic: 'Department of Energy fellowship',
       keywords: ['doe', 'csgf', 'fellow', 'fellowship', 'computational science graduate fellowship', 'fund', 'funds', 'funded', 'funding', 'funder'],
       phrases: ['who funds', 'funds his', 'funding for his'],
-      answer: 'David is a recipient of the U.S. Department of Energy Computational Science Graduate Fellowship (DOE CSGF).',
+      answer: `David is a recipient of the U.S. Department of Energy Computational Science Graduate Fellowship (DOE CSGF), awarded in ${csgf.date}. The fellowship supports Ph.D. students applying high-performance computing to research.`,
+      links: [{ label: csgfNews.data.venue, url: csgfNews.data.url }],
     },
     {
       topic: 'awards',
@@ -356,8 +371,8 @@ export function render({ site, collections }) {
     {
       topic: 'contact',
       keywords: ['contact', 'card', 'vcard', 'vcf', 'download', 'save', 'reach', 'location', 'located', 'live', 'lives', 'based', 'chicago'],
-      phrases: ['contact card', 'download contact', 'save contact', 'recruiter reach', 'recruiter contact', 'best way to reach', 'reach him', 'get in touch'],
-      answer: `David is based in ${site.location}. You can reach him at ${site.email} or run \`download contact.vcf\` to save his contact card.`,
+      phrases: ['contact card', 'download contact', 'save contact', 'recruiter reach', 'recruiter contact', 'best way to reach', 'reach him', 'get in touch', 'email and phone', 'phone and email'],
+      answer: `David is based in ${site.location}. You can reach him at ${site.email} or ${site.phone}, or run \`download contact.vcf\` to save his contact card.`,
       readMore: {
         prompt: 'Would you like to download his contact card? (y/n)',
         command: 'download /home/contact.vcf',
@@ -438,13 +453,13 @@ export function render({ site, collections }) {
     {
       topic: 'publications and papers',
       keywords: ['publication', 'publications', 'paper', 'papers', 'published', 'writing', 'list', 'submitted', 'review', 'read', 'pdf', 'pdfs', 'bibtex', 'bib', 'cite'],
-      phrases: ['research papers', 'first author', 'first authored', 'read his papers'],
+      phrases: ['research papers', 'first author', 'first authored', 'read his papers', 'technical report', 'tech report'],
       answer: `David's publications and technical reports:\n${bullets(publications.map((paper) => `${paper.data.title} — ${paper.data.venue} (${paper.date.getUTCFullYear()})`))}\n\nHe is first author on ${firstAuthored} of ${publications.length}. The published ones are in ~/publications:`,
       command: 'ls /home/publications',
     },
     {
       topic: 'presentations and talks',
-      keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures', 'presented', 'present', 'presenting', 'conference', 'conferences', 'spoke', 'speaker', 'speaking', 'supercomputing', 'juliacon'],
+      keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures', 'presented', 'present', 'presenting', 'conference', 'conferences', 'spoke', 'speaker', 'speaking', 'supercomputing', 'juliacon', 'sc', 'sc21', 'sc22'],
       phrases: ['research talks', 'conference slides'],
       answer: `David's talks:\n${bullets(talks.map((talk) => `${talk.data.title} — ${talk.data.venue} (${monthYear(talk.date)})`))}\n\nSlides are in ~/presentations:`,
       command: 'ls /home/presentations',

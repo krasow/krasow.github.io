@@ -91,23 +91,51 @@
     }
 
     async ask(question) {
-      const { entries, fallback, vocabulary } = await this.load();
+      return (await this.askAll(question))[0];
+    }
+
+    // One answer per distinct topic in questions joined by "and" ("where is he
+    // located and is he willing to relocate"), unless the whole question is
+    // itself a phrase containing "and" ("email and phone").
+    async askAll(question) {
+      const data = await this.load();
+      const whole = this.match(question, data);
+      const parts = question.split(/\s+(?:and|&)\s+/i).filter((part) => part.trim());
+      if (parts.length > 1 && !whole.andPhrase) {
+        const answers = [
+          ...new Set(
+            parts
+              .map((part) => this.match(part, data))
+              .filter((match) => match.score)
+              .map((match) => match.entry),
+          ),
+        ];
+        if (answers.length > 1) return answers;
+      }
+      return [whole.score ? whole.entry : { answer: data.fallback }];
+    }
+
+    match(question, { entries, vocabulary }) {
       const query = new Set(
         wordsIn(question)
           .map(normalizeReference)
           .map((word) => this.correct(word, vocabulary)),
       );
       const normalized = normalizePhrase(question);
-      const phraseScore = (entry) =>
-        entry.phrases.reduce((best, phrase) => {
-          const matches =
-            normalized.includes(phrase.compact) || phrase.words.every((word) => query.has(word));
-          return matches ? Math.max(best, 10 + 2 * phrase.words.length) : best;
-        }, 0);
+      const matchedPhrases = (entry) =>
+        entry.phrases.filter(
+          (phrase) =>
+            normalized.includes(phrase.compact) || phrase.words.every((word) => query.has(word)),
+        );
       const score = (entry) =>
-        entry.words.filter((word) => query.has(word)).length + phraseScore(entry);
-      const best = entries.reduce((a, b) => (score(b) > score(a) ? b : a));
-      return score(best) ? best : { answer: fallback };
+        entry.words.filter((word) => query.has(word)).length +
+        Math.max(0, ...matchedPhrases(entry).map((phrase) => 10 + 2 * phrase.words.length));
+      const entry = entries.reduce((a, b) => (score(b) > score(a) ? b : a));
+      return {
+        entry,
+        score: score(entry),
+        andPhrase: matchedPhrases(entry).some((phrase) => phrase.words.includes('and')),
+      };
     }
 
     async load() {
@@ -193,20 +221,25 @@
       this.terminal.append(thinking);
 
       try {
-        const result = await this.model.ask(question);
+        const results = await this.model.askAll(question);
         thinking.remove();
-        this.terminal.write(result.answer, 'pth');
-        if (result.hint) this.terminal.write(result.hint, 'hint');
-        result.links?.forEach(({ label, url }) => {
-          const text = url.startsWith('/') ? `→ ${label}` : `→ ${label}: ${url}`;
-          this.terminal.writeLink(url, text);
-        });
-        if (result.command) this.dispatchDataCommand(result.command);
-        if (this.mode && result.readMore) {
-          this.confirmation = result.readMore;
+        // Only one y/n follow-up can be pending, so with several answers it
+        // comes from the last one that offers one.
+        const followUp = results.findLast((result) => result.readMore || result.command);
+        for (const result of results) {
+          this.terminal.write(result.answer, 'pth');
+          if (result.hint && results.length === 1) this.terminal.write(result.hint, 'hint');
+          result.links?.forEach(({ label, url }) => {
+            const text = url.startsWith('/') ? `→ ${label}` : `→ ${label}: ${url}`;
+            this.terminal.writeLink(url, text);
+          });
+          if (result.command) await this.dispatchDataCommand(result.command, result === followUp);
+        }
+        if (this.mode && followUp?.readMore) {
+          this.confirmation = followUp.readMore;
           this.updatePrompt();
           this.terminal.write(
-            result.readMore.prompt ?? 'Would you like to read more? (y/n)',
+            followUp.readMore.prompt ?? 'Would you like to read more? (y/n)',
             'hint',
           );
         }
@@ -291,13 +324,15 @@
       if (!validDataCommand(command)) throw new Error('invalid knowledge command');
       this.terminal.echo(command, 'david:~$');
       const [name, ...args] = command.split(/\s+/);
-      this.terminal.commands.get(name)?.(args);
+      return this.terminal.commands.get(name)?.(args);
     }
 
-    dispatchDataCommand(command) {
+    // Read-only commands (cat, ls) run right away; ones with side effects
+    // (open, download) ask first, which only `canConfirm` answers may do.
+    dispatchDataCommand(command, canConfirm = true) {
       const name = command.split(/\s+/, 1)[0];
       if (!SIDE_EFFECTING_COMMANDS.has(name)) return this.runTerminalCommand(command);
-      if (!this.mode) {
+      if (!this.mode || !canConfirm) {
         this.terminal.write(`run \`${command}\` to continue`, 'hint');
         return;
       }

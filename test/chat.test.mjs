@@ -27,10 +27,14 @@ const loadChat = () => {
   vm.runInContext(fs.readFileSync(chatUrl, 'utf8'), context);
   const topics = new Map(JSON.parse(knowledge).entries.map((entry) => [entry.answer, entry.topic]));
   const chat = new window.ChatApp({}).model;
-  return async (question) => topics.get((await chat.ask(question)).answer) ?? FALLBACK;
+  // Several answers (for "x and y" questions) are joined with " + ".
+  return async (question) =>
+    (await chat.askAll(question))
+      .map((result) => topics.get(result.answer) ?? FALLBACK)
+      .join(' + ');
 };
 
-// [question, topic of the answer it should get]
+// [question, topic of the answer it should get, or "a + b" when it should get several]
 const EXPECTED = [
   // availability and timing
   ['is he available for an internship', 'hiring availability'],
@@ -197,6 +201,97 @@ const EXPECTED = [
   ['can i see his resme', 'resume'],
   ['does he know pyton', 'programming background'],
   ['what are his publicatons', 'publications and papers'],
+  // role fit
+  ['would he be a good fit for an hpc engineer role', 'summary'],
+  ['is he a good fit for a gpu performance engineer position', 'summary'],
+  ['would he fit a compiler engineer role', 'programming background'],
+  ['is he qualified for a research scientist position', 'summary'],
+  ['would he be interested in ml infrastructure', 'hiring availability'],
+  ['can he do systems programming', 'programming background'],
+  ['does he have backend experience', 'experience and background'],
+  ['is he a software engineer', 'programming background'],
+  // company and lab fit
+  ['would he want to work at nvidia', 'hiring availability'],
+  ['has he worked with amd gpus', 'hardware'],
+  ['does he have experience with intel', 'experience and background'],
+  ['is he interested in national labs', 'experience and background'],
+  ['has he interned at a national lab', 'experience and background'],
+  ['has he worked with doe labs', 'experience and background'],
+  // one word
+  ['internship', 'hiring availability'],
+  ['resume', 'resume'],
+  ['julia', 'programming background'],
+  ['gpu', 'cuNumeric.jl'],
+  ['email', 'email address'],
+  ['linkedin', 'LinkedIn'],
+  ['publications', 'publications and papers'],
+  ['contact', 'contact'],
+  ['skills', 'programming background'],
+  ['availability', 'hiring availability'],
+  ['pim', 'processing in memory'],
+  ['legion', 'Legion runtime'],
+  ['awards', 'awards'],
+  ['location', 'contact'],
+  // pasted recruiter messages
+  [
+    'hi david we are hiring a gpu performance engineer would you be interested',
+    'hiring availability',
+  ],
+  [
+    'hello i am a recruiter at a startup looking for distributed systems engineers',
+    'hiring availability',
+  ],
+  ['we have an hpc internship for summer 2027 are you available', 'hiring availability'],
+  ['i would like to schedule a quick call to discuss an opportunity', 'meeting'],
+  // two intents
+  ['what is his email and phone number', 'contact'],
+  ['where is he located and is he willing to relocate', 'contact + logistics'],
+  ['what does he research and where does he study', 'research interests + education'],
+  // venues and fellowship
+  ['what is ipdps', 'cuNumeric.jl'],
+  ['what is asplos', 'PolymerPIM'],
+  ['what is sc', 'presentations and talks'],
+  ['what is the csgf', 'Department of Energy fellowship'],
+  ['what is the doe csgf practicum', 'Department of Energy fellowship'],
+  ['how long is his fellowship', 'Department of Energy fellowship'],
+  ['what is juliacon', 'presentations and talks'],
+  ['what is a technical report', 'publications and papers'],
+  // working style and soft skills
+  ['is he a good communicator', 'communication'],
+  ['can he work independently', 'logistics'],
+  ['has he written documentation', 'cuNumeric.jl'],
+  ['does he work well with others', 'teamwork and leadership'],
+  ['how does he approach problems', 'logistics'],
+  ['has he managed a project', 'teamwork and leadership'],
+  // evaluating strength
+  ['what is his strongest project', 'projects'],
+  ['what is his most impactful work', 'research interests'],
+  ['how many citations does he have', 'Google Scholar'],
+  ['has he won any competitions', 'awards'],
+  ['is his work used by anyone', 'cuNumeric.jl'],
+  ['does nvidia use his work', 'cuNumeric.jl'],
+  // "and" questions that should split
+  ['when does he graduate and is he looking for a job', 'graduation + hiring availability'],
+  ['who is his advisor and what lab is he in', 'current role and university + Prescience Lab'],
+  [
+    'what are his skills and is he available for an internship',
+    'programming background + hiring availability',
+  ],
+  ['tell me about cunumeric and polymerpim', 'cuNumeric.jl + PolymerPIM'],
+  ['what awards has he won and what has he published', 'awards + publications and papers'],
+  ['can i see his resume and schedule a meeting', 'resume + meeting'],
+  [
+    'where did he study and what did he do at los alamos',
+    'education + Los Alamos National Laboratory',
+  ],
+  ['what is his linkedin & github', 'LinkedIn + GitHub profile'],
+  // "and" questions that should stay one answer
+  ['what is his email and phone number', 'contact'],
+  ['what is his phone and email', 'contact'],
+  ['does he know c++ and python', 'programming background'],
+  ['what is vertical and horizontal fusion', 'PolymerPIM'],
+  ['has he worked at both argonne and los alamos', 'experience and background'],
+  ['does he know mpi and cuda', 'programming background'],
 ];
 
 test('chat answers common questions with the right topic', async () => {
