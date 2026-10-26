@@ -1,5 +1,5 @@
 ---
-title: Fellows Forge an Industry Collaboration
+title: "Fellows Forge an Industry Collaboration"
 venue: Science in Parallel
 url: https://scienceinparallel.org/2026/10/fellows-industry-collaboration/
 ---

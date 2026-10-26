@@ -1,6 +1,6 @@
 ---
 layout: layouts/about.njk
-title: About
+title: "About"
 permalink: /pages/about.html
 photo: /assets/images/sc.JPG
 photoLink: https://sc22.supercomputing.org/presentation/?id=spostu110&sess=sess227#038;sess=sess227

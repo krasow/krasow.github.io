@@ -1,6 +1,6 @@
 ---
 layout: layouts/base.njk
-title: Presentations
+title: "Presentations"
 permalink: /pages/presentations.html
 # The body is a page outline (Nunjucks), not Markdown prose.
 templateEngineOverride: njk

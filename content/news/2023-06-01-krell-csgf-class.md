@@ -1,5 +1,5 @@
 ---
-title: DOE CSGF Strengthens Diversity With 2023-2024 Class
+title: "DOE CSGF Strengthens Diversity With 2023-2024 Class"
 venue: Krell Institute
 url: https://www.krellinst.org/csgf/about-doe-csgf/news-events/2023-incoming-class
 ---

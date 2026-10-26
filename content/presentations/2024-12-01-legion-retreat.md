@@ -1,5 +1,5 @@
 ---
-title: Task Based Programming for Processing in Memory (PIM) HPC Clusters
+title: "Task Based Programming for Processing in Memory (PIM) HPC Clusters"
 venue: Legion Retreat
 venueUrl: https://legion.stanford.edu/retreat2024/
 kind: invited

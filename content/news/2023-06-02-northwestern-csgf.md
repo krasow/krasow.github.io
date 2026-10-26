@@ -1,5 +1,5 @@
 ---
-title: David Krasowska and Kirill Nagaitsev Awarded DOE Computational Science Graduate Fellowships
+title: "David Krasowska and Kirill Nagaitsev Awarded DOE Computational Science Graduate Fellowships"
 venue: Northwestern McCormick School of Engineering
 url: https://www.mccormick.northwestern.edu/electrical-computer/news-events/news/articles/2023/david-krasowska-and-kirill-nagaitsev-awarded-doe-computational-science-graduate-fellowships.html
 image: /assets/images/nw_news.png

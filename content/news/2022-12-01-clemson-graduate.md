@@ -1,5 +1,5 @@
 ---
-title: Computer engineering graduate enriched his Clemson Experience with supercomputer research
+title: "Computer engineering graduate enriched his Clemson Experience with supercomputer research"
 venue: Clemson News
 url: https://news.clemson.edu/computer-engineering-graduate-enriched-his-clemson-experience-with-supercomputer-research/
 image: /assets/images/clemson-award.png

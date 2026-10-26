@@ -1,5 +1,5 @@
 ---
-title: What's the deal with this 'Grad School' thing?
+title: "What's the deal with this 'Grad School' thing?"
 venue: Clemson CECAS Invited Talks
 kind: invited
 id: GRADSCHOOL22

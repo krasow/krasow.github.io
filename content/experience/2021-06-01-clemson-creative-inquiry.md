@@ -1,5 +1,5 @@
 ---
-title: High Performance Computing Creative Inquiry
+title: "High Performance Computing Creative Inquiry"
 org: Clemson University
 end: Dec 2022
 logo: /assets/images/logos/clemson.png

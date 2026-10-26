@@ -1,6 +1,6 @@
 ---
 layout: layouts/base.njk
-title: News
+title: "News"
 permalink: /pages/news.html
 # The body is a page outline (Nunjucks), not Markdown prose.
 templateEngineOverride: njk

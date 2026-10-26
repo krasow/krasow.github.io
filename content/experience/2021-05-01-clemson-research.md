@@ -1,5 +1,5 @@
 ---
-title: Undergraduate Student Researcher
+title: "Undergraduate Student Researcher"
 org: Clemson University · FTHPC
 end: May 2022
 logo: /assets/images/logos/clemson.png
