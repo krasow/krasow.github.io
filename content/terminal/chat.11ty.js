@@ -37,6 +37,9 @@ export function render({ site, collections }) {
   const polymerPaper = bySlug(publications, 'polymerpim');
   const polymerPoster = byId(collections.posters, 'CSGF26');
   const nvidiaArticle = bySlug(collections.news, 'science-in-parallel');
+  const talks = [...collections.presentations].reverse();
+  const posters = [...collections.posters].reverse();
+  const phdStart = cv.education[0].date.split(' ')[0];
   const summary = collections.snippets[0].templateContent.trim();
   const projects = collections.projects
     .filter((project) => project.data.card)
@@ -86,7 +89,7 @@ export function render({ site, collections }) {
     {
       topic: 'Northwestern experience',
       keywords: ['peter dinda'],
-      phrases: ['at northwestern', 'northwestern research', 'northwestern work', 'doing for phd', 'phd research', 'research is he doing', 'doctoral work'],
+      phrases: ['at northwestern', 'northwestern research', 'northwestern work', 'doing for phd', 'phd research', 'research is he doing', 'doctoral work', 'current project', 'current work', 'currently working', 'working on now', 'he working on', 'recent work', 'latest work', 'latest research'],
       answer: 'At Northwestern University, David is a Computer Science Ph.D. candidate advised by Peter Dinda. His work there includes cuNumeric.jl, for running Julia array programs across distributed GPU systems, and PolymerPIM, which uses deferred execution to make Processing-in-Memory systems both easy to program and fast.',
       hint: 'Try asking about cuNumeric.jl or PolymerPIM.',
     },
@@ -103,8 +106,8 @@ export function render({ site, collections }) {
     {
       topic: 'graduation',
       keywords: ['graduation'],
-      phrases: ['when does he graduate', 'when will he graduate', 'when is he graduating', 'expect to graduate', 'expected graduation', 'graduation date', 'when does he finish', 'when will he finish', 'when is he done'],
-      answer: `David expects to graduate from Northwestern University with his Ph.D. in Computer Science in ${EXPECTED_GRADUATION}.`,
+      phrases: ['when does he graduate', 'when will he graduate', 'when is he graduating', 'expect to graduate', 'expected graduation', 'graduation date', 'when does he finish', 'when will he finish', 'when is he done', 'what year of his phd', 'how far along', 'when did he start his phd', 'how long has he been'],
+      answer: `David started his Ph.D. in Computer Science at Northwestern University in ${phdStart} and expects to graduate in ${EXPECTED_GRADUATION}.`,
       hint: 'Ask whether he is looking for a job or internship.',
     },
     {
@@ -179,8 +182,8 @@ export function render({ site, collections }) {
     },
     {
       topic: 'projects',
-      keywords: ['project', 'projects', 'portfolio', 'built'],
-      phrases: ['what has he built', 'what is he working on'],
+      keywords: ['project', 'projects', 'portfolio'],
+      phrases: ['what has he built'],
       answer: `David's projects:\n${bullets(projects.map((project) => `${project.data.card.name} — ${project.data.card.org}`))}`,
       command: 'ls /home/projects',
     },
@@ -239,10 +242,23 @@ export function render({ site, collections }) {
       links: [{ label: 'GitHub', url: 'https://github.com/JuliaLegate/cuNumeric.jl/' }],
     },
     {
+      topic: 'performance results',
+      keywords: ['performance', 'fast', 'faster', 'speed', 'speedup', 'benchmark', 'benchmarks', 'benchmarking', 'results', 'scaling', 'scales', 'efficiency', 'optimization', 'compare', 'compares', 'comparison', 'cupynumeric', 'gemm', 'flops'],
+      answer: "Early cuNumeric.jl results on the project page: GEMM weak-scales to 8×A100 GPUs and matches cuPyNumeric, and Monte Carlo integration matches cuPyNumeric's parallel efficiency while achieving higher FLOPS, since cuNumeric.jl calls into C++ from a thin Julia front end instead of several layers of Python. Those results reflect an early version; current numbers are in the cuNumeric.jl benchmark results.",
+      links: [{ label: 'Current benchmark results', url: 'https://julialegate.github.io/cuNumeric.jl/stable/benchmarks/results' }],
+      readMore: { command: 'open /home/projects/cunumeric' },
+    },
+    {
+      topic: 'hardware',
+      keywords: ['hardware', 'supercomputer', 'supercomputers', 'cluster', 'clusters', 'architecture', 'architectures', 'palmetto', 'a100', 'dimm', 'dimms'],
+      phrases: ['hardware has he worked with'],
+      answer: "David has worked with NVIDIA GPUs (cuNumeric.jl, up to 8×A100), UPMEM Processing-in-Memory DIMMs (Legion PIM and PolymerPIM), CGRAs, and FPGAs. At Clemson he ran research on the Palmetto Cluster and helped build a competition cluster with Dell and Intel for the Student Cluster Competition.",
+    },
+    {
       topic: 'cuNumeric.jl',
       keywords: ['cunumeric', 'julia', 'gpu', 'gpus', 'arrays', 'ndarray', 'legate', 'constellation', 'nvidia', 'ipdps'],
       phrases: ['what is cunumeric', 'cunumeric relate', 'julia work', 'julia project', 'julia array project', 'gpu work'],
-      answer: `cuNumeric.jl is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nIt grew into an industry collaboration with NVIDIA, now in beta ("${nvidiaArticle.data.title}", ${nvidiaArticle.data.venue}, ${nvidiaArticle.date.getUTCFullYear()}).\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
+      answer: `cuNumeric.jl, developed with collaborators at Carnegie Mellon University, Los Alamos National Laboratory, and NVIDIA, is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nIt grew into an industry collaboration with NVIDIA, now in beta ("${nvidiaArticle.data.title}", ${nvidiaArticle.data.venue}, ${nvidiaArticle.date.getUTCFullYear()}).\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
       links: [
         { label: 'GitHub', url: 'https://github.com/JuliaLegate/cuNumeric.jl/' },
         { label: 'Documentation', url: 'https://julialegate.github.io/cuNumeric.jl/dev/' },
@@ -286,6 +302,13 @@ export function render({ site, collections }) {
       readMore: { command: 'open /home/projects/legionpim' },
     },
     {
+      topic: 'Prescience Lab',
+      keywords: ['prescience', 'prescience lab', 'lab', 'group', 'research group'],
+      phrases: ['what lab', 'which lab'],
+      answer: 'David is a member of the Prescience Lab at Northwestern University, advised by Peter Dinda. He also collaborates with Los Alamos National Laboratory.',
+      links: [{ label: 'PrescienceLab on GitHub', url: 'https://github.com/PrescienceLab' }],
+    },
+    {
       topic: 'Los Alamos National Laboratory',
       keywords: ['lanl', 'los alamos', 'pat mccormick', 'laboratory', 'lab'],
       phrases: ['at lanl', 'lanl collaboration'],
@@ -293,12 +316,13 @@ export function render({ site, collections }) {
     },
     {
       topic: 'Department of Energy fellowship',
-      keywords: ['doe', 'csgf', 'fellow', 'fellowship', 'computational science graduate fellowship'],
+      keywords: ['doe', 'csgf', 'fellow', 'fellowship', 'computational science graduate fellowship', 'fund', 'funds', 'funded', 'funding', 'funder'],
+      phrases: ['who funds', 'funds his', 'funding for his'],
       answer: 'David is a recipient of the U.S. Department of Energy Computational Science Graduate Fellowship (DOE CSGF).',
     },
     {
       topic: 'awards',
-      keywords: ['award', 'awards', 'honor', 'honors', 'prize', 'won', 'win', 'competition', 'first place', 'best poster'],
+      keywords: ['award', 'awards', 'honor', 'honors', 'prize', 'won', 'win', 'competition', 'first place', 'best poster', 'accomplishment', 'accomplishments', 'achievement', 'achievements', 'proud', 'recognition'],
       answer: `David's awards and fellowships:\n${bullets(cv.awards.map((award) => `${award.title} — ${award.org} (${award.date})`))}`,
     },
     {
@@ -308,7 +332,7 @@ export function render({ site, collections }) {
     },
     {
       topic: 'phone number',
-      keywords: ['phone', 'number', 'telephone', 'mobile', 'call'],
+      keywords: ['phone', 'number', 'telephone', 'mobile', 'call', 'text', 'texting', 'sms'],
       answer: `David's phone number is ${site.phone}.`,
       readMore: {
         prompt: 'Would you like to see more contact info? (y/n)',
@@ -332,7 +356,7 @@ export function render({ site, collections }) {
     {
       topic: 'contact',
       keywords: ['contact', 'card', 'vcard', 'vcf', 'download', 'save', 'reach', 'location', 'located', 'live', 'lives', 'based', 'chicago'],
-      phrases: ['contact card', 'download contact', 'save contact', 'recruiter reach', 'recruiter contact'],
+      phrases: ['contact card', 'download contact', 'save contact', 'recruiter reach', 'recruiter contact', 'best way to reach', 'reach him', 'get in touch'],
       answer: `David is based in ${site.location}. You can reach him at ${site.email} or run \`download contact.vcf\` to save his contact card.`,
       readMore: {
         prompt: 'Would you like to download his contact card? (y/n)',
@@ -361,9 +385,49 @@ export function render({ site, collections }) {
     },
     {
       topic: 'Google Scholar',
-      keywords: ['scholar', 'google scholar', 'citations', 'citation'],
+      keywords: ['scholar', 'google scholar', 'citations', 'citation', 'h-index', 'hindex', 'index'],
       answer: "David's Google Scholar profile:",
       links: [{ label: 'Google Scholar', url: site.scholar }],
+    },
+    {
+      topic: 'social media',
+      keywords: ['twitter', 'bluesky', 'mastodon', 'instagram', 'social', 'socials', 'social media'],
+      answer: "David's site doesn't list Twitter/X or other social accounts. You can find him on LinkedIn, GitHub, and Google Scholar.",
+      links: [
+        { label: 'LinkedIn', url: site.linkedin },
+        { label: 'GitHub', url: site.github },
+        { label: 'Google Scholar', url: site.scholar },
+      ],
+    },
+    {
+      topic: 'this site',
+      keywords: ['website', 'eleventy', 'source code'],
+      phrases: ['this site', 'this website', 'made this site', 'built this site', 'source code', 'made with ai', 'built with ai', 'personal website'],
+      answer: "This is David's personal website, krasow.dev. It's built with Eleventy from Markdown, and this terminal was designed and built with help from AI tools. The source is on GitHub.",
+      links: [{ label: 'Source on GitHub', url: 'https://github.com/krasow/krasow.github.io' }],
+      readMore: { command: 'cat /home/ai-notice.md' },
+    },
+    {
+      topic: 'personal',
+      keywords: ['hobby', 'hobbies', 'fun', 'free time', 'personal', 'hometown', 'age', 'old', 'speak', 'spoken'],
+      phrases: ['where is he from', 'what does he do for fun', 'how old', 'languages does he speak', 'outside of work'],
+      answer: `David's site focuses on his research and work, so it doesn't cover that. Feel free to ask him directly at ${site.email}.`,
+    },
+    {
+      topic: 'greeting',
+      keywords: ['hi', 'hello', 'hey', 'howdy'],
+      answer: 'Hello! Ask me anything about David, or type `help` in chat mode for examples.',
+    },
+    {
+      topic: 'thanks',
+      keywords: ['thanks', 'thank', 'thx', 'appreciate'],
+      answer: `You're welcome! You can reach David at ${site.email}.`,
+    },
+    {
+      topic: 'what to ask',
+      keywords: [],
+      phrases: ['what can i ask', 'what can you do', 'what do you know', 'what should i ask', 'how does this work'],
+      answer: 'Try asking about his research, skills, projects, publications, availability, or how to contact him. For example: "is he looking for an internship", "what languages does he know", or "how do I reach him".',
     },
     {
       topic: 'news and updates',
@@ -373,22 +437,22 @@ export function render({ site, collections }) {
     },
     {
       topic: 'publications and papers',
-      keywords: ['publication', 'publications', 'paper', 'papers', 'published', 'writing', 'list', 'submitted', 'review'],
-      phrases: ['research papers', 'first author', 'first authored'],
+      keywords: ['publication', 'publications', 'paper', 'papers', 'published', 'writing', 'list', 'submitted', 'review', 'read', 'pdf', 'pdfs', 'bibtex', 'bib', 'cite'],
+      phrases: ['research papers', 'first author', 'first authored', 'read his papers'],
       answer: `David's publications and technical reports:\n${bullets(publications.map((paper) => `${paper.data.title} — ${paper.data.venue} (${paper.date.getUTCFullYear()})`))}\n\nHe is first author on ${firstAuthored} of ${publications.length}. The published ones are in ~/publications:`,
       command: 'ls /home/publications',
     },
     {
       topic: 'presentations and talks',
-      keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures'],
+      keywords: ['presentation', 'presentations', 'talk', 'talks', 'slide', 'slides', 'lecture', 'lectures', 'presented', 'present', 'presenting', 'conference', 'conferences', 'spoke', 'speaker', 'speaking', 'supercomputing', 'juliacon'],
       phrases: ['research talks', 'conference slides'],
-      answer: "Here are David's listed presentations:",
+      answer: `David's talks:\n${bullets(talks.map((talk) => `${talk.data.title} — ${talk.data.venue} (${monthYear(talk.date)})`))}\n\nSlides are in ~/presentations:`,
       command: 'ls /home/presentations',
     },
     {
       topic: 'posters',
       keywords: ['poster', 'posters', 'conference poster', 'research poster'],
-      answer: "Here are David's listed posters:",
+      answer: `David's posters:\n${bullets(posters.map((poster) => `${poster.data.title} — ${poster.data.venue} (${monthYear(poster.date)})`))}\n\nPDFs are in ~/posters:`,
       command: 'ls /home/posters',
     },
   ];

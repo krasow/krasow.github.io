@@ -1,14 +1,14 @@
 repos:
   - repo: local
     hooks:
-      # Generated HTML isn't committed (CI builds and deploys it); this just
-      # catches content or template errors before they reach CI.
+      # Generated HTML isn't committed (CI builds and deploys it); this builds
+      # the site and runs test/ to catch content, template, or chat regressions.
       - id: build
-        name: Build the site with Eleventy
-        entry: npm run --silent build -- --quiet
+        name: Build the site and run tests
+        entry: npm test
         language: system
         pass_filenames: false
-        files: ^(content/|terminal/|common/|assets/|eleventy\.config\.mjs$|package(-lock)?\.json$)
+        files: ^(content/|terminal/|common/|assets/|test/|eleventy\.config\.mjs$|package(-lock)?\.json$)
       # Only the files being committed, so unrelated work in progress can't block a commit.
       - id: prettier
         name: Check JavaScript and HTML formatting

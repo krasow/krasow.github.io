@@ -62,7 +62,10 @@
   const normalizePhrase = (text) => wordsIn(text).join('');
   const normalizeReference = (word) => (['he', 'him'].includes(word) ? 'david' : word);
 
+  // Edits needed to turn a into b; swapping two adjacent letters counts as one
+  // edit, so typos like "emial" still correct to "email".
   const editDistance = (a, b) => {
+    let previous = null;
     let row = [...Array(b.length + 1).keys()];
     for (let i = 1; i <= a.length; i += 1) {
       const next = [i];
@@ -72,7 +75,10 @@
           row[j] + 1,
           row[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
         );
+        if (previous && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1])
+          next[j] = Math.min(next[j], previous[j - 2] + 1);
       }
+      previous = row;
       row = next;
     }
     return row[b.length];
