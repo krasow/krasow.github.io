@@ -1,0 +1,10 @@
+---
+permalink: /terminal/fs/home/presentations/.terminal.json
+---
+{
+  "entries": [
+{%- for talk in collections.presentations | newestFirst | where("id") %}
+    { "name": {{ talk.data.id | json | safe }}, "target": {{ talk.data.links.Slides | json | safe }} }{% if not loop.last %},{% endif %}
+{%- endfor %}
+  ]
+}

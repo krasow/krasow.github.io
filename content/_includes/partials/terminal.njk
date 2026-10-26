@@ -1,0 +1,80 @@
+{%- set summary = collections.snippets | first -%}
+{%- set education = (collections.cv | first).data.education -%}
+<!-- Mobile: business card -->
+<div class="mobile-card">
+  <div class="mobile-card-command">david:~$ whoami</div>
+  <div class="mobile-card-header">
+    <div>
+      <div class="mobile-card-name">{{ site.name }}</div>
+      <div class="mobile-card-title">{{ site.headline }}</div>
+    </div>
+    <div class="mobile-card-links">
+      <a href="{{ site.resume }}" class="mobile-card-save">Resume</a>
+    </div>
+  </div>
+  <hr class="mobile-card-divider" />
+  <div class="mobile-card-contact-row">
+    <div>
+      <div class="mobile-card-row">{{ site.location }}</div>
+      <div class="mobile-card-row">{{ site.phone }}</div>
+      <div class="mobile-card-row"><a href="mailto:{{ site.email }}">{{ site.email }}</a></div>
+    </div>
+    <a href="{{ site.contactCard }}" download class="mobile-card-save">Contact</a>
+  </div>
+  <hr class="mobile-card-divider" />
+  <div class="mobile-card-icons">
+    <a href="{{ site.github }}" target="_blank"><i class="fa fa-github"></i></a>
+    <a href="{{ site.linkedin }}" target="_blank"><i class="fa fa-linkedin"></i></a>
+    <a href="{{ site.scholar }}" target="_blank"><i class="fa fa-graduation-cap"></i></a>
+  </div>
+  <hr class="mobile-card-divider" />
+  {%- for school in education %}
+  <div class="mobile-card-row">{{ school.org }} ({{ school.terminalDate }})</div>
+  <div class="mobile-card-sub">{{ school.terminal }}</div>
+  {%- endfor %}
+</div>
+
+<!-- Desktop: split terminal -->
+<div class="terminal-split terminal-desktop-only">
+  <div class="terminal-cmds">
+    <div class="command active" data-idx="0">david:~$ summary</div>
+    <div class="command" data-idx="1">david:~$ education</div>
+    <div class="command" data-idx="2">david:~$ contact</div>
+  </div>
+  <div class="terminal-output">
+    <div class="response response-sm active" data-idx="0">
+      <div id="terminal-summary" class="md-response">{{ summary.templateContent | trim }}</div>
+      <div class="summary-links">
+        <a href="/pages/cv.html" class="mobile-card-save">View CV</a>
+        <a href="{{ site.resume }}" download class="mobile-card-save">Download Resume</a>
+      </div>
+    </div>
+    <div class="response response-md" data-idx="1">
+      <div id="terminal-education" class="response-block md-response">
+        {%- include "partials/education.txt.njk" -%}
+      </div>
+    </div>
+    <div class="response response-md" data-idx="2">
+      <div class="contact-flex">
+        <div class="contact-left">
+          <div class="response-block">
+            {{ site.name }}<br />
+            {{ site.location }}<br />
+            <a href="mailto:{{ site.email }}">{{ site.email }}</a><br />
+            {{ site.phone }}
+          </div>
+          <div class="contact-icons">
+            <a href="{{ site.github }}" target="_blank"><i class="fa fa-github"></i></a>
+            <a href="{{ site.linkedin }}" target="_blank"><i class="fa fa-linkedin"></i></a>
+            <a href="{{ site.scholar }}" target="_blank"><i class="fa fa-graduation-cap"></i></a>
+          </div>
+          <div class="contact-buttons">
+            <a href="{{ site.contactCard }}" download class="mobile-card-save">Download Contact</a>
+            <a href="{{ site.calendar }}" target="_blank" class="mobile-card-save">Schedule a Meeting</a>
+          </div>
+        </div>
+        <img class="contact-photo" src="{{ site.photo }}" alt="{{ site.name }}" />
+      </div>
+    </div>
+  </div>
+</div>

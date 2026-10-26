@@ -1,0 +1,16 @@
+---
+# Project pages used to live at /pages/show.html?page=<name>.
+permalink: /pages/show.html
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      location.replace(
+        '/projects/' + (new URLSearchParams(location.search).get('page') || 'cunumeric') + '/' + location.hash,
+      );
+    </script>
+  </head>
+</html>

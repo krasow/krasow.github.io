@@ -1,0 +1,21 @@
+<div class="holder">
+  <div class="title-lg">Publications and Technical Reports</div>
+  {%- for pub in collections.publications | newestFirst %}
+
+  <div class="event pub-event">
+    <div class="pub-left">
+      <div class="pub-year">{{ pub.date | year }}</div>
+    </div>
+    <div class="pub-content">
+      <div class="title-sm">
+        {%- if pub.data.url %}<a href="{{ pub.data.url }}">{{ pub.data.title }}</a>
+        {%- else %}{{ pub.data.title }}{% endif -%}
+      </div>
+      <div class="description">{{ pub.data.authors | md | safe }}</div>
+      <div class="venue">{{ pub.data.venue | md | safe }}</div>
+      {%- set links = pub.data.links %}
+      {%- include "partials/links.njk" %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>

@@ -1,0 +1,7 @@
+{%- if links %}
+<div class="pub-links">
+  {%- for label, href in links %}
+  <a href="{{ href }}"{% if href.endsWith(".bib") %} download{% endif %}>{{ label }}</a>
+  {%- endfor %}
+</div>
+{%- endif %}

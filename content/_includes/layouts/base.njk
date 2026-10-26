@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <script>
+      /* Set theme before paint to avoid a flash of the wrong colors. */
+      (function () {
+        try {
+          var t = localStorage.getItem('theme') || 'light';
+          var d = document.documentElement;
+          d.setAttribute('data-theme', t);
+          d.style.backgroundColor = t === 'dark' ? '#121212' : '#ffffff';
+        } catch (e) {}
+      })();
+    </script>
+    <!-- Google Analytics -->
+    <script src="/common/gtag.js"></script>
+    <title>{{ site.name }}{% if title %} | {{ title }}{% endif %}</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/" />
+    <meta property="og:image" content="/assets/images/" />
+    <meta property="og:image:secure_url" content="/assets/images/" />
+    <link rel="stylesheet" href="/common/css/theme.css" />
+    <link rel="stylesheet" href="/common/css/style.css" />
+    <link rel="stylesheet" href="/common/css/containers.css" />
+    <link rel="stylesheet" href="/common/css/navbar.css" />
+    <link rel="stylesheet" href="/common/css/footer.css" />
+    <!-- Bootstrap 4.5.0 -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+    <!-- Font awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    {%- for sheet in styles %}
+    <link rel="stylesheet" href="{{ sheet }}" />
+    {%- endfor %}
+    {%- for script in headScripts %}
+    <script src="{{ script }}"></script>
+    {%- endfor %}
+  </head>
+
+  <body>
+    <div class="content" id="content">
+      <div id="navbar">{% include "partials/navbar.njk" %}</div>
+      {{ content | safe }}
+    </div>
+
+    <div id="footer">{% include "partials/footer.njk" %}</div>
+
+    <script src="/common/js/navbar.js"></script>
+    <script src="/common/js/theme.js"></script>
+    {%- for script in scripts %}
+    <script src="{{ script }}"></script>
+    {%- endfor %}
+  </body>
+</html>

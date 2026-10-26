@@ -1,0 +1,28 @@
+---
+layout: layouts/base.njk
+---
+<div class="holder">
+  <div class="title-lg">{{ title }}</div>
+  {%- for item in collections.news | newestFirst %}
+
+  <div class="article pub-event">
+    <div class="pub-left">
+      <div class="pub-year">{{ item.date | year }}</div>
+      <div class="pub-links"><a href="{{ item.data.url }}">Read</a></div>
+    </div>
+    <div class="pub-content">
+      <div class="title">{{ item.data.title }}</div>
+      <div class="venue">{{ item.data.venue | md | safe }}</div>
+      <div class="description">
+        {{ item.templateContent | unwrap | safe }}
+        <a href="{{ item.data.url }}">See more</a>
+      </div>
+      {%- if item.data.image %}
+      <div class="news-img-wrap">
+        <img src="{{ item.data.image }}" alt="{{ item.data.imageAlt }}" />
+      </div>
+      {%- endif %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>

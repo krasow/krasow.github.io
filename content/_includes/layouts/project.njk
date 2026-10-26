@@ -1,0 +1,15 @@
+---
+layout: layouts/base.njk
+styles:
+  - /common/css/markdown.css
+  - https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/github-dark.min.css
+headScripts:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+scripts:
+  - https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js
+  - https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/julia.min.js
+  - /common/js/highlight.js
+---
+<div class="holder">
+  <div class="markdown-content" id="project">{{ content | safe }}</div>
+</div>

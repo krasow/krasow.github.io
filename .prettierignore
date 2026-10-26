@@ -1,4 +1,4 @@
 .git/
 node_modules/
-terminal/fs/manifest.json
+_site/
 terminal/fonts/

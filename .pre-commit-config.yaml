@@ -1,19 +1,14 @@
 repos:
   - repo: local
     hooks:
-      # Runs before terminal-manifest, which reads the rendered HTML.
-      - id: render-projects
-        name: Render project pages from Markdown
-        entry: bash -c 'bash pages/projects/render.sh && npx prettier --write pages/projects/*.html >/dev/null && git add pages/projects/*.html'
+      # Generated HTML isn't committed (CI builds and deploys it); this just
+      # catches content or template errors before they reach CI.
+      - id: build
+        name: Build the site with Eleventy
+        entry: npm run --silent build -- --quiet
         language: system
         pass_filenames: false
-        files: ^pages/projects/(.+\.md|render\.sh)$
-      - id: terminal-manifest
-        name: Regenerate terminal filesystem manifest and page text
-        entry: bash -c 'npm run --silent generate && git add terminal/fs/manifest.json assets/terminal/pages'
-        language: system
-        pass_filenames: false
-        files: ^(terminal/fs/.*|pages/.+\.(html|md)|homepage/.+\.html|terminal/generate-fs-manifest\.mjs|terminal/lib/page-text\.mjs)$
+        files: ^(content/|terminal/|common/|homepage/|pages/|assets/|eleventy\.config\.mjs$|package(-lock)?\.json$)
       - id: prettier
         name: Check JavaScript and HTML formatting
         entry: npm run format:check

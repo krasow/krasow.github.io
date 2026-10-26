@@ -1,0 +1,10 @@
+---
+permalink: /terminal/fs/home/publications/.terminal.json
+---
+{
+  "entries": [
+{%- for pub in collections.publications | newestFirst | where("id") %}
+    { "name": {{ pub.data.id | json | safe }}, "target": {{ pub.data.url | json | safe }} }{% if not loop.last %},{% endif %}
+{%- endfor %}
+  ]
+}

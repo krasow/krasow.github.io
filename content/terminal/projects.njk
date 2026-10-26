@@ -1,0 +1,10 @@
+---
+permalink: /terminal/fs/home/projects/.terminal.json
+---
+{
+  "entries": [
+{%- for project in collections.projects | where("card") | sort(false, true, "fileSlug") %}
+    { "name": {{ project.fileSlug | json | safe }}, "target": {{ project.url | json | safe }} }{% if not loop.last %},{% endif %}
+{%- endfor %}
+  ]
+}
