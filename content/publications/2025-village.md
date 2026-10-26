@@ -1,7 +1,7 @@
 ---
 title: "Village: From High Level Parallelism to High Performance"
 authors: K. Nagaitsev, G. Dube, K. Hallsby, P. Liu, Q. Jiang, L. Myers, D. Krasowska, A. Butler, R. Xu, P. Dinda
-venue: Technical Report NU-CS-2025-33 · Northwestern University
+venue: Technical Report NU-CS-2025-33, Northwestern University
 url: https://www.mccormick.northwestern.edu/computer-science/documents/nu-cs-2025-33.pdf
 id: VILLAGE25
 links:

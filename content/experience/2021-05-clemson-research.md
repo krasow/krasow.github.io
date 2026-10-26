@@ -1,6 +1,6 @@
 ---
 title: "Undergraduate Student Researcher"
-org: Clemson University · FTHPC
+org: Clemson University, FTHPC
 end: May 2022
 logo: /assets/images/logos/clemson.png
 summary: Advised by Dr. Jon Calhoun. Statistical modeling of scientific datasets to establish correlations with lossy compression ratios. First publication at DRBSD-7, SC '21.

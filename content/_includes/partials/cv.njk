@@ -25,7 +25,7 @@
 {%- macro list(name, items) %}
   {%- call section(name) %}
     {%- for item in items %}
-      {%- set org = item.org + (" · " + item.location if item.location else "") %}
+      {%- set org = item.org + (", " + item.location if item.location else "") %}
       {{- entry(item.date, item.title | md, org | md, item.desc | md) }}
     {%- endfor %}
   {%- endcall %}

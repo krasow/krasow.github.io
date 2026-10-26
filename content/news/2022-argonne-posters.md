@@ -1,6 +1,6 @@
 ---
 title: "Summer internships at Argonne lead to award-winning posters"
-venue: Argonne National Laboratory · Mathematics and Computer Science Division
+venue: Argonne National Laboratory, Mathematics and Computer Science Division
 url: https://www.anl.gov/mcs/article/summer-internships-at-argonne-lead-to-awardwinning-posters
 image: /assets/images/mcs-award.png
 imageAlt: Argonne MCS Award

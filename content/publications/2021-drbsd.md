@@ -2,7 +2,7 @@
 title: "Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets"
 authors: D. Krasowska, J. Bessac, R. Underwood, J. C. Calhoun, S. Di, F. Cappello
 venue: 7th Workshop on Data Analysis and Reduction for Big Scientific Data (DRBSD-7)
-short: DRBSD-7 · Supercomputing 2021
+short: DRBSD-7, Supercomputing 2021
 url: https://ieeexplore.ieee.org/abstract/document/9652575
 id: DRBSD21
 links:

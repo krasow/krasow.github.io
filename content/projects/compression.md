@@ -14,15 +14,15 @@ Scientific research increasingly uses error-bounded lossy compressors to achieve
 
 1. **Exploring Lossy Compressibility through Statistical Correlations of Scientific Datasets**
    D. Krasowska, J. Bessac, R. Underwood, J. C. Calhoun, S. Di, F. Cappello
-   *DRBSD-7, SC 2021* · [PDF](/assets/documents/papers/2021/Exploring_Lossy_Compressibility_through_Statistical_Correlations_of_Scientific_Datasets.pdf)
+   *DRBSD-7, SC 2021* ([PDF](/assets/documents/papers/2021/Exploring_Lossy_Compressibility_through_Statistical_Correlations_of_Scientific_Datasets.pdf))
 
 2. **Black-Box Statistical Prediction of Lossy Compression Ratios for Scientific Data**
    R. Underwood, J. Bessac, D. Krasowska, J. C. Calhoun, S. Di, F. Cappello
-   *IJHPCA 2023* · [PDF](/assets/documents/papers/2023/Black-Box_Statistical_Prediction_of_Lossy_Compression_Ratios_for_Scientific_Data.pdf)
+   *IJHPCA 2023* ([PDF](/assets/documents/papers/2023/Black-Box_Statistical_Prediction_of_Lossy_Compression_Ratios_for_Scientific_Data.pdf))
 
 3. **A Lightweight, Effective Compressibility Estimation Method for Error-bounded Lossy Compression**
    A. Ganguli, R. Underwood, J. Bessac, D. Krasowska, J. C. Calhoun, S. Di, F. Cappello
-   *IEEE CLUSTER 2023* · [PDF](/assets/documents/papers/2023/A_Lightweight_Effective_Compressibility_Estimation_Method_for_Error-bounded_Lossy_Compression.pdf)
+   *IEEE CLUSTER 2023* ([PDF](/assets/documents/papers/2023/A_Lightweight_Effective_Compressibility_Estimation_Method_for_Error-bounded_Lossy_Compression.pdf))
 
 ## Collaborators
 

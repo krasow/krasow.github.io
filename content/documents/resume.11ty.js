@@ -60,7 +60,7 @@ export function render({ site, collections }) {
         .map(
           // Same shape as Experience: "**Ph.D. … in Computer Science**, Northwestern University, Evanston, IL".
           (school) =>
-            `\\dated{\\textbf{${tex(school.title.replace(' · ', ' in '))}}, ${tex(school.org)}, ${tex(school.location)}}{${tex(school.date)}}`,
+            `\\dated{\\textbf{${tex(school.title)}}, ${tex(school.org)}, ${tex(school.location)}}{${tex(school.date)}}`,
         )
         .join('\n'),
     ],
@@ -99,7 +99,7 @@ export function render({ site, collections }) {
             item,
             // The report series, e.g. NU-CS from "Technical Report NU-CS-2025-33".
             item.data.venue.match(/Technical Report ([A-Z]+(?:-[A-Z]+)*)-/i)[1],
-            tex(item.data.venue.split(' · ')[0]),
+            tex(item.data.venue.split(', ')[0]),
           ),
         )
         .join('\n'),

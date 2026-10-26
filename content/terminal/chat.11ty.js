@@ -123,7 +123,7 @@ export function render({ site, collections }) {
       topic: 'Clemson experience',
       keywords: ['fthpc', 'jon calhoun'],
       phrases: ['at clemson', 'at argonne', 'clemson experience', 'clemson research', 'clemson work', 'undergraduate research', 'group undergraduate', 'cluster competition', 'student cluster', 'undergrad research', 'get into research', 'got into research', 'start doing research', 'first research', 'start research', 'started research', 'start his research', 'begin research', 'began research', 'research start', 'research career', 'first research experience', 'where did he start', 'how did he start', 'when did he start research'],
-      answer: `At Clemson University, David earned a ${bachelors.title.replace(' · ', ' in ')} and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data. He also competed in the Student Cluster Competition at SC '21 and IndySCC at SC '22, building a cluster with Dell and Intel.`,
+      answer: `At Clemson University, David earned a ${bachelors.title} and conducted undergraduate research with the FTHPC group under Jon Calhoun. He collaborated with Argonne National Laboratory on statistical methods for predicting error-bounded lossy compression ratios for scientific data. He also competed in the Student Cluster Competition at SC '21 and IndySCC at SC '22, building a cluster with Dell and Intel.`,
       readMore: {
         prompt: 'Would you like to read more about the compression project? (y/n)',
         command: 'open /home/projects/compression',
@@ -231,7 +231,7 @@ export function render({ site, collections }) {
       topic: 'communication',
       keywords: ['communicator', 'communication', 'communicate', 'communicates', 'presenter', 'writer', 'writing'],
       phrases: ['good communicator', 'communication skills', 'public speaking'],
-      answer: `David has given ${talks.length} talks (including ${andList(talks.slice(0, 3).map((talk) => talk.data.venue))}), won ${firstPlace.title.replace(' · ', ' in the ')} at ${firstPlace.org}, and has written ${publications.length} papers and reports. He also teaches and mentors students.`,
+      answer: `David has given ${talks.length} talks (including ${andList(talks.slice(0, 3).map((talk) => talk.data.venue))}), won ${firstPlace.title.replace(', ', ' in the ')} at ${firstPlace.org}, and has written ${publications.length} papers and reports. He also teaches and mentors students.`,
       readMore: { command: 'ls /home/presentations' },
     },
     {
@@ -291,7 +291,7 @@ export function render({ site, collections }) {
       topic: 'Village',
       keywords: ['village'],
       phrases: ['what is village', 'village toolchain', 'village report', 'village paper', 'village technical report'],
-      answer: `"${village.data.title}" (${village.data.venue.replace(' · ', ', ')}, ${village.date.getUTCFullYear()}) comes from Peter Dinda's group; David is a co-author. His ${constellationTalk.data.venue} talk proposed targeting UPMEM PIM through the Village toolchain.`,
+      answer: `"${village.data.title}" (${village.data.venue}, ${village.date.getUTCFullYear()}) comes from Peter Dinda's group; David is a co-author. His ${constellationTalk.data.venue} talk proposed targeting UPMEM PIM through the Village toolchain.`,
       links: [paperLink('VILLAGE25')],
     },
     {
@@ -424,7 +424,7 @@ export function render({ site, collections }) {
       topic: 'ACM Student Research Competition',
       keywords: ['src', 'acm', 'indyscc'],
       phrases: ['student research competition', 'acm src', 'sc22 award', 'won at sc22', 'win at sc22', 'best poster', 'first place'],
-      answer: `At SC22, David won ${firstPlace.title.replace(' · ', ' in the ')} with "${srcPoster.data.title}", which extended his statistical methods for predicting lossy compression ratios from 2D to 3D scientific data. His Clemson team also won Best Poster at IndySCC22.`,
+      answer: `At SC22, David won ${firstPlace.title.replace(', ', ' in the ')} with "${srcPoster.data.title}", which extended his statistical methods for predicting lossy compression ratios from 2D to 3D scientific data. His Clemson team also won Best Poster at IndySCC22.`,
       links: [
         { label: 'Poster', url: srcPoster.data.file },
         { label: argonneNews.data.title, url: argonneNews.data.url },
