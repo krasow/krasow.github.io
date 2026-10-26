@@ -275,7 +275,7 @@ export function render({ site, collections }) {
       answer: `cuNumeric.jl, developed with collaborators at Carnegie Mellon University, Los Alamos National Laboratory, and NVIDIA, is a Julia array library for running numerical programs across distributed, heterogeneous systems with minimal code changes. Its NDArray type is designed as a drop-in alternative to Julia's standard Array, while the Legate ecosystem uses Legion underneath to organize deferred computations, manage data, and schedule work across resources such as NVIDIA GPUs.\n\nThe project grew out of an industry collaboration with NVIDIA, which the ${nvidiaArticle.data.venue} podcast covered in ${nvidiaArticle.date.getUTCFullYear()}.\n\nPaper: "${cunumericPaper.data.title}" (${cunumericPaper.data.venue}).`,
       links: [
         { label: 'GitHub', url: 'https://github.com/JuliaLegate/cuNumeric.jl/' },
-        { label: 'Documentation', url: 'https://julialegate.github.io/cuNumeric.jl/dev/' },
+        { label: 'Documentation', url: 'https://julialegate.github.io/cuNumeric.jl/stable/' },
         { label: `${nvidiaArticle.data.venue} podcast episode`, url: nvidiaArticle.data.url },
       ],
       readMore: { command: 'open /home/projects/cunumeric' },
@@ -288,7 +288,7 @@ export function render({ site, collections }) {
       links: [
         { label: 'Legion', url: 'https://legion.stanford.edu/' },
         { label: 'cuNumeric.jl GitHub', url: 'https://github.com/JuliaLegate/cuNumeric.jl/' },
-        { label: 'cuNumeric.jl documentation', url: 'https://julialegate.github.io/cuNumeric.jl/dev/' },
+        { label: 'cuNumeric.jl documentation', url: 'https://julialegate.github.io/cuNumeric.jl/stable/' },
         { label: 'Legion PIM GitHub', url: 'https://github.com/PrescienceLab/upmem-legion' },
       ],
     },
