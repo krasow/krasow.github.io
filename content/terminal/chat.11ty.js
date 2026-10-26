@@ -3,6 +3,10 @@
 // skills) are pulled from content/ so the chat can't drift from the site.
 // terminal/js/apps/chat.js validates the shape on load.
 
+// Not shown elsewhere on the site, so it lives here; used by the graduation and
+// hiring answers.
+const EXPECTED_GRADUATION = 'December 2027';
+
 const monthYear = (date) =>
   date.toLocaleString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const bullets = (lines) => lines.map((line) => `• ${line}`).join('\n');
@@ -28,7 +32,7 @@ export function render({ site, collections }) {
     .skills;
   const publications = [...collections.publications].reverse();
   const experience = [...collections.experience].reverse();
-  const [phd, bachelors] = cv.education;
+  const [, bachelors] = cv.education;
   const cunumericPaper = bySlug(publications, 'cunumeric-jl');
   const polymerPaper = bySlug(publications, 'polymerpim');
   const polymerPoster = byId(collections.posters, 'CSGF26');
@@ -77,6 +81,13 @@ export function render({ site, collections }) {
       },
     },
     {
+      topic: 'graduation',
+      keywords: ['graduation'],
+      phrases: ['when does he graduate', 'when will he graduate', 'when is he graduating', 'expect to graduate', 'expected graduation', 'graduation date', 'when does he finish', 'when will he finish', 'when is he done'],
+      answer: `David expects to graduate from Northwestern University with his Ph.D. in Computer Science in ${EXPECTED_GRADUATION}.`,
+      hint: 'Ask whether he is looking for a job or internship.',
+    },
+    {
       topic: 'education',
       keywords: ['education', 'school', 'go', 'attend', 'attended', 'graduate', 'graduated', 'study', 'studied', 'degree', 'degrees', 'major', 'undergrad', 'college', 'clemson', 'northwestern', 'bachelor', 'masters', 'doctorate', 'doctoral', 'computer engineering', 'computer science'],
       answer: `David's education:\n${bullets(cv.education.map((school) => `${school.title} — ${school.org} (${school.date})`))}`,
@@ -119,8 +130,8 @@ export function render({ site, collections }) {
     {
       topic: 'hiring availability',
       keywords: ['hire', 'hiring', 'available', 'availability', 'recruit', 'recruiting', 'job', 'internship', 'intern', 'full time', 'full-time'],
-      phrases: ['open to work', 'available to work', 'looking for work', 'expect to graduate', 'expected graduation', 'graduation date'],
-      answer: 'David is looking for an internship for 2027. He expects to graduate in December 2027 and plans to begin looking for full-time positions around that time.',
+      phrases: ['open to work', 'available to work', 'looking for work', 'looking for a job'],
+      answer: `David is looking for an internship for 2027. He expects to graduate in ${EXPECTED_GRADUATION} and plans to begin looking for full-time positions around that time.`,
       readMore: {
         prompt: 'Would you like to download his contact card? (y/n)',
         command: 'download /home/contact.vcf',
