@@ -4,15 +4,18 @@
 // to update. Written by `npm run resume` along with the resume. The file holds
 // only what gets pasted: papers under review are left out until accepted.
 
+import { monthYear, paperStatus, profile } from '../_includes/content.mjs';
+
 // LinkedIn's field limits; the build fails rather than writing text that
 // LinkedIn would cut off.
 const LIMITS = { headline: 220, about: 2600, title: 100, description: 2000 };
 
-const monthYear = (date) =>
-  date.toLocaleString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
-const checked = (field, text, limit) => {
-  if (text.length > limit)
-    throw new Error(`linkedin.11ty.js: ${field} is ${text.length} characters (limit ${limit})`);
+// `where` names the entry in the error, e.g. the experience file.
+const checked = (field, text, where) => {
+  if (text.length > LIMITS[field])
+    throw new Error(
+      `linkedin.11ty.js: ${field}${where ? ` of ${where}` : ''} is ${text.length} characters (limit ${LIMITS[field]})`,
+    );
   return text;
 };
 const fields = (entries) =>
@@ -29,39 +32,34 @@ export const data = {
 };
 
 export function render({ site, collections }) {
-  const cv = collections.cv[0].data;
-  const summary = collections.snippets[0].templateContent.trim();
-  const skills = collections.all.find((page) => page.inputPath === './content/index.md').data
-    .skills;
-  const experience = [...collections.experience].reverse();
-  const publications = [...collections.publications].reverse();
-  const published = publications.filter((paper) => !/^submitted to/i.test(paper.data.venue));
+  const { cv, summary, skills, experience, publications } = profile(collections);
+  const published = publications.filter((paper) => paperStatus(paper) !== 'under review');
 
   const about = `${summary}\n\nPublications, talks, and projects: ${site.url}`;
 
   return `${[
     section('Intro', [
       fields([
-        ['Headline', checked('Headline', site.linkedinHeadline, LIMITS.headline)],
+        ['Headline', checked('headline', site.linkedinHeadline)],
         ['Location', site.location],
         ['Website', site.url],
       ]),
     ]),
-    section('About', [checked('About', about, LIMITS.about)]),
+    section('About', [checked('about', about)]),
     section(
       'Experience',
       experience.map((job) =>
         fields([
-          ['Title', checked(`${job.inputPath} title`, job.data.title, LIMITS.title)],
+          ['Title', checked('title', job.data.title, job.inputPath)],
           ['Company or organization', job.data.org],
           ['Start date', monthYear(job.date)],
           ['End date', job.data.end],
           [
             'Description',
             checked(
-              `${job.inputPath} description`,
+              'description',
               (job.data.resume ?? []).map((bullet) => `• ${bullet}`).join('\n'),
-              LIMITS.description,
+              job.inputPath,
             ),
           ],
         ]),
@@ -98,7 +96,7 @@ export function render({ site, collections }) {
       'Honors & awards',
       cv.awards.map((award) =>
         fields([
-          ['Title', checked(`award ${award.title}`, award.title, LIMITS.title)],
+          ['Title', checked('title', award.title, `award ${award.title}`)],
           ['Issuer', award.org],
           ['Issue date', String(award.date)],
         ]),

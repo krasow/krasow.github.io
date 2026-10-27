@@ -5,6 +5,8 @@
 // Only written when BUILD_DOCUMENTS is set (by `npm run resume`), since it carries
 // site.personalPhone, which stays off the website.
 
+import { monthYear, paperStatus, profile } from '../_includes/content.mjs';
+
 const escapes = {
   '\\': '\\textbackslash{}',
   '{': '\\{',
@@ -22,10 +24,9 @@ const tex = (text) =>
   String(text ?? '')
     .replaceAll(' · ', ', ')
     .replace(/[\\{}&%$#_~^]/g, (char) => escapes[char]);
-const monthYear = (date) =>
-  date.toLocaleString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const link = (url, label) => `\\href{${url.replace(/[%#]/g, '\\$&')}}{${tex(label)}}`;
 const bareUrl = (url) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+const lines = (items, line) => items.map(line).join('\n');
 
 export const data = {
   permalink: () => (process.env.BUILD_DOCUMENTS ? '/resume/resume.tex' : false),
@@ -33,36 +34,32 @@ export const data = {
 };
 
 export function render({ site, collections }) {
-  const cv = collections.cv[0].data;
-  const summary = collections.snippets[0].templateContent.trim();
-  const experience = [...collections.experience].reverse();
-  const publications = [...collections.publications].reverse();
+  const { cv, summary, experience, publications } = profile(collections);
   const authors = (list) => tex(list).replaceAll(site.authorName, `\\textbf{${site.authorName}}`);
-
-  const underReview = publications.filter((paper) => /^submitted to/i.test(paper.data.venue));
-  const reports = publications.filter((paper) => /technical report/i.test(paper.data.venue));
-  const reviewed = publications.filter(
-    (paper) => !underReview.includes(paper) && !reports.includes(paper),
-  );
-  const paper = (item, tag, detail) =>
-    `\\paper{${tex(tag)}}{${tex(item.data.title)}}{${authors(item.data.authors)}}{${detail}}`;
-  const year = (item) => item.date.getUTCFullYear();
-  const doi = (item) => {
-    const url = item.data.links?.DOI;
-    return url ? link(url, `doi:${url.replace('https://doi.org/', '')}`) : tex(item.data.venue);
+  // One \paper line per paper with this status, tagged and detailed by `cite`.
+  const papers = (status, cite) =>
+    lines(
+      publications.filter((paper) => paperStatus(paper) === status),
+      (paper) => {
+        const [tag, detail] = cite(paper);
+        return `\\paper{${tex(tag)}}{${tex(paper.data.title)}}{${authors(paper.data.authors)}}{${detail}}`;
+      },
+    );
+  const doi = (paper) => {
+    const url = paper.data.links?.DOI;
+    return url ? link(url, `doi:${url.replace('https://doi.org/', '')}`) : tex(paper.data.venue);
   };
 
   const sections = [
     ['Summary', tex(summary)],
     [
       'Education',
-      cv.education
-        .map(
-          // Same shape as Experience: "**Ph.D. … in Computer Science**, Northwestern University, Evanston, IL".
-          (school) =>
-            `\\dated{\\textbf{${tex(school.title)}}, ${tex(school.org)}, ${tex(school.location)}}{${tex(school.date)}}`,
-        )
-        .join('\n'),
+      lines(
+        cv.education,
+        // Same shape as Experience: "**Ph.D. … in Computer Science**, Northwestern University, Evanston, IL".
+        (school) =>
+          `\\dated{\\textbf{${tex(school.title)}}, ${tex(school.org)}, ${tex(school.location)}}{${tex(school.date)}}`,
+      ),
     ],
     [
       'Experience',
@@ -80,39 +77,33 @@ export function render({ site, collections }) {
     ],
     [
       'Peer-Reviewed Publications',
-      reviewed.map((item) => paper(item, item.data.id.replace(/\d+$/, ''), doi(item))).join('\n'),
+      papers('reviewed', (paper) => [paper.data.id.replace(/\d+$/, ''), doi(paper)]),
     ],
     [
       'Under Review',
-      underReview
-        .map((item) => {
-          const venue = item.data.venue.match(/^submitted to (\S+?);/i)[1];
-          return paper(item, venue, `Submitted to ${tex(venue)}, ${year(item)}`);
-        })
-        .join('\n'),
+      papers('under review', (paper) => {
+        const venue = paper.data.venue.match(/^submitted to (\S+?);/i)[1];
+        return [venue, `Submitted to ${tex(venue)}, ${paper.date.getUTCFullYear()}`];
+      }),
     ],
     [
       'Technical Reports',
-      reports
-        .map((item) =>
-          paper(
-            item,
-            // The report series, e.g. NU-CS from "Technical Report NU-CS-2025-33".
-            item.data.venue.match(/Technical Report ([A-Z]+(?:-[A-Z]+)*)-/i)[1],
-            tex(item.data.venue.split(', ')[0]),
-          ),
-        )
-        .join('\n'),
+      papers('report', (paper) => [
+        // The report series, e.g. NU-CS from "Technical Report NU-CS-2025-33".
+        paper.data.venue.match(/Technical Report ([A-Z]+(?:-[A-Z]+)*)-/i)[1],
+        tex(paper.data.venue.split(', ')[0]),
+      ]),
     ],
     [
       'Teaching \\& Mentoring',
-      cv.teaching.map((item) => `\\dated{${tex(item.title)}}{${tex(item.date)}}`).join('\n'),
+      lines(cv.teaching, (item) => `\\dated{${tex(item.title)}}{${tex(item.date)}}`),
     ],
     [
       'Awards',
-      cv.awards
-        .map((award) => `\\dated{${tex(award.title)}, ${tex(award.org)}}{${tex(award.date)}}`)
-        .join('\n'),
+      lines(
+        cv.awards,
+        (award) => `\\dated{${tex(award.title)}, ${tex(award.org)}}{${tex(award.date)}}`,
+      ),
     ],
   ].filter(([, body]) => body);
 
