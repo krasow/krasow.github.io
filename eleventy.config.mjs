@@ -5,6 +5,7 @@ import markdownItAttrs from 'markdown-it-attrs';
 import markdownItFootnote from 'markdown-it-footnote';
 import { tex } from '@mdit/plugin-tex';
 import site from './content/_data/site.json' with { type: 'json' };
+import { structuredData } from './content/_includes/structured-data.mjs';
 import { generateManifest } from './terminal/generate-fs-manifest.mjs';
 
 // Static files served as-is, at the same paths as their source.
@@ -90,6 +91,14 @@ export default function (eleventyConfig) {
     return Object.fromEntries(links);
   });
   eleventyConfig.addFilter('json', (value) => JSON.stringify(value));
+  eleventyConfig.addFilter('structuredData', (site, collections, skills) =>
+    structuredData({
+      site,
+      cv: collections.cv[0].data,
+      publications: [...collections.publications].reverse(),
+      skills,
+    }),
+  );
 
   // The terminal's filesystem manifest and page text are built from the
   // finished site, so they always match what's deployed. Skipped when nothing

@@ -7,4 +7,5 @@ scripts:
   - /common/js/home-terminal.js
 ---
 {#- The homepage's sections and their order are in the body of content/index.md. #}
+<script type="application/ld+json">{{ site | structuredData(collections, skills) | safe }}</script>
 {{ content | safe }}
