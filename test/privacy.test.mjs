@@ -17,7 +17,7 @@ const files = (directory) =>
   });
 
 test('the personal phone number never reaches the website', () => {
-  // The last ten digits, in any format: 8432837758, (843) 283-7758, 843.283.7758…
+  // The last ten digits, in any format: 5555550123, (555) 555-0123, 555.555.0123…
   const digits = site.personalPhone.replace(/\D/g, '').slice(-10);
   const number = new RegExp(digits.split('').join('\\D{0,3}'));
   const leaks = files(siteDirectory)
