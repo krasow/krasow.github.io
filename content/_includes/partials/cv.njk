@@ -52,9 +52,25 @@
   {%- endcall %}
 {%- endmacro %}
 
-{#- A section that just links elsewhere. #}
-{%- macro link(name, text, href) %}
+{#- Talks from content/presentations/ whose `kind` matches, titles linked to the slides. #}
+{%- macro talks(name, items, kind) %}
   {%- call section(name) %}
-    {{- entry("", "", '<a href="' + href + '">' + text + ' &rarr;</a>') }}
+    {%- for talk in items | newestFirst | where("kind", kind) %}
+      {%- set title = talk.data.title | md %}
+      {%- if talk.data.links.Slides %}{% set title = '<a href="' + talk.data.links.Slides + '">' + title + '</a>' %}{% endif %}
+      {%- set venue = talk.data.venue | md %}
+      {%- if talk.data.venueUrl %}{% set venue = '<a href="' + talk.data.venueUrl + '">' + venue + '</a>' %}{% endif %}
+      {{- entry(talk.date | monthYear, title, venue) }}
+    {%- endfor %}
+  {%- endcall %}
+{%- endmacro %}
+
+{#- Posters from content/posters/, titles linked to the PDFs. #}
+{%- macro posters(name, items) %}
+  {%- call section(name) %}
+    {%- for poster in items | newestFirst %}
+      {%- set title = '<a href="' + poster.data.file + '">' + (poster.data.title | md) + '</a>' %}
+      {{- entry(poster.date | monthYear, title, poster.data.venue | md) }}
+    {%- endfor %}
   {%- endcall %}
 {%- endmacro %}

@@ -45,4 +45,6 @@ teaching:
 {{ cv.experience("Experience", collections.experience) }}
 {{ cv.list("Teaching & Mentoring", teaching) }}
 {{ cv.publications("Publications", collections.publications) }}
-{{ cv.link("Presentations", "See full list", "/pages/presentations.html") }}
+{{ cv.talks("Conference Talks", collections.presentations, "conference") }}
+{{ cv.talks("Invited Talks", collections.presentations, "invited") }}
+{{ cv.posters("Posters", collections.posters) }}
