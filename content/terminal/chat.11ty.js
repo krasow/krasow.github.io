@@ -606,7 +606,7 @@ export function render({ site, collections }) {
     {
       topic: 'latest papers',
       keywords: [],
-      phrases: ['latest paper', 'latest papers', 'newest paper', 'most recent paper', 'recent papers', 'latest publication', 'recent publications', 'paper status', 'status of his papers', 'under review', 'papers accepted', 'paper accepted'],
+      phrases: ['latest paper', 'latest papers', 'newest paper', 'most recent paper', 'recent paper', 'recent papers', 'last paper', 'latest publication', 'newest publication', 'recent publication', 'recent publications', 'last publication', 'paper status', 'status of his papers', 'under review', 'papers accepted', 'paper accepted'],
       answer: `David's most recent papers:\n${bullets(latestPapers.map(paperLine))}`,
     },
     {
