@@ -7,7 +7,7 @@ const monthYear = (date) =>
   date.toLocaleString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const bullets = (lines) => lines.map((line) => `• ${line}`).join('\n');
 const andList = (items) =>
-  items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
+  items.length < 3 ? items.join(' and ') : `${items.slice(0, -1).join(', ')}, and ${items.at(-1)}`;
 const byId = (items, id) => {
   const item = items.find((entry) => entry.data.id === id);
   if (!item) throw new Error(`chat.11ty.js: no entry with id ${id}`);
@@ -70,6 +70,15 @@ export function render({ site, collections }) {
   const firstPaper = publications.at(-1);
   const newestYear = publications[0].date.getUTCFullYear();
   const latestPapers = publications.filter((paper) => paper.date.getUTCFullYear() === newestYear);
+  // Accepted means peer reviewed: not still under submission and not a tech report.
+  const accepted = publications.filter(
+    (paper) => !/^submitted to|technical report/i.test(paper.data.venue),
+  );
+  const newestAcceptedYear = accepted[0].date.getUTCFullYear();
+  const latestAccepted = accepted.filter(
+    (paper) => paper.date.getUTCFullYear() === newestAcceptedYear,
+  );
+  const underReview = publications.filter((paper) => /^submitted to/i.test(paper.data.venue));
   const paperLink = (id) => {
     const paper = byId(publications, id);
     return { label: `${id} — ${paper.data.title}`, url: paper.data.links?.PDF ?? paper.data.url };
@@ -602,6 +611,13 @@ export function render({ site, collections }) {
       phrases: ['first paper', 'first publication', 'earliest paper', 'oldest paper', 'first published'],
       answer: `David's first paper was ${paperLine(firstPaper)}, from his undergraduate research at Clemson with Argonne National Laboratory.`,
       links: [paperLink(firstPaper.data.id)],
+    },
+    {
+      topic: 'latest accepted papers',
+      keywords: [],
+      phrases: ['latest accepted paper', 'latest accepted publication', 'newest accepted paper', 'newest accepted publication', 'recent accepted paper', 'recent accepted publication', 'last accepted paper', 'last accepted publication', 'latest published paper', 'recent published paper', 'last published paper', 'latest peer reviewed', 'recent peer reviewed'],
+      answer: `David's most recent accepted ${latestAccepted.length > 1 ? 'papers' : 'paper'}:\n${bullets(latestAccepted.map(paperLine))}${underReview.length ? `\n\nNewer work is under review at ${andList(underReview.map((paper) => paper.data.venue.replace(/^submitted to |;.*$/gi, '')))}.` : ''}`,
+      links: latestAccepted.map((paper) => paperLink(paper.data.id)),
     },
     {
       topic: 'latest papers',
