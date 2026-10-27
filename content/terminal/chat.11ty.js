@@ -93,7 +93,14 @@ export function render({ site, collections }) {
           `what does he do with ${surname}`,
           `work with ${surname}`,
         ],
-        answer: `${name} is a co-author with David on:\n${bullets(papers.map(paperLine))}`,
+        answer: `${name} is a co-author with David on:`,
+        links: papers.map((paper) => {
+          const url = paper.data.links?.PDF ?? paper.data.url ?? paper.data.links?.Code;
+          if (!url) throw new Error(`chat.11ty.js: no link for ${paper.inputPath}`);
+          const venue = paper.data.short ?? paper.data.venue;
+          const where = /\d{4}/.test(venue) ? venue : `${venue}, ${paper.date.getUTCFullYear()}`;
+          return { label: `${paper.data.title} (${where})`, url };
+        }),
       };
     });
 
