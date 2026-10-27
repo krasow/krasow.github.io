@@ -71,8 +71,8 @@
   margin-bottom: 1px;
 }
 
-.cv-title a { color: inherit; text-decoration: none; }
-.cv-title a:hover { text-decoration: underline; }
+.cv-title a, .cv-org a { color: inherit; text-decoration: none; }
+.cv-title a:hover, .cv-org a:hover { text-decoration: underline; }
 
 .cv-org {
   font-size: 12px;
