@@ -81,10 +81,11 @@ export function render({ site, collections }) {
     ],
     [
       'Under Review',
-      papers('under review', (paper) => {
-        const venue = paper.data.venue.match(/^submitted to (\S+?);/i)[1];
-        return [venue, `Submitted to ${tex(venue)}, ${paper.date.getUTCFullYear()}`];
-      }),
+      // No venue named: it would break double-blind review.
+      papers('under review', (paper) => [
+        'Submitted',
+        `Under review, ${paper.date.getUTCFullYear()}`,
+      ]),
     ],
     [
       'Technical Reports',

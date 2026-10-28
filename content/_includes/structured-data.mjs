@@ -10,7 +10,7 @@ export function structuredData({ site, cv, publications, skills }) {
   const [degrees, field] = current.title.split(' in ');
 
   const papers = publications
-    .filter((paper) => !/^submitted to/i.test(paper.data.venue))
+    .filter((paper) => !/^under review/i.test(paper.data.venue))
     .map((paper) => ({
       '@type': 'ScholarlyArticle',
       headline: paper.data.title,

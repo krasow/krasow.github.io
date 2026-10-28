@@ -13,10 +13,10 @@ export const profile = (collections) => ({
   publications: [...collections.publications].reverse(),
 });
 
-// Read from the venue: "submitted to …" is under review, "Technical Report …"
+// Read from the venue: "under review" is under review, "Technical Report …"
 // is a report, and anything else went through peer review.
 export const paperStatus = (paper) => {
-  if (/^submitted to/i.test(paper.data.venue)) return 'under review';
+  if (/^under review/i.test(paper.data.venue)) return 'under review';
   if (/technical report/i.test(paper.data.venue)) return 'report';
   return 'reviewed';
 };

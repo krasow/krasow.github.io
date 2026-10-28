@@ -54,7 +54,7 @@ export function render({ site, collections }) {
       'Publications',
       newest(collections.publications).map((paper) => {
         const url = paper.data.links?.DOI ?? paper.data.url ?? paper.data.links?.Code;
-        const venue = /^submitted to/i.test(paper.data.venue) ? paper.data.short : paper.data.venue;
+        const venue = /^under review/i.test(paper.data.venue) ? paper.data.short : paper.data.venue;
         return `${link(paper.data.title, url)}. ${paper.data.authors}. ${venue}, ${paper.date.getUTCFullYear()}.`;
       }),
     ),

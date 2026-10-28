@@ -73,7 +73,7 @@ export function render({ site, collections }) {
   const latestPapers = newest(publications);
   // Accepted: not under submission and not a tech report.
   const latestAccepted = newest(
-    publications.filter((paper) => !/^submitted to|technical report/i.test(paper.data.venue)),
+    publications.filter((paper) => !/^under review|technical report/i.test(paper.data.venue)),
   );
   const paperLink = (id) => {
     const paper = byId(publications, id);

@@ -21,7 +21,7 @@ card:
 
 [JuliaCon 2025](/pages/presentations.html#juliacon)
 
-**Note:** this page is outdated. The benchmarks and implementation details below reflect an early version of cuNumeric.jl. A paper, *cuNumeric.jl: Automated Performant Multi-GPU Numerical Computing for Julia*, has been submitted to IPDPS. For current performance results, see the [up-to-date benchmark results](https://julialegate.github.io/cuNumeric.jl/stable/benchmarks/results).
+**Note:** this page is outdated. The benchmarks and implementation details below reflect an early version of cuNumeric.jl. A paper, *cuNumeric.jl: Automated Performant Multi-GPU Numerical Computing for Julia*, is under review. For current performance results, see the [up-to-date benchmark results](https://julialegate.github.io/cuNumeric.jl/stable/benchmarks/results).
 
 cuNumeric.jl enables heterogeneous distributed code execution with minimal effort. The core type is the
 NDArray- a drop-in replacement for the Base.Array within Julia. Some of the key differences include:
